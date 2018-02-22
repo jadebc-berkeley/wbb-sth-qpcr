@@ -4,24 +4,22 @@
 # November 2017
 #######################################
 rm(list=ls())
-# library(xlsx)
 library(reshape2)
 library(ggplot2)
 
 #--------------------------------------
 # read in qPCR data
 #--------------------------------------
-iac=read.csv(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/Bangladesh - STH - Master Results File-2-IAC.csv",stringsAsFactors=FALSE)
-na=read.csv(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/Bangladesh - STH - Master Results File-2-NA.csv",stringsAsFactors=FALSE)
-ad=read.csv(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/Bangladesh - STH - Master Results File-2-AD.csv",stringsAsFactors=FALSE)
-ss=read.csv(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/Bangladesh - STH - Master Results File-2-SS.csv",stringsAsFactors=FALSE)
-tt=read.csv(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/Bangladesh - STH - Master Results File-2-TT.csv",stringsAsFactors=FALSE)
-al=read.csv(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/Bangladesh - STH - Master Results File-2-AL.csv",stringsAsFactors=FALSE)
-ac=read.csv(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/Bangladesh - STH - Master Results File-2-AC.csv",stringsAsFactors=FALSE)
-
+iac=read.csv(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/File 3/Bangladesh - STH - Master Results File-IAC.csv",stringsAsFactors=FALSE)
+na=read.csv(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/File 3/Bangladesh - STH - Master Results File-NA.csv",stringsAsFactors=FALSE)
+ad=read.csv(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/File 3/Bangladesh - STH - Master Results File-AD.csv",stringsAsFactors=FALSE)
+ss=read.csv(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/File 3/Bangladesh - STH - Master Results File-SS.csv",stringsAsFactors=FALSE)
+tt=read.csv(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/File 3/Bangladesh - STH - Master Results File-TT.csv",stringsAsFactors=FALSE)
+al=read.csv(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/File 3/Bangladesh - STH - Master Results File-AL.csv",stringsAsFactors=FALSE)
+ac=read.csv(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/File 3/Bangladesh - STH - Master Results File-AC.csv",stringsAsFactors=FALSE)
 
 colnames=c("sampleid","sampleno","assay",
-  "CTmean","CTSD","assaydate","plateid","positive")
+  "CTmean","CTSD","assaydate","plateid","retest")
 
 colnames(iac)=colnames
 colnames(na)=colnames
@@ -29,17 +27,29 @@ colnames(ad)=colnames
 colnames(ss)=colnames
 colnames(tt)=colnames
 colnames(al)=colnames
-colnames(ac)=colnames
+colnames(ac)=c(colnames,"comment")
 
-iac$positive[is.na(iac$positive)]=0
+# Nils: First off, we generally call any samples that give a positive result with Ct values <40 
+# positive if they are positive in both replicate reactions.  If only one replicate is positive, 
+# then the sample is retested by another two replicates.  If at least one of these is positive 
+# (meaning at least 2 out of 4 overall) the sample is considered to be positive.  
+iac$positive=ifelse(iac$CTmean<40 & is.na(iac$retest),1,0)
+na$positive=ifelse(na$CTmean<40 & is.na(na$retest),1,0)
+ad$positive=ifelse(ad$CTmean<40 & is.na(ad$retest),1,0)
+ss$positive=ifelse(ss$CTmean<40 & is.na(ss$retest),1,0)
+tt$positive=ifelse(tt$CTmean<40 & is.na(tt$retest),1,0)
+al$positive=ifelse(al$CTmean<40 & is.na(al$retest),1,0)
+ac$positive=ifelse(ac$CTmean<40 & is.na(ac$retest),1,0)
+
+iac$positive[is.na(iac$positive)]=0 #retest 2 less than theirs
 na$positive[is.na(na$positive)]=0
 ad$positive[is.na(ad$positive)]=0
 ss$positive[is.na(ss$positive)]=0
 tt$positive[is.na(tt$positive)]=0
-al$positive[is.na(al$positive)]=0
+al$positive[is.na(al$positive)]=0 # positive count under theirs by 1
 ac$positive[is.na(ac$positive)]=0
 
-ac=ac[,c(1:8)]
+ac$comment=NULL
 
 qpcr=rbind(iac,na,ad,ss,tt,al,ac)
 qpcr=qpcr[!is.na(qpcr$sampleid),]
@@ -47,10 +57,6 @@ qpcr=qpcr[!is.na(qpcr$sampleid),]
 qpcr.w=reshape(qpcr[,c("sampleid","assay",
   "CTmean","CTSD","positive")],idvar="sampleid",
   direction="wide",timevar="assay")
-
-indicator=function(x){
-  return(ifelse(x=="",0,1))
-}
 
 qpcr.w=qpcr.w[!is.na(qpcr.w$sampleid),]
 qpcr.w$dataid=substr(qpcr.w$sampleid,1,5)
@@ -90,6 +96,32 @@ keep=keep[!is.na(keep$alint),]
 keep=keep[rev(order(keep$alepg)),]
 keep[1:6,c("dataid","personid")]
 keep[7:16,c("dataid","personid")]
+keep[17:29,c("dataid","personid")]
+
+# requested by Nils on 2/22/18
+# kk and qpcr positive for tt and nothing else
+qdata$keep2=ifelse(qdata$ttkk==1 & qdata$hwkk==0 & qdata$alkk==0 & 
+      qdata$positive.Tt==1 & qdata$positive.Na!=1 & qdata$positive.Ad!=1 & 
+      qdata$positive.Ss!=1 & qdata$positive.Al!=1 & qdata$positive.Ac!=1,1,0)
+as.matrix(paste0(qdata$dataid[qdata$keep2==1],"E",qdata$personid[qdata$keep2==1],"S1"))
+
+# kk and qpcr positive for Na and nothing else
+qdata$keep3=ifelse(qdata$ttkk==0 & qdata$hwkk==1 & qdata$alkk==0 & 
+       qdata$positive.Tt!=1 & qdata$positive.Na==1 & qdata$positive.Ad!=1 & 
+       qdata$positive.Ss!=1 & qdata$positive.Al!=1 & qdata$positive.Ac!=1,1,0)
+as.matrix(paste0(qdata$dataid[qdata$keep3==1],"E",qdata$personid[qdata$keep3==1],"S1"))
+
+# kk and qpcr positive for Al and nothing else
+qdata$keep4=ifelse(qdata$ttkk==0 & qdata$hwkk==0 & qdata$alkk==1 & 
+       qdata$positive.Tt!=1 & qdata$positive.Na!=1 & qdata$positive.Ad!=1 & 
+       qdata$positive.Ss!=1 & qdata$positive.Al==1 & qdata$positive.Ac!=1,1,0)
+as.matrix(paste0(qdata$dataid[qdata$keep4==1],"E",qdata$personid[qdata$keep4==1],"S1"))
+
+# kk and qpcr negative for all
+qdata$keep5=ifelse(qdata$ttkk==0 & qdata$hwkk==0 & qdata$alkk==0 & 
+      qdata$positive.Tt!=1 & qdata$positive.Na!=1 & qdata$positive.Ad!=1 & 
+      qdata$positive.Ss!=1 & qdata$positive.Al!=1 & qdata$positive.Ac!=1,1,0)
+as.matrix(paste0(qdata$dataid[qdata$keep5==1],"E",qdata$personid[qdata$keep5==1],"S1")[1:15])
 
 
 
