@@ -5,6 +5,7 @@
 rm(list=ls())
 library(reshape2)
 library(ggplot2)
+library(dplyr)
 
 #--------------------------------------
 # read in qPCR data
@@ -63,6 +64,9 @@ qpcr=qpcr[!is.na(qpcr$sampleid),]
 qpcr=qpcr[,c("sampleid","assay",
         "CTmean","CTSD","positive")]
 
+# correcting data entry error
+qpcr$sampleid[qpcr$sampleid==":559901ETS"]="559901ETS1"
+
 qpcr.w=reshape(qpcr[,c("sampleid","assay",
   "CTmean","CTSD","positive")],idvar="sampleid",
   direction="wide",timevar="assay")
@@ -77,6 +81,8 @@ qpcr.w$qpcr="Done"
 # merge in kk data
 #--------------------------------------
 kk=read.csv("~/Dropbox/WASHB Parasites/Analysis datasets/Jade/sth.csv")
+kk$dataid=as.character(kk$dataid)
+kk$personid=as.character(kk$personid)
 kk=kk[,c("dataid","personid","block","clusterid","tr",
       "alepg","hwepg","ttepg",
        "logalepg","loghwepg","logttepg",
@@ -86,9 +92,35 @@ colnames(kk)[which(colnames(kk)=="tt")]="ttkk"
 colnames(kk)[which(colnames(kk)=="al")]="alkk"
 colnames(kk)[which(colnames(kk)=="hw")]="hwkk"
 
-data=merge(kk,qpcr.w,by=c("dataid","personid"),all.x=TRUE,all.y=TRUE)
+data=full_join(kk,qpcr.w,by=c("dataid","personid"))
 data$qpcr[is.na(data$qpcr)]="Not done"
 qdata=data[data$qpcr=="Done",]
+
+# clean up missing cluster ids
+qdata$clusterid[is.na(qdata$clusterid)]=substr(qdata$dataid[is.na(qdata$clusterid)],1,3)
+
+# -------------------------------------------
+# create gold standard by pooling together 
+# kk and qPCR results
+# -------------------------------------------
+qdata = qdata %>% 
+  mutate(positive.Hw=ifelse(positive.Na==1 | positive.Ac==1 | positive.Ad==1,1,0)) %>%
+  mutate(gold.hwpos=ifelse(hwkk==1 | positive.Hw==1,1,0)) %>%
+  mutate(gold.ttpos=ifelse(ttkk==1 | positive.Tt==1,1,0)) %>%
+  mutate(gold.alpos=ifelse(alkk==1 | positive.Al==1,1,0)) %>%
+  mutate(gold.sthpos=ifelse(sth==1 | positive.Al==1| positive.Hw==1 | positive.Tt==1,1,0))
+
+# tabulate hookworm
+qdata %>% select(positive.Hw,hwkk,gold.hwpos) %>%
+  summarise(qPCR=mean(positive.Hw),kk=mean(hwkk,na.rm=TRUE),gold=mean(gold.hwpos,na.rm=TRUE))
+
+# tabulate trichuris
+qdata %>% select(positive.Tt,ttkk,gold.ttpos) %>%
+  summarise(qPCR=mean(positive.Tt),kk=mean(ttkk,na.rm=TRUE),gold=mean(gold.ttpos,na.rm=TRUE))
+
+# tabulate ascaris
+qdata %>% select(positive.Al,alkk,gold.alpos) %>%
+  summarise(qPCR=mean(positive.Al),kk=mean(alkk,na.rm=TRUE),gold=mean(gold.alpos,na.rm=TRUE))
 
 #--------------------------------------
 # save data
@@ -135,4 +167,5 @@ qdata$keep5=ifelse(qdata$ttkk==0 & qdata$hwkk==0 & qdata$alkk==0 &
       qdata$positive.Tt!=1 & qdata$positive.Na!=1 & qdata$positive.Ad!=1 & 
       qdata$positive.Ss!=1 & qdata$positive.Al!=1 & qdata$positive.Ac!=1,1,0)
 as.matrix(paste0(qdata$dataid[qdata$keep5==1],"E",qdata$personid[qdata$keep5==1],"S1")[1:15])
+
 
