@@ -114,7 +114,7 @@ C.hw.MCMC <- compileNimble(hw.MCMC, project=lca.model.hw)
 #--------------------------------------
 # Run MCMC
 #--------------------------------------
-niter=2000000
+niter=1000000
 
 # specify initial values for each chain
 hw.inits=list(list(pi=0.22, Se1=0.526, Se2=0.98, Sp1=0.986, Sp2=0.97,

@@ -156,7 +156,7 @@ C.hw.MCMC <- compileNimble(hw.MCMC, project=lca.model.hw)
 
 
 #### Run MCMC
-Next I run MCMC with 10,000 iterations and four chains. I specify different initial values for each chain. The values for chains 2-3 are completely arbitrary. I need to investigate whether they need to be more thoughtful (probably).
+Next I run MCMC with 1,000,000 iterations and four chains. I specify different initial values for each chain. The values for chains 2-3 are completely arbitrary. I need to investigate whether they need to be more thoughtful (probably).
 
 ```{r , echo=TRUE}
 niter=1000000
@@ -184,29 +184,30 @@ mcmc.hw.out <- runMCMC(C.hw.MCMC, niter = niter, nchains = 4, inits=hw.inits)
 
 ```{r , echo=TRUE}
 samples.hw.f=as.data.frame(do.call(rbind,mcmc.hw.out))
-rows=niter/thin
-samples.hw.f$chain=as.factor(c(rep(1,rows),rep(2,rows),rep(3,rows),rep(4,rows)))
+samples.hw.f$chain=as.factor(c(rep(1,niter/thin),
+       rep(2,niter/thin),rep(3,niter/thin),
+       rep(4,niter/thin)))
 
 # convert samples to long format for plotting
 samples.hw.l=melt(samples.hw.f,id.vars=c("chain"))
 
 # plot history of each parameter
 numMonitors=7
-xseq=rep(rep(seq(1,niter),numMonitors),4)
+xseq=rep(rep(seq(1,niter/thin),numMonitors),4)
 ```
 
 #### Plot the parameter estimates for each MCMC iteration
-For each parameter with 10,000 iterations convergence isn't great. 
+For each parameter with 1,000,000 iterations convergence isn't great. 
 ```{r , echo=TRUE, fig.width=9, fig.height=7}
 ggplot(samples.hw.l, aes(x=xseq,y=value,color=chain))+
-  geom_line()+facet_wrap(~variable, scales="free", ncol=2)+theme_bw()+
+  geom_line()+facet_wrap(~variable, scales="free",ncol=2)+theme_bw()+
   xlab("Iteration")+ylab("Parameter estimate")
 ```
 
 #### Plot the density of parameter estimates from MCMC
 ```{r , echo=TRUE, fig.width=9, fig.height=7}
 ggplot(samples.hw.l, aes(x=value))+geom_density(aes(col=chain))+
-  facet_wrap(~variable, scales="free", ncol=2)+theme_bw()+
+  facet_wrap(~variable, scales="free")+theme_bw()+
   xlab("Kernal density")+xlab("Parameter estimate")
 ```
 

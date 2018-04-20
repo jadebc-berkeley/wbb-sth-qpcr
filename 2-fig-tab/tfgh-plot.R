@@ -66,7 +66,7 @@ magenta="#c51b8a"
 
 mycol=c(magenta,teal1,teal2,blue,dblue,green)
 
-pdf(file="~/Dropbox/WASH-B-STH-Add-on/Results/wbb-qpcr-kk-bargraph.pdf",
+pdf(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Results/wbb-qpcr-kk-bargraph.pdf",
     width=10,height=4)
 ggplot(bar.data,aes(x=test,y=n,fill=org),col="black")+
   geom_bar(aes(fill=org),stat="identity",colour="black",
