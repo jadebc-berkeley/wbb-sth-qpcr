@@ -84,6 +84,7 @@ kk=read.csv("~/Dropbox/WASHB Parasites/Analysis datasets/Jade/sth.csv")
 kk$dataid=as.character(kk$dataid)
 kk$personid=as.character(kk$personid)
 kk=kk[,c("dataid","personid","block","clusterid","tr",
+         "sex","aged","agem","agey",
       "alepg","hwepg","ttepg",
        "logalepg","loghwepg","logttepg",
        "al","tt","hw","sth","alint","ttint","hwint")]
@@ -95,6 +96,9 @@ colnames(kk)[which(colnames(kk)=="hw")]="hwkk"
 data=full_join(kk,qpcr.w,by=c("dataid","personid"))
 data$qpcr[is.na(data$qpcr)]="Not done"
 qdata=data[data$qpcr=="Done",]
+
+# merging in characteristics for the 11 kids without kk that got qPCR
+# NEEED TO DO!
 
 # clean up missing cluster ids
 qdata$clusterid[is.na(qdata$clusterid)]=substr(qdata$dataid[is.na(qdata$clusterid)],1,3)
