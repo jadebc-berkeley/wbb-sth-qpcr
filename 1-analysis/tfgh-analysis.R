@@ -19,6 +19,7 @@ hw.kk=washb_mean(qdata$hwkk, id=qdata$clusterid, print = TRUE)
 tt.kk=washb_mean(qdata$ttkk, id=qdata$clusterid, print = TRUE)
 
 al.q=washb_mean(qdata$positive.Al, id=qdata$clusterid, print = TRUE)
+hw.q=washb_mean(qdata$positive.Hw, id=qdata$clusterid, print = TRUE)
 na.q=washb_mean(qdata$positive.Na, id=qdata$clusterid, print = TRUE)
 ac.q=washb_mean(qdata$positive.Ac, id=qdata$clusterid, print = TRUE)
 ad.q=washb_mean(qdata$positive.Ad, id=qdata$clusterid, print = TRUE)
@@ -105,7 +106,7 @@ tt.corr <- cor.test(x=qdata$CTmean.Tt, y=qdata$ttepg,
        method = 'spearman',exact=FALSE)
 
 save(al.kk,hw.kk,tt.kk,
-     al.q,na.q,ac.q,ad.q,tt.q,
+     al.q,hw.q,na.q,ac.q,ad.q,tt.q,
      al.kk.gmn,hw.kk.gmn,tt.kk.gmn,
      al.q.gmn,na.q.gmn,ac.q.gmn,ad.q.gmn,tt.q.gmn,
      file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/prev_results.RData")
