@@ -21,9 +21,10 @@ prev.kk = prev.kk %>%
   select(org,N,prevkk) %>%
   rename(Nkk=N)
 
-prev.q=as.data.frame(rbind(al.q,na.q,ac.q,ad.q,tt.q))
-prev.q$org=c("Ascaris lumbricoides","Trichuris trichiura",
-           "Necator americanus","Ancylostoma ceylanicum","Ancylostoma duodenale")
+prev.q=as.data.frame(rbind(al.q,hw.q,na.q,ac.q,ad.q,tt.q))
+prev.q$org=c("Ascaris lumbricoides","Hookworm",
+           "Necator americanus","Ancylostoma ceylanicum","Ancylostoma duodenale",
+           "Trichuris trichiura")
 colnames(prev.q)[5:6]=c("lb","ub")
 prev.q = prev.q %>%
   mutate(prevq=ptestci.format(Mean,lb,ub,decimals=1,scale=100)) %>%
