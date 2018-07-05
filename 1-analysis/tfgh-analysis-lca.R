@@ -11,6 +11,15 @@ load("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/qdata.RData")
 
 
 # define data
+adata=qdata[!is.na(qdata$positive.Al) & !is.na(qdata$alkk),]
+al.x11=nrow(adata[adata$positive.Al==1 & adata$alkk==1,])
+al.x10=nrow(adata[adata$positive.Al==0 & adata$alkk==1,])
+al.x01=nrow(adata[adata$positive.Al==1 & adata$alkk==0,])
+al.x00=nrow(adata[adata$positive.Al==0 & adata$alkk==0,])
+al.n=sum(al.x11,al.x10,al.x01,al.x00)
+
+al.data=list(n=al.n, x=c(al.x11, al.x10, al.x01, al.x00))
+
 hdata=qdata[!is.na(qdata$positive.Hw) & !is.na(qdata$hwkk),]
 hw.x11=nrow(hdata[hdata$positive.Hw==1 & hdata$hwkk==1,])
 hw.x10=nrow(hdata[hdata$positive.Hw==0 & hdata$hwkk==1,])
@@ -19,6 +28,15 @@ hw.x00=nrow(hdata[hdata$positive.Hw==0 & hdata$hwkk==0,])
 hw.n=sum(hw.x11,hw.x10,hw.x01,hw.x00)
 
 hw.data=list(n=hw.n, x=c(hw.x11, hw.x10, hw.x01, hw.x00))
+
+tdata=qdata[!is.na(qdata$positive.Tt) & !is.na(qdata$ttkk),]
+tt.x11=nrow(tdata[tdata$positive.Tt==1 & tdata$ttkk==1,])
+tt.x10=nrow(tdata[tdata$positive.Tt==0 & tdata$ttkk==1,])
+tt.x01=nrow(tdata[tdata$positive.Tt==1 & tdata$ttkk==0,])
+tt.x00=nrow(tdata[tdata$positive.Tt==0 & tdata$ttkk==0,])
+tt.n=sum(tt.x11,tt.x10,tt.x01,tt.x00)
+
+tt.data=list(n=tt.n, x=c(tt.x11, tt.x10, tt.x01, tt.x00))
 
 #--------------------------------------
 # Build BUGS model
@@ -38,10 +56,10 @@ lca.hw <- nimbleCode({
   
   # prior values
   pi ~ dbeta(1,1) 
-  Se1 ~ dbeta(1,1) 
-  Sp1 ~ dbeta(1,1) 
-  Se2 ~ dbeta(1,1) 
-  Sp2 ~ dbeta(1,1) 
+  Se1 ~ dbeta(3,3) 
+  Sp1 ~ dunif(0.9475,1) 
+  Se2 ~ dunif(0.7895,1) 
+  Sp2 ~ dunif(0.9475,1)  
   
   covDn ~ dunif(0, uc)
   covDp ~ dunif(0, us)
@@ -51,7 +69,7 @@ lca.hw <- nimbleCode({
 
 # define initial values
 set.seed(123)
-hw.inits=list(pi=0.22, Se1=0.526, Se2=0.98, Sp1=0.986, Sp2=0.97, 
+hw.inits=list(pi=0.22, Se1=0.33, Se2=0.99, Sp1=0.986, Sp2=0.97, 
               rhoD=0.5, rhoDc=0.5, 
               p=c(0.526*0.22+0.98*0.22, 
                   0.526*0.22+0.97*(1-0.22), 
@@ -91,7 +109,7 @@ c.lca.model.hw=compileNimble(lca.model.hw)
 # Configure MCMC 
 #--------------------------------------
 monitors=c("pi","Se1","Se2","Sp1","Sp2","rhoD", "rhoDc")
-thin=100
+thin=10
 lca.hw.Conf <- configureMCMC(lca.model.hw,
       monitors=monitors,
       thin=thin, print = TRUE)
@@ -114,37 +132,72 @@ C.hw.MCMC <- compileNimble(hw.MCMC, project=lca.model.hw)
 #--------------------------------------
 # Run MCMC
 #--------------------------------------
-niter=1000000
+niter=100000
 
 # specify initial values for each chain
-hw.inits=list(list(pi=0.22, Se1=0.526, Se2=0.98, Sp1=0.986, Sp2=0.97,
-                   rhoD=0.5, rhoDc=0.5,
-                   p=c(0.526*0.22+0.98*0.22,
-                       0.526*0.22+0.97*(1-0.22),
-                       0.986*(1-0.22)+0.98*0.22,
-                       0.986*(1-0.22)+0.97*(1-0.22))),
-              list(pi=0.5, Se1=0.5, Se2=0.5, Sp1=0.5, Sp2=0.5,
-                   rhoD=0.5, rhoDc=0.5,
-                   p=c(0.5,0.5,0.5,0.5)),
-              list(pi=0.3, Se1=0.3, Se2=0.3, Sp1=0.3, Sp2=0.3,
-                   rhoD=0.3, rhoDc=0.3,
-                   p=c(0.3,0.3,0.3,0.3)),
-              list(pi=0.4, Se1=0.4, Se2=0.4, Sp1=0.4, Sp2=0.4,
-                   rhoD=0.4, rhoDc=0.4,
-                   p=c(0.4,0.4,0.4,0.4)))
+hw.inits=list(list(pi=0.22, Se1=0.33, Se2=0.99, Sp1=0.986, Sp2=0.97, 
+                   rhoD=0.5, rhoDc=0.5, 
+                   p=c(0.526*0.22+0.98*0.22, 
+                       0.526*0.22+0.97*(1-0.22), 
+                       0.986*(1-0.22)+0.98*0.22, 
+                       0.986*(1-0.22)+0.97*(1-0.22)), 
+                   covDp=runif(1,min=0,max=0.526-(0.526*0.98)),
+                   covDn=runif(1,min=0,max=0.97-(0.986*0.97))),
+              
+              list(pi=0.22, Se1=0.33, Se2=0.99, Sp1=0.986, Sp2=0.97, 
+                   rhoD=0.5, rhoDc=0.5, 
+                   p=c(0.526*0.22+0.98*0.22, 
+                       0.526*0.22+0.97*(1-0.22), 
+                       0.986*(1-0.22)+0.98*0.22, 
+                       0.986*(1-0.22)+0.97*(1-0.22)), 
+                   covDp=runif(1,min=0,max=0.526-(0.526*0.98)),
+                   covDn=runif(1,min=0,max=0.97-(0.986*0.97))),
+              
+              list(pi=0.22, Se1=0.33, Se2=0.99, Sp1=0.986, Sp2=0.97, 
+                   rhoD=0.5, rhoDc=0.5, 
+                   p=c(0.526*0.22+0.98*0.22, 
+                       0.526*0.22+0.97*(1-0.22), 
+                       0.986*(1-0.22)+0.98*0.22, 
+                       0.986*(1-0.22)+0.97*(1-0.22)), 
+                   covDp=runif(1,min=0,max=0.526-(0.526*0.98)),
+                   covDn=runif(1,min=0,max=0.97-(0.986*0.97))),
+              
+              list(pi=0.22, Se1=0.33, Se2=0.99, Sp1=0.986, Sp2=0.97, 
+                   rhoD=0.5, rhoDc=0.5, 
+                   p=c(0.526*0.22+0.98*0.22, 
+                       0.526*0.22+0.97*(1-0.22), 
+                       0.986*(1-0.22)+0.98*0.22, 
+                       0.986*(1-0.22)+0.97*(1-0.22)), 
+                   covDp=runif(1,min=0,max=0.526-(0.526*0.98)),
+                   covDn=runif(1,min=0,max=0.97-(0.986*0.97))))
 set.seed(12345)
 mcmc.hw.out <- runMCMC(C.hw.MCMC, niter = niter, nchains = 4, inits=hw.inits)
 
 names(mcmc.hw.out)
 
 #--------------------------------------
-# Plot features of posterior distribution
+# Get mean and percentiles of posterior distribution, combining chains
 #--------------------------------------
 samples.hw.f=as.data.frame(do.call(rbind,mcmc.hw.out))
 samples.hw.f$chain=as.factor(c(rep(1,niter/thin),
-       rep(2,niter/thin),rep(3,niter/thin),
-       rep(4,niter/thin)))
+                               rep(2,niter/thin),rep(3,niter/thin),
+                               rep(4,niter/thin)))
 
+hw.pi=c(mean(samples.hw.f$pi),quantile(samples.hw.f$pi,probs=c(0.025, 0.975)))
+hw.Se1=c(mean(samples.hw.f$Se1),quantile(samples.hw.f$Se1,probs=c(0.025, 0.975)))
+hw.Se2=c(mean(samples.hw.f$Se2),quantile(samples.hw.f$Se2,probs=c(0.025, 0.975)))
+hw.Sp1=c(mean(samples.hw.f$Sp1),quantile(samples.hw.f$Sp1,probs=c(0.025, 0.975)))
+hw.Sp2=c(mean(samples.hw.f$Sp2),quantile(samples.hw.f$Sp2,probs=c(0.025, 0.975)))
+hw.rhoD=c(mean(samples.hw.f$rhoD),quantile(samples.hw.f$rhoD,probs=c(0.025, 0.975)))
+hw.rhoDc=c(mean(samples.hw.f$rhoDc),quantile(samples.hw.f$rhoDc,probs=c(0.025, 0.975)))
+
+hw.out=t(cbind(hw.pi,hw.Se1,hw.Sp1,hw.Sp1,hw.Sp2,hw.rhoD,hw.rhoDc))
+hw.out=data.frame(monitors,hw.out)
+colnames(hw.out)=c("monitors","mean","lb","ub")
+
+#--------------------------------------
+# Plot features of posterior distribution
+#--------------------------------------
 # convert samples to long format for plotting
 samples.hw.l=melt(samples.hw.f,id.vars=c("chain"))
 
