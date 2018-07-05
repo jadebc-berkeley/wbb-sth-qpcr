@@ -34,17 +34,17 @@ kk.sens.qgold$org=c("A. lumbricoides","Hookworm","T. trichiura")
 #----------------------------------------
 # calculate specificity
 #----------------------------------------
-ald2= d %>% filter(positive.Al==1) %>%
+ald2= d %>% filter(positive.Al==0) %>%
   filter(!is.na(alkk)) %>%
   mutate(alneg=ifelse(alkk==1,0,1))
 al.spec=washb_mean(ald2$alneg,id=ald2$clusterid)
 
-hwd2= d %>% filter(positive.Hw==1) %>%
+hwd2= d %>% filter(positive.Hw==0) %>%
   filter(!is.na(hwkk)) %>%
   mutate(hwneg=ifelse(hwkk==1,0,1))
 hw.spec=washb_mean(hwd2$hwneg,id=hwd2$clusterid)
 
-ttd2= d %>% filter(positive.Tt==1) %>%
+ttd2= d %>% filter(positive.Tt==0) %>%
   filter(!is.na(ttkk)) %>%
   mutate(ttneg=ifelse(ttkk==1,0,1))
 tt.spec=washb_mean(ttd2$ttneg,id=ttd2$clusterid)
