@@ -24,12 +24,57 @@ library(ggplot2)
 # quantile(se,c(0,0.05,1))
 # 
 # 
-# set.seed(123)
-# sp=rbeta(1000,shape1=21.2, shape2=1)
-# hist(sp)
+set.seed(123)
+sp=rbeta(1000,shape1=21.2, shape2=1)
+hist(sp)
+
+set.seed(123)
+sp=rbeta(1000,shape1=5, shape2=5)
+hist(sp)
+
+
+set.seed(123)
+sp=rbeta(1000,shape1=5, shape2=20)
+hist(sp)
+# 
 # 
 # Mode(sp)
 # quantile(sp,c(0,0.05,1))
+sp=rbeta(1000,shape1=21.2, shape2=1)
+hist(sp)
+
+# Easton: 95 % confidence that the speci- ficity of each method was greater than 95 %
+# uniform distribution (does better)
+set.seed(123)
+d=data.frame(sp=runif(1000,min=0.9475, max=1))
+d$over95=ifelse(d$sp>0.95,1,0)
+prop.table(table(d$over95))
+hist(d$sp)
+
+# gaussian distribution
+set.seed(123)
+d=data.frame(sp=rnorm(1000,mean=0.975, sd=0.0152))
+d$over95=ifelse(d$sp>0.95,1,0)
+prop.table(table(d$over95))
+hist(d$sp)
+
+# Easton: 95 % con- fidence that the sensitivity of qPCR was greater than 80 %.”
+# uniform distribution (does better)
+set.seed(123)
+d=data.frame(se=runif(1000,min=0.7895, max=1))
+d$over95=ifelse(d$se>0.8,1,0)
+prop.table(table(d$over95))
+hist(d$se)
+
+# gaussian distribution
+set.seed(123)
+d=data.frame(se=rnorm(1000,mean=0.9, sd=0.1255))
+d$over95=ifelse(d$se>0.8,1,0)
+prop.table(table(d$over95))
+hist(d$se)
+
+
+
 
 
 # assume sensitivity = 0.95, sensitivity = 0.98
