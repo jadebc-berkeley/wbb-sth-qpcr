@@ -96,10 +96,10 @@ lca.hw <- nimbleCode({
   
   # prior values
   pi ~ dbeta(1,1) 
-  Se1 ~ dbeta(1,1) 
-  Sp1 ~ dbeta(1,1) 
-  Se2 ~ dbeta(1,1) 
-  Sp2 ~ dbeta(1,1) 
+  Se1 ~ dbeta(3,3) 
+  Sp1 ~ dunif(0.9475,1) 
+  Se2 ~ dunif(0.7895,1) 
+  Sp2 ~ dunif(0.9475,1)  
   
   covDn ~ dunif(0, uc)
   covDp ~ dunif(0, us)
@@ -111,7 +111,7 @@ lca.hw <- nimbleCode({
 I chose initial values as follows:
 
 - `pi`: prevalence of hookworm by qPCR in our study
-- `Se1`, `Sp1`: estimates for Kato-Katz from Nikolay et al. 
+- `Se1`, `Sp1`: estimates for Kato-Katz from our study using qPCR as the gold standard
 - `Se2`, `Sp2`: estimates from Easton et al. 
 - `covDp`, `covDn`: I randomly sampled from the prior distribution defined above. 
 - `p`: For the probability of each count, I calculated the expected value using the assumptions defined above. 
@@ -120,7 +120,7 @@ I chose initial values as follows:
 ```{r , echo=TRUE}
 # define initial values
 set.seed(123)
-hw.inits=list(pi=0.22, Se1=0.526, Se2=0.98, Sp1=0.986, Sp2=0.97, 
+hw.inits=list(pi=0.22, Se1=0.33, Se2=0.99, Sp1=0.986, Sp2=0.97, 
               rhoD=0.5, rhoDc=0.5, 
               p=c(0.526*0.22+0.98*0.22, 
                   0.526*0.22+0.97*(1-0.22), 
@@ -146,7 +146,7 @@ Below I define the features of the MCMC model. The default sampling is Metropoli
 ```{r , echo=TRUE}
 c.lca.model.hw=compileNimble(lca.model.hw)
 monitors=c("pi","Se1","Se2","Sp1","Sp2","rhoD", "rhoDc")
-thin=100
+thin=10
 lca.hw.Conf <- configureMCMC(lca.model.hw,
       monitors=monitors,
       thin=thin, print = TRUE)
@@ -156,27 +156,48 @@ C.hw.MCMC <- compileNimble(hw.MCMC, project=lca.model.hw)
 
 
 #### Run MCMC
-Next I run MCMC with 1,000,000 iterations and four chains. I specify different initial values for each chain. The values for chains 2-3 are completely arbitrary. I need to investigate whether they need to be more thoughtful (probably).
+Next I run MCMC with 100,000 iterations and four chains. I specify different initial values for each chain. The values for chains 2-3 are completely arbitrary. I need to investigate whether they need to be more thoughtful (probably).
 
 ```{r , echo=TRUE}
-niter=1000000
+niter=100000
 
 # specify initial values for each chain
-hw.inits=list(list(pi=0.22, Se1=0.526, Se2=0.98, Sp1=0.986, Sp2=0.97,
-                   rhoD=0.5, rhoDc=0.5,
-                   p=c(0.526*0.22+0.98*0.22,
-                       0.526*0.22+0.97*(1-0.22),
-                       0.986*(1-0.22)+0.98*0.22,
-                       0.986*(1-0.22)+0.97*(1-0.22))),
-              list(pi=0.5, Se1=0.5, Se2=0.5, Sp1=0.5, Sp2=0.5,
-                   rhoD=0.5, rhoDc=0.5,
-                   p=c(0.5,0.5,0.5,0.5)),
-              list(pi=0.3, Se1=0.3, Se2=0.3, Sp1=0.3, Sp2=0.3,
-                   rhoD=0.3, rhoDc=0.3,
-                   p=c(0.3,0.3,0.3,0.3)),
-              list(pi=0.4, Se1=0.4, Se2=0.4, Sp1=0.4, Sp2=0.4,
-                   rhoD=0.4, rhoDc=0.4,
-                   p=c(0.4,0.4,0.4,0.4)))
+hw.inits=list(list(pi=0.22, Se1=0.33, Se2=0.99, Sp1=0.986, Sp2=0.97, 
+              rhoD=0.5, rhoDc=0.5, 
+              p=c(0.526*0.22+0.98*0.22, 
+                  0.526*0.22+0.97*(1-0.22), 
+                  0.986*(1-0.22)+0.98*0.22, 
+                  0.986*(1-0.22)+0.97*(1-0.22)), 
+              covDp=runif(1,min=0,max=0.526-(0.526*0.98)),
+              covDn=runif(1,min=0,max=0.97-(0.986*0.97))),
+              
+              list(pi=0.22, Se1=0.33, Se2=0.99, Sp1=0.986, Sp2=0.97, 
+              rhoD=0.5, rhoDc=0.5, 
+              p=c(0.526*0.22+0.98*0.22, 
+                  0.526*0.22+0.97*(1-0.22), 
+                  0.986*(1-0.22)+0.98*0.22, 
+                  0.986*(1-0.22)+0.97*(1-0.22)), 
+              covDp=runif(1,min=0,max=0.526-(0.526*0.98)),
+              covDn=runif(1,min=0,max=0.97-(0.986*0.97))),
+              
+              list(pi=0.22, Se1=0.33, Se2=0.99, Sp1=0.986, Sp2=0.97, 
+              rhoD=0.5, rhoDc=0.5, 
+              p=c(0.526*0.22+0.98*0.22, 
+                  0.526*0.22+0.97*(1-0.22), 
+                  0.986*(1-0.22)+0.98*0.22, 
+                  0.986*(1-0.22)+0.97*(1-0.22)), 
+              covDp=runif(1,min=0,max=0.526-(0.526*0.98)),
+              covDn=runif(1,min=0,max=0.97-(0.986*0.97))),
+              
+              list(pi=0.22, Se1=0.33, Se2=0.99, Sp1=0.986, Sp2=0.97, 
+              rhoD=0.5, rhoDc=0.5, 
+              p=c(0.526*0.22+0.98*0.22, 
+                  0.526*0.22+0.97*(1-0.22), 
+                  0.986*(1-0.22)+0.98*0.22, 
+                  0.986*(1-0.22)+0.97*(1-0.22)), 
+              covDp=runif(1,min=0,max=0.526-(0.526*0.98)),
+              covDn=runif(1,min=0,max=0.97-(0.986*0.97))))
+
 set.seed(12345)
 mcmc.hw.out <- runMCMC(C.hw.MCMC, niter = niter, nchains = 4, inits=hw.inits)
 ```
@@ -197,7 +218,7 @@ xseq=rep(rep(seq(1,niter/thin),numMonitors),4)
 ```
 
 #### Plot the parameter estimates for each MCMC iteration
-For each parameter with 1,000,000 iterations convergence isn't great. 
+For each parameter with 100,000 iterations convergence isn't great. 
 ```{r , echo=TRUE, fig.width=9, fig.height=7}
 ggplot(samples.hw.l, aes(x=xseq,y=value,color=chain))+
   geom_line()+facet_wrap(~variable, scales="free",ncol=2)+theme_bw()+
