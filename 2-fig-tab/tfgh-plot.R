@@ -7,8 +7,10 @@ library(dplyr)
 library(tidyr)
 library(reshape2)
 library(ggplot2)
+library(grid)
 library(gridExtra)
 load("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/qdata.RData")
+load("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/concentration.RData")
 
 #--------------------------------------
 # bar graph of qPCR CT and KK EPG results
@@ -81,70 +83,85 @@ dev.off()
 #--------------------------------------
 # scatter plot of qPCR CT and KK EPG results
 #--------------------------------------
-# ADD CODE THAT CONVERTS CT VALUE TO DNA CONCENTRATION
+# # ADD CODE THAT CONVERTS CT VALUE TO DNA CONCENTRATION
+# 
+# qdata$CTmean.Al=as.numeric(as.character(qdata$CTmean.Al))
+# qdata$CTmean.Ad=as.numeric(as.character(qdata$CTmean.Ad))
+# qdata$CTmean.Tt=as.numeric(as.character(qdata$CTmean.Tt))
+# qdata$CTmean.Ac=as.numeric(as.character(qdata$CTmean.Ac))
+# qdata$CTmean.Na=as.numeric(as.character(qdata$CTmean.Na))
+# 
+# qdata$log10CTmean.Al=log10(qdata$CTmean.Al)
+# qdata$log10CTmean.Ad=log10(qdata$CTmean.Ad)
+# qdata$log10CTmean.Tt=log10(qdata$CTmean.Tt)
+# qdata$log10CTmean.Ac=log10(qdata$CTmean.Ac)
+# qdata$log10CTmean.Na=log10(qdata$CTmean.Na)
 
-qdata$CTmean.Al=as.numeric(as.character(qdata$CTmean.Al))
-qdata$CTmean.Ad=as.numeric(as.character(qdata$CTmean.Ad))
-qdata$CTmean.Tt=as.numeric(as.character(qdata$CTmean.Tt))
-qdata$CTmean.Ac=as.numeric(as.character(qdata$CTmean.Ac))
-qdata$CTmean.Na=as.numeric(as.character(qdata$CTmean.Na))
+cb.lightorange="#E69F00"
+cb.blue= "#56B4E9"
+cb.green="#009E73"
+cb.orange="#D55E00"
+cb.pink="#CC79A7"
+cb.dblue="#005787"
 
-qdata$log10CTmean.Al=log10(qdata$CTmean.Al)
-qdata$log10CTmean.Ad=log10(qdata$CTmean.Ad)
-qdata$log10CTmean.Tt=log10(qdata$CTmean.Tt)
-qdata$log10CTmean.Ac=log10(qdata$CTmean.Ac)
-qdata$log10CTmean.Na=log10(qdata$CTmean.Na)
-
+yseq=c(0.00001,0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 1000, 10000, 100000, 1000000)
+xseq=c(1, 10, 100, 1000, 10000, 100000)
 
 # al plot
-# fix detection limits
-qdata$log10alepg=log10(qdata$alepg)
-qdata$log10CTmean.Al[is.na(qdata$log10CTmean.Al)]=1
+al <- qdata.conc %>% filter(positive.Al==1 | alkk==1) %>%
+  # impute 1 for negative values of epg
+  mutate(alepg=ifelse(alepg==0, 1, alepg))
 
-# IS THE Y AXIS THE SAME AS IN EASTON PAPER?
-al.plot=ggplot(qdata[qdata$log10CTmean.Al>1 & qdata$log10alepg>1,],
-               aes(x=log10alepg,y=log10CTmean.Al))+
-  ylab(expression("log"[10]*"DNA concentration (ng/"*mu*"L)"))+
-  xlab(expression("log"[10]*italic(" A. lumbricoides")*" mean EPG"))+
-  geom_point(alpha=0.5)+
-  theme_bw()
+al.plot=ggplot(al, aes(x=alepg, y=copies.Al))+
+  geom_point(alpha=0.65,col=cb.lightorange)+
+  scale_y_log10(labels=yseq, breaks=yseq, limits=c(10^(-5), 10^6)) +
+  scale_x_log10(labels=xseq, breaks=xseq, limits=c(1, 10^5))+
+  xlab(expression(paste("Mean", " log"[10], italic(" A. lumbricoides"), " EPG")))+
+  ylab(expression(paste("Mean", " log"[10], italic(" A. lumbricoides"), " DNA (ag/",mu,"l)")))+
+  theme_bw()+ggtitle(expression(paste(italic("A. lumbricoides"))))+theme(plot.title = element_text(hjust = 0.5))
 
 # hw plot
-qpcr.l=melt(qdata,id.vars=c("dataid","personid"),
-            measure.vars=c("CTmean.Na","CTmean.Ad","CTmean.Ac"))
-kk.l=melt(qdata,id.vars=c("dataid","personid"),
-          measure.vars=c("hwepg"))
+hw <- qdata.conc %>% filter(positive.Hw==1 | hwkk==1) %>%
+  select(c(copies.Na, copies.Ac, copies.Ad, hwepg)) %>%
+  gather(hw.species,copies,copies.Na:copies.Ad) %>%
+  mutate(Species=case_when(
+    hw.species=="copies.Ad" ~ "Ancylostoma duodenale",
+    hw.species=="copies.Ac" ~ "Ancylostoma ceylanicum",
+    hw.species=="copies.Na" ~ "Necator americanus"
+  ))%>%
+  # impute 1 for negative values of epg
+  mutate(hwepg=ifelse(hwepg==0, 1, hwepg)) %>%
+  mutate(Species=factor(Species, levels=c("Necator americanus", 
+                "Ancylostoma ceylanicum", "Ancylostoma duodenale")))
 
-qdata.l=merge(qpcr.l,kk.l,by=c("dataid","personid"))
-colnames(qdata.l)=c("dataid","personid","qpcr","qpcr.val","kk","kk.val")
-qdata.l=qdata.l[qdata.l$kk.val>0,]
+hw.plot=ggplot(hw, aes(x=hwepg, y=copies))+
+  geom_point(aes(col=Species),alpha=0.65)+
+  scale_y_log10(labels=yseq, breaks=yseq, limits=c(10^(-5), 10^6)) +
+  scale_x_log10(labels=xseq, breaks=xseq, limits=c(1, 10^5))+
+  xlab(expression(paste("Mean", " log"[10], " Hookworm", " EPG")))+
+  ylab(expression(paste("Mean", " log"[10], " Hookworm", " DNA (ag/",mu,"l)")))+
+  scale_color_manual(values=c(cb.blue,cb.dblue,cb.pink))+
+  theme_bw()+ 
+  theme(legend.position = c(0.77, 0.2), legend.background = element_rect(color = "black", 
+    fill = "white", size = 0.2, linetype = "solid"))+
+  ggtitle("Hookworm")+theme(plot.title = element_text(hjust = 0.5))
 
-hw.plot=ggplot(qdata.l,aes(x=kk.val,y=qpcr.val,group=qpcr))+
-  geom_point(aes(color=qpcr),alpha=.5)+
-  ylab(expression("log"[10]*"DNA concentration (ng/"*mu*"L)"))+
-  xlab(expression("log"[10]*italic(" Hookworm")*" mean EPG"))+
-  theme_bw()
 
 # tt plot
-# fix detection limits
-qdata$log10ttepg=log10(qdata$ttepg)
-qdata$log10CTmean.Tt[is.na(qdata$log10CTmean.Tt)]=1
+tt <- qdata.conc %>% filter(positive.Tt==1 | ttkk==1) %>%
+  # impute 1 for negative values of epg
+  mutate(ttepg=ifelse(ttepg==0, 1, ttepg))
 
-tt.plot=ggplot(qdata[qdata$log10CTmean.Tt>1 & qdata$log10ttepg>1,],
-               aes(x=log10ttepg,y=log10CTmean.Tt))+
-  geom_point(alpha=0.5)+
-  ylab(expression("log"[10]*"DNA concentration (ng/"*mu*"L)"))+
-  xlab(expression("log"[10]*italic(" T. trichiura")*" mean EPG"))+
-  theme_bw()
+tt.plot=ggplot(tt, aes(x=ttepg, y=copies.Tt))+
+  geom_point(alpha=0.65,col=cb.green)+
+  scale_y_log10(labels=yseq, breaks=yseq, limits=c(10^(-5), 10^6)) +
+  scale_x_log10(labels=xseq, breaks=xseq, limits=c(1, 10^5))+
+  xlab(expression(paste("Mean", " log"[10], italic(" T. trichiura"), " EPG")))+
+  ylab(expression(paste("Mean", " log"[10], italic(" T. trichiura"), " DNA (ag/",mu,"l)")))+
+  theme_bw()+ggtitle(expression(paste(italic("T. trichiura"))))+theme(plot.title = element_text(hjust = 0.5))
 
-ggplot(qdata[qdata$CTmean.Tt>1 & qdata$ttepg>1,],
-       aes(x=ttepg,y=CTmean.Tt))+
-  geom_point(alpha=0.5)+
-  ylab(expression("log"[10]*"DNA concentration (ng/"*mu*"L)"))+
-  xlab(expression("log"[10]*italic(" T. trichiura")*" mean EPG"))+
-  theme_bw()
-
-# MAKE AXIS LABELS LIKE EASTON'S
 cont.plot=grid.arrange(al.plot,hw.plot,tt.plot,nrow=1)
+pdf(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Results/wbb-qpcr-kk-scatter.pdf",
+    width=15,height=4)
 grid.draw(cont.plot)
-
+dev.off()
