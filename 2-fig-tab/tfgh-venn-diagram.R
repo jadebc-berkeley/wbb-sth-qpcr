@@ -1,17 +1,12 @@
 #######################################
 # WASH Benefits Bangladesh STH KK qPCR validation
 # venn diagram of co-infection
-# try the second package here.. just cant install
-# on  my computer
-
-# https://rstudio-pubs-static.s3.amazonaws.com/13301_6641d73cfac741a59c0a851feb99e98b.html
-
 #######################################
 rm(list=ls())
 library(dplyr)
-# library(gdata)
-# library(gplots)
 library(VennDiagram)
+library(venneuler)
+
 load("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/qdata.RData")
 
 kk=qdata[,c("alkk","hwkk","ttkk")]
@@ -27,11 +22,24 @@ altot=nrow(kk[kk$alkk==1,])
 hwtot=nrow(kk[kk$hwkk==1,])
 tttot=nrow(kk[kk$ttkk==1,])
 
-draw.triple.venn(area1 = altot, area2 = hwtot, area3 = tttot, 
-                 n12 = alhw, n23 = hwtt, n13 = altt, n123 = alhwtt, 
-                 category = c("Ascaris", "Hookworm", "Trichuris"), 
-                 fill = c("skyblue", "pink1", "mediumorchid"),
-                 euler.d=TRUE,scaled=TRUE)
+# circles proportional to size 
+v <- venneuler(c(Ascaris=altot, Hookworm=hwtot, Trichuris=tttot,
+                 "Ascaris&Hookworm"=alhw,"Hookworm&Trichuris"=hwtt,
+                 "Trichuris&Ascaris"=altt,"Ascaris&Hookworm&Trichuris"=alhwtt))
+v$labels <- c(
+  paste("Ascaris\n",altot),
+  paste("Hookworm\n",hwtot),
+  paste("Trichuris\n",tttot)
+)
+
+pdf(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Results/wbb-qpcr-kk-venn.pdf",
+    width=6,height=6)
+  plot(v)
+  text(x=v$centers[1,1]+0.2,y=v$centers[1,2]+0.06, labels=paste(altt))
+  text(x=v$centers[1,1]+0.15,y=v$centers[1,2]-0.1, labels=paste(alhw))
+  text(x=v$centers[1,1]+0.22,y=v$centers[1,2]-0.03, labels=paste(alhwtt))
+  text(x=v$centers[1,1]+0.31,y=v$centers[1,2]-0.04, labels=paste(hwtt))
+dev.off()
 
 
-# circles not proportional to size 
+
