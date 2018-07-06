@@ -59,14 +59,16 @@ bar.data=bar.data[bar.data$lab!="positive.Hw",]
 bar.data$org=factor(bar.data$org,levels=c("Ascaris lumbricoides","Hookworm","Ancylostoma ceylanicum",
     "Ancylostoma duodenale","Necator americanus","Trichuris trichiura"))
 
-teal1="#a1dab4"
+cb.lightorange="#E69F00"
+cb.blue= "#56B4E9"
+cb.green="#009E73"
+cb.orange="#D55E00"
+cb.pink="#CC79A7"
+cb.dblue="#005787"
+cb.lblue="#A0D9FA"
 teal2="#41b6c4"
-blue="#2c7fb8"
-dblue="#253494"
-green="#31a354"
-magenta="#c51b8a"
 
-mycol=c(magenta,teal1,teal2,blue,dblue,green)
+mycol=c(cb.lightorange,cb.lblue,cb.blue,teal2,cb.dblue,cb.green)
 
 pdf(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Results/wbb-qpcr-kk-bargraph.pdf",
     width=10,height=4)
@@ -75,8 +77,8 @@ ggplot(bar.data,aes(x=test,y=n,fill=org),col="black")+
            position='stack')+facet_grid(~orgcat)+
   scale_fill_manual("Organism",values=mycol) +
   scale_y_continuous(limits=c(0,1100))+
-  geom_text(aes(label=per.f,vjust=c(-0.3,-0.3,-0.3,-0.3,-0.3,-2.3,-0.3,-0.3)))+
-  theme_bw()+ylab("Number infected")+xlab("Diagnostic")
+  geom_text(aes(label=per.f,vjust=c(-0.3,-0.3,-0.3,-0.3,-0.3,-2.9,-0.3,-0.3)))+
+  theme_bw()+ylab("Number infected")+xlab("Diagnostic method")
 dev.off()
 
 
