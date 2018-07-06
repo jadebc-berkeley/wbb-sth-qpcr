@@ -47,10 +47,10 @@ purple="#9E4AED"
 pdf(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Results/wbb-venn-kk.pdf",
     width=6,height=6)
   plot(v, col=c(cb.lightorange, cb.blue, cb.green))
-  text(x=v$centers[1,1]-0.2,y=v$centers[1,2]+0.1, labels=paste(altt))
-  text(x=v$centers[1,1]-0.18,y=v$centers[1,2]-0.1, labels=paste(alhw))
-  text(x=v$centers[1,1]-0.22,y=v$centers[1,2], labels=paste(alhwtt))
-  text(x=v$centers[1,1]-0.34,y=v$centers[1,2]-0.01, labels=paste(hwtt))
+  text(x=v$centers[1,1]+0.2,y=v$centers[1,2]+0.08, labels=paste(altt))
+  text(x=v$centers[1,1]+0.15,y=v$centers[1,2]-0.1, labels=paste(alhw))
+  text(x=v$centers[1,1]+0.22,y=v$centers[1,2]-0.02, labels=paste(alhwtt))
+  text(x=v$centers[1,1]+0.32,y=v$centers[1,2]-0.04, labels=paste(hwtt))
 dev.off()
 
 # ---------------------------------------
