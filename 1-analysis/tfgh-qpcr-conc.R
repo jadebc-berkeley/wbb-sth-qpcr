@@ -4,10 +4,10 @@
 #######################################
 library(dplyr)
 library(tidyr)
-library(pcr)
 library(ggplot2)
 
 data.dir="/Users/jadederong/Dropbox/WASH-B-STH-Add-on/TFGH/Data/Final file/Compiled controls by assay - 3-29-18 - Bangladesh_"
+load("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/qdata.RData")
 
 # read in datasets
 al=read.csv(paste0(data.dir,"Al_nofailures.csv"))
@@ -35,14 +35,15 @@ d <- d %>%
          ct=Ct.Value)
 
 d <- d %>%
+  # convert to attograms / ul 
   mutate(conc.n=case_when(
-      conc == "10ag/ul" ~ 10^(-12),
-      conc == "10fg/ul" ~ 10^(-9),
-      conc == "10pg/ul" ~ 10^(-6)
+      conc == "10ag/ul" ~ 10^1,
+      conc == "10fg/ul" ~ 10^(3),
+      conc == "10pg/ul" ~ 10^(6)
   )) %>%
   mutate(log.conc=log10(conc.n))
 
-# plot concentration by mean CT value
+# plot log concentration by mean CT value
 ggplot(d, aes(x=log.conc,y=ct))+geom_point()+
   facet_wrap(~org)
 
@@ -86,44 +87,62 @@ dna.conc=function(ct, intercept, slope){
   return(10^((ct - intercept)/slope))
 }
 
-al <- d %>% filter(org=="al") 
+al <- qdata %>% 
+  filter(positive.Al==1) %>%
+  select(c(dataid,personid,CTmean.Al))
 al <- al %>%
-  mutate(copies = dna.conc(ct=al$ct, 
+  mutate(copies.Al = dna.conc(ct=al$CTmean.Al, 
     intercept=out$intercept[out$org=="ac"],
     slope=out$slope[out$org=="ac"]))
 
-ac <- d %>% filter(org=="ac") 
+ac <- qdata %>% 
+  filter(positive.Ac==1) %>%
+  select(c(dataid,personid,CTmean.Ac))
 ac <- ac %>%
-  mutate(copies = dna.conc(ct=ac$ct, 
+  mutate(copies.Ac = dna.conc(ct=ac$CTmean.Ac, 
     intercept=out$intercept[out$org=="ac"],
     slope=out$slope[out$org=="ac"]))
 
-na <- d %>% filter(org=="na") 
+na <- qdata %>% 
+  filter(positive.Na==1) %>%
+  select(c(dataid,personid,CTmean.Na))
 na <- na %>%
-  mutate(copies = dna.conc(ct=na$ct, 
+  mutate(copies.Na = dna.conc(ct=na$CTmean.Na, 
      intercept=out$intercept[out$org=="na"],
      slope=out$slope[out$org=="na"]))
 
-ad <- d %>% filter(org=="ad") 
+ad <- qdata %>% 
+  filter(positive.Ad==1) %>%
+  select(c(dataid,personid,CTmean.Ad))
 ad <- ad %>%
-  mutate(copies = dna.conc(ct=ad$ct, 
+  mutate(copies.Ad = dna.conc(ct=ad$CTmean.Ad, 
      intercept=out$intercept[out$org=="ad"],
      slope=out$slope[out$org=="ad"]))
 
-tt <- d %>% filter(org=="tt") 
+tt <- qdata %>% 
+  filter(positive.Tt==1) %>%
+  select(c(dataid,personid,CTmean.Tt))
 tt <- tt %>%
-  mutate(copies = dna.conc(ct=tt$ct, 
+  mutate(copies.Tt = dna.conc(ct=tt$CTmean.Tt, 
      intercept=out$intercept[out$org=="tt"],
      slope=out$slope[out$org=="tt"]))
 
-ss <- d %>% filter(org=="ss") 
+ss <- qdata %>% 
+  filter(positive.Ss==1) %>%
+  select(c(dataid,personid,CTmean.Ss))
 ss <- ss %>%
-  mutate(copies = dna.conc(ct=ss$ct, 
+  mutate(copies.Ss = dna.conc(ct=ss$CTmean.Ss, 
      intercept=out$intercept[out$org=="ss"],
      slope=out$slope[out$org=="ss"]))
 
-d = bind_rows(al,ac,na,ad,tt,ss)
+# merge dna concentration back on to main data
+qdata.conc <- left_join(qdata, al, by=c("dataid","personid","CTmean.Al"))
+qdata.conc <- left_join(qdata.conc, ac, by=c("dataid","personid","CTmean.Ac"))
+qdata.conc <- left_join(qdata.conc, na, by=c("dataid","personid","CTmean.Na"))
+qdata.conc <- left_join(qdata.conc, ad, by=c("dataid","personid","CTmean.Ad"))
+qdata.conc <- left_join(qdata.conc, tt, by=c("dataid","personid","CTmean.Tt"))
+qdata.conc <- left_join(qdata.conc, ss, by=c("dataid","personid","CTmean.Ss"))
 
-save(d, file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/concentration.RData")
+save(qdata.conc, al, ac, na, ad, tt, ss, file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/concentration.RData")
 
 
