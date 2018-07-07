@@ -8,6 +8,7 @@ library(clusrank)
 library(tidyr)
 library(washb)
 load("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/qdata.RData")
+load("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/concentration.RData")
 
 
 #--------------------------------------
@@ -91,22 +92,96 @@ tt.wilcox=clusWilcox.test(positive ~ test,data=tt.dat,paired=TRUE)
 #--------------------------------------
 # Spearman's rank correlation coefficient
 #--------------------------------------
-# CHANGE TO DNA CONCENTRATION
-al.corr <- cor.test(x=qdata$CTmean.Al, y=qdata$alepg, 
+qdata.conc <- qdata.conc %>%
+  mutate(copies.Al=ifelse(is.na(copies.Al),0,copies.Al),
+         copies.Ac=ifelse(is.na(copies.Ac),0,copies.Ac),
+         copies.Na=ifelse(is.na(copies.Na),0,copies.Na),
+         copies.Tt=ifelse(is.na(copies.Tt),0,copies.Tt)) 
+
+al.corr <- cor.test(x=qdata.conc$copies.Al, y=qdata.conc$alepg, 
+       method = 'spearman',exact=FALSE)
+Na.corr <- cor.test(x=qdata.conc$copies.Na, y=qdata.conc$hwepg, 
+       method = 'spearman',exact=FALSE)
+Ac.corr <- cor.test(x=qdata.conc$copies.Ac, y=qdata.conc$hwepg, 
+       method = 'spearman',exact=FALSE)
+tt.corr <- cor.test(x=qdata.conc$copies.Tt, y=qdata.conc$ttepg, 
        method = 'spearman',exact=FALSE)
 
-Na.corr <- cor.test(x=qdata$CTmean.Na, y=qdata$hwkk, 
-       method = 'spearman',exact=FALSE)
-Ad.corr <- cor.test(x=qdata$CTmean.Ad, y=qdata$hwkk, 
-       method = 'spearman',exact=FALSE)
-Ac.corr <- cor.test(x=qdata$CTmean.Ac, y=qdata$hwkk, 
-       method = 'spearman',exact=FALSE)
+# bootstrap to get p-value for spearman rank correlation
+# resample clusters
+bs.clus=function(y1, y2,clus,B){
+  
+  dat=as.data.frame(cbind(y1,y2,clus))
+  # dat=dat[dat$clus<=15,]
+  # clus=dat$clus
+  # y1=dat$y1
+  # y2=dat$y2
+  
+  # observed rho on full data
+  corr.obs=cor.test(x=dat$y1, y=dat$y2, 
+                method = 'spearman',exact=FALSE)$estimate
+  
+  # get bootstrap distribution
+  bdat=matrix(NA,nrow=B,ncol=1)
+  
+  blocks=unique(clus)
+  
+  for(i in 1:B){
+    # take a random sample of clusters
+    samp.b=sample(blocks,size=length(blocks),replace=TRUE)
 
-tt.corr <- cor.test(x=qdata$CTmean.Tt, y=qdata$ttepg, 
-       method = 'spearman',exact=FALSE)
+    # create data frame with sampled clusters
+    bootdat <- NULL
+    clus1 <- dat[clus %in% samp.b[1],]
+    for(j in 2:length(samp.b)){
+      # cc <- dat[clus %in% names(samp.blocks.tab[samp.blocks.tab %in% j]),]
+      clusj <- dat[clus %in% samp.b[j],]
+      if(j==2){
+        bootdat <- rbind(clus1, clusj)
+      }else{
+        bootdat <- rbind(bootdat, clusj)
+      }
+    
+    # correlation test on bootstrapped data
+      corr=cor.test(x=bootdat$y1, y=bootdat$y2, 
+                    method = 'spearman',exact=FALSE)
+      bdat[i,1] <- corr$estimate
+    }
+    
+
+  }
+  
+  # p-value 
+  pval = sum(bdat >= corr.obs)/B
+
+  return(list(bsdist=bdat, corr.obs=corr.obs, pval=pval))
+}
+
+y1=qdata.conc$alepg[!is.na(qdata.conc$alkk)]
+y2=qdata.conc$copies.Al[!is.na(qdata.conc$alkk)]
+clus=qdata.conc$block[!is.na(qdata.conc$alkk)]
+B=10
+
+set.seed(333)
+x=bs.clus(y1=qdata.conc$alepg, y2=qdata.conc$copies.Al, clus=qdata.conc$block,
+        B=1000)
+x$pval
+hist(x$bsdist)
+
+corr.tab=data.frame(org=c("A. lumbricoides","N. americanus","A. ceylanicum",
+                          "T. trichiura"),
+                    rho=c(al.corr$estimate, Na.corr$estimate, Ac.corr$estimate,
+                          tt.corr$estimate),
+                    p.val=c(al.corr$p.value, Na.corr$p.value, Ac.corr$p.value,
+                            tt.corr$p.value))
+corr.tab$rho=sprintf("%0.03f",corr.tab$rho)
+corr.tab$p.val=formatC(corr.tab$p.val, format = "e", digits = 2)
+
+write.csv(corr.tab,file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Results/corr.table.csv",row.names=FALSE)
 
 save(al.kk,hw.kk,tt.kk,
      al.q,hw.q,na.q,ac.q,ad.q,tt.q,
      al.kk.gmn,hw.kk.gmn,tt.kk.gmn,
      al.q.gmn,na.q.gmn,ac.q.gmn,ad.q.gmn,tt.q.gmn,
+     corr.tab,
      file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/prev_results.RData")
