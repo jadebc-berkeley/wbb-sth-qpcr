@@ -30,9 +30,9 @@ d = bind_rows(al,ac,na,ad,tt,ss)
 # drop columns that take mean / SD, rename columns
 d <- d %>%
   select(Plate.ID, Control.Conc, Ct.Value, org) %>%
-  rename(id=Plate.ID, 
-         conc=Control.Conc,
-         ct=Ct.Value)
+  rename(id=Plate.ID) %>%
+  rename(conc=Control.Conc) %>%
+  rename(ct=Ct.Value)
 
 d <- d %>%
   # convert to attograms / ul 
@@ -144,5 +144,6 @@ qdata.conc <- left_join(qdata.conc, tt, by=c("dataid","personid","CTmean.Tt"))
 qdata.conc <- left_join(qdata.conc, ss, by=c("dataid","personid","CTmean.Ss"))
 
 save(qdata.conc, al, ac, na, ad, tt, ss, file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/concentration.RData")
+write.csv(qdata.conc, file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/concentration.csv", row.names=FALSE)
 
 
