@@ -2,6 +2,7 @@ rm(list=ls())
 load("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/qdata.RData")
 
 prop.table(table(qdata$sex))
+prop.table(table(qdata$dw))
 
 qdata %>%
   summarise(min=min(agem,na.rm=TRUE),
