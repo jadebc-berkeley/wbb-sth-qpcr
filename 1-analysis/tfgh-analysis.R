@@ -12,9 +12,6 @@ library(washb)
 load("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/qdata.RData")
 load("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/concentration.RData")
 
-# stata test
-write.csv(qdata.conc[,c("alepg","copies.Al","block")],file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/temp.csv")
-
 #--------------------------------------
 # Estimate prevalence and 95%CI for each
 # test, robust sandwich SEs
@@ -29,6 +26,23 @@ na.q=washb_mean(qdata$positive.Na, id=qdata$clusterid, print = TRUE)
 ac.q=washb_mean(qdata$positive.Ac, id=qdata$clusterid, print = TRUE)
 ad.q=washb_mean(qdata$positive.Ad, id=qdata$clusterid, print = TRUE)
 tt.q=washb_mean(qdata$positive.Tt, id=qdata$clusterid, print = TRUE)
+ss.q=washb_mean(qdata$positive.Ss, id=qdata$clusterid, print = TRUE)
+
+#--------------------------------------
+# co-infection
+#--------------------------------------
+qdata <- qdata %>%
+  mutate(numsth.kk=alkk+hwkk+ttkk,
+         numsth.q=positive.Al+positive.Ac+positive.Na+
+           positive.Ad+positive.Tt) %>%
+  mutate(multisth.kk=ifelse(numsth.kk>1,1,0),
+         multisth.q=ifelse(numsth.q>1,1,0))
+
+prop.table(table(qdata$numsth.kk))*100
+prop.table(table(qdata$numsth.q))*100
+
+prop.table(table(qdata$multisth.kk))*100
+prop.table(table(qdata$multisth.q))*100
 
 #--------------------------------------
 # Estimate geometric mean and 95%CI for each
