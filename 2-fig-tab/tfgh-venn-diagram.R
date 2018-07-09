@@ -31,9 +31,7 @@ v <- venneuler(c(Ascaris=altot, Hookworm=hwtot, Trichuris=tttot,
                  "Ascaris&Hookworm"=alhw,"Hookworm&Trichuris"=hwtt,
                  "Trichuris&Ascaris"=altt,"Ascaris&Hookworm&Trichuris"=alhwtt))
 v$labels <- c(
-  paste("Ascaris\n",altot),
-  paste("Hookworm\n",hwtot),
-  paste("Trichuris\n",tttot)
+  "","",""
 )
 
 cb.lightorange="#E69F00"
@@ -47,8 +45,19 @@ purple="#9E4AED"
 pdf(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Results/wbb-venn-kk.pdf",
     width=6,height=6)
   plot(v, col=c(cb.lightorange, cb.blue, cb.green))
-  text(x=v$centers[1,1]+0.2,y=v$centers[1,2]+0.08, labels=paste(altt))
-  text(x=v$centers[1,1]+0.15,y=v$centers[1,2]-0.1, labels=paste(alhw))
+  # titles
+  text(x=v$centers[1,1],y=v$centers[1,2]+0.32, labels=expression(paste(italic("A. lumbricoides"))))
+  text(x=v$centers[1,1]+0.3,y=v$centers[1,2]-0.28, labels="Hookworm")
+  text(x=v$centers[1,1]+0.3,y=v$centers[1,2]+0.22, labels=expression(paste(italic("T. trichiura"))))
+  
+  # non intersections
+  text(x=v$centers[1,1],y=v$centers[1,2], labels=paste(altot))
+  text(x=v$centers[2,1]+0.06,y=v$centers[2,2]-0.05, labels=paste(hwtot))
+  text(x=v$centers[3,1]+0.06,y=v$centers[3,2]+0.02, labels=paste(tttot))
+  
+  # intersections
+  text(x=v$centers[1,1]+0.21,y=v$centers[1,2]+0.08, labels=paste(altt))
+  text(x=v$centers[1,1]+0.18,y=v$centers[1,2]-0.13, labels=paste(alhw))
   text(x=v$centers[1,1]+0.22,y=v$centers[1,2]-0.02, labels=paste(alhwtt))
   text(x=v$centers[1,1]+0.32,y=v$centers[1,2]-0.04, labels=paste(hwtt))
 dev.off()
@@ -61,48 +70,43 @@ qpcr = qdata.conc %>%
          positive.Tt=ifelse(!is.na(copies.Tt),1,0),
          positive.Ss=ifelse(!is.na(copies.Ss),1,0)) %>%
   mutate(positive.Hw=ifelse(positive.Na==1 |positive.Ac==1 | positive.Ad==1,1,0)) %>%
-  select(c("positive.Al","positive.Tt","positive.Ss",
-           "positive.Hw")) 
+  select(c("positive.Al","positive.Tt","positive.Hw")) 
 
 # counts
-altot=nrow(qpcr[qpcr$positive.Al==1 & qpcr$positive.Hw==0 & qpcr$positive.Tt==0 & qpcr$positive.Ss==0,])
-hwtot=nrow(qpcr[qpcr$positive.Al==0 & qpcr$positive.Hw==1 & qpcr$positive.Tt==0 & qpcr$positive.Ss==0,])
-tttot=nrow(qpcr[qpcr$positive.Al==0 & qpcr$positive.Hw==0 & qpcr$positive.Tt==1 & qpcr$positive.Ss==0,])
-sstot=nrow(qpcr[qpcr$positive.Al==0 & qpcr$positive.Hw==0 & qpcr$positive.Tt==0 & qpcr$positive.Ss==1,])
+altot=nrow(qpcr[qpcr$positive.Al==1 & qpcr$positive.Hw==0 & qpcr$positive.Tt==0,])
+hwtot=nrow(qpcr[qpcr$positive.Al==0 & qpcr$positive.Hw==1 & qpcr$positive.Tt==0,])
+tttot=nrow(qpcr[qpcr$positive.Al==0 & qpcr$positive.Hw==0 & qpcr$positive.Tt==1,])
 
 # intersections
-alhw=nrow(qpcr[qpcr$positive.Al==1 & qpcr$positive.Hw==1 & qpcr$positive.Tt==0 & qpcr$positive.Ss==0,])
-altt=nrow(qpcr[qpcr$positive.Al==1 & qpcr$positive.Hw==0 & qpcr$positive.Tt==1 & qpcr$positive.Ss==0,])
-alss=nrow(qpcr[qpcr$positive.Al==1 & qpcr$positive.Hw==0 & qpcr$positive.Tt==0 & qpcr$positive.Ss==1,])
-hwtt=nrow(qpcr[qpcr$positive.Al==0 & qpcr$positive.Hw==1 & qpcr$positive.Tt==1 & qpcr$positive.Ss==0,])
-hwss=nrow(qpcr[qpcr$positive.Al==0 & qpcr$positive.Hw==1 & qpcr$positive.Tt==0 & qpcr$positive.Ss==1,])
-ttss=nrow(qpcr[qpcr$positive.Al==0 & qpcr$positive.Hw==0 & qpcr$positive.Tt==1 & qpcr$positive.Ss==1,])
+alhw=nrow(qpcr[qpcr$positive.Al==1 & qpcr$positive.Hw==1 & qpcr$positive.Tt==0,])
+altt=nrow(qpcr[qpcr$positive.Al==1 & qpcr$positive.Hw==0 & qpcr$positive.Tt==1,])
+hwtt=nrow(qpcr[qpcr$positive.Al==0 & qpcr$positive.Hw==1 & qpcr$positive.Tt==1,])
 
-alhwtt=nrow(qpcr[qpcr$positive.Al==1 & qpcr$positive.Hw==1 & qpcr$positive.Tt==1 & qpcr$positive.Ss==0,])
-alttss=nrow(qpcr[qpcr$positive.Al==1 & qpcr$positive.Hw==0 & qpcr$positive.Tt==1 & qpcr$positive.Ss==1,])
-alhwss=nrow(qpcr[qpcr$positive.Al==1 & qpcr$positive.Hw==1 & qpcr$positive.Tt==0 & qpcr$positive.Ss==1,])
-hwttss=nrow(qpcr[qpcr$positive.Al==0 & qpcr$positive.Hw==1 & qpcr$positive.Tt==1 & qpcr$positive.Ss==1,])
-
-alhwttss=nrow(qpcr[qpcr$positive.Al==1 & qpcr$positive.Hw==1 & qpcr$positive.Tt==1 & qpcr$positive.Ss==1,])
+alhwtt=nrow(qpcr[qpcr$positive.Al==1 & qpcr$positive.Hw==1 & qpcr$positive.Tt==1,])
 
 dna <- venneuler(qpcr)
 
-dna$labels <- c(
-  paste("A. lumbricoides\n",altot),
-  paste("Hookworm\n",hwtot),
-  paste("S. stercoralis\n",sstot),
-  paste("T. trichiura\n",tttot)
-)
+dna$labels <- c("","","")
 
 centers=dna$centers
 
 pdf(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Results/wbb-venn-qpcr.pdf",
     width=6,height=6)
-  plot(dna, col=c(cb.lightorange, cb.blue, purple,cb.green))
-  text(x=centers[1,1]-0.12,y=centers[1,2]+0.07, labels=paste(altt))
-  text(x=centers[4,1]+0.1,y=centers[4,2]+0.01, labels=paste(alhwtt))
-  text(x=centers[4,1]-0.02,y=centers[4,2]-0.1, labels=paste(hwtt))
-  text(x=centers[2,1]+0.13,y=centers[2,2]+0.09, labels=paste(alhw))
+  plot(dna, col=c(cb.lightorange, cb.blue,cb.green))
+  # titles
+  text(x=centers[1,1]+0.17,y=centers[1,2]+0.25, labels=expression(paste(italic("A. lumbricoides"))))
+  text(x=centers[2,1]-0.23,y=centers[2,2]+0.26, labels="Hookworm")
+  text(x=centers[3,1]-0.19,y=centers[3,2]-0.22, labels=expression(paste(italic("T. trichiura"))))
+  
+  # non intersections
+  text(x=centers[1,1]+0.13,y=centers[1,2]-0.03, labels=paste(altot))
+  text(x=centers[2,1]-0.07,y=centers[2,2]+0.13, labels=paste(hwtot))
+  text(x=centers[3,1]-0.03,y=centers[3,2]-0.13, labels=paste(tttot))
+  # intersections
+  text(x=centers[1,1],y=centers[1,2]-0.15, labels=paste(altt))
+  text(x=centers[1,1]-0.1,y=centers[1,2]-0.04, labels=paste(alhwtt))
+  text(x=centers[3,1]-0.12,y=centers[3,2]+0.04, labels=paste(hwtt))
+  text(x=centers[1,1]-0.02,y=centers[1,2]+0.13, labels=paste(alhw))
 dev.off()
 
 
@@ -128,17 +132,21 @@ acnaad=nrow(qpcr.hw[qpcr.hw$positive.Ac==1 & qpcr.hw$positive.Na==1 & qpcr.hw$po
 
 dna.hw <- venneuler(qpcr.hw)
 
-dna.hw$labels <- c(
-  paste("A. ceylanicum\n",actot),
-  paste("N. americanus\n",natot),
-  paste("A. duodenale\n")
-)
+dna.hw$labels <- c("","","")
 
 centers=dna.hw$centers
 
 pdf(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Results/wbb-venn-qpcr-hw.pdf",
     width=6,height=6)
 plot(dna.hw, col=c(cb.lightorange, cb.blue, purple,cb.green))
+# titles
+text(x=centers[1,1],y=centers[1,2]+0.165, labels=expression(paste(italic("A. ceylanicum"))))
+text(x=centers[2,1],y=centers[2,2]-0.32, labels=expression(paste(italic("N. americanus"))))
+text(x=centers[3,1]-0.08,y=centers[3,2]+0.04, labels=expression(paste(italic("A. duodenale"))))
+# non intersections
+text(x=centers[1,1],y=centers[1,2]+0.03, labels=paste(actot))
+text(x=centers[2,1],y=centers[2,2]-0.02, labels=paste(natot))
+# intersections
 text(x=centers[1,1],y=centers[1,2]-0.08, labels=paste(acna))
-text(x=centers[1,1]-0.25,y=centers[1,2]-0.16, labels=paste(naad))
+text(x=centers[1,1]-0.25,y=centers[1,2]-0.16, labels=paste(naad),cex=0.75)
 dev.off()
