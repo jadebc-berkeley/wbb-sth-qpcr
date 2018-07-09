@@ -10,8 +10,8 @@ library(dplyr)
 #--------------------------------------
 # read in qPCR data
 #--------------------------------------
-data.dir="~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/Full File/"
-res.name="Bangladesh - STH - Master Results File - with Retests"
+data.dir="~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/Final file/"
+res.name="FINAL FINAL FINAL Master Results File - Bangladesh - 4-30-18"
 iac=read.csv(file=paste0(data.dir,res.name,"-IAC.csv"),stringsAsFactors=FALSE)
 na=read.csv(file=paste0(data.dir,res.name,"-NA.csv"),stringsAsFactors=FALSE)
 ad=read.csv(file=paste0(data.dir,res.name,"-AD.csv"),stringsAsFactors=FALSE)
@@ -21,57 +21,64 @@ al=read.csv(file=paste0(data.dir,res.name,"-AL.csv"),stringsAsFactors=FALSE)
 ac=read.csv(file=paste0(data.dir,res.name,"-AC.csv"),stringsAsFactors=FALSE)
 
 colnames=c("sampleid","sampleno","assay",
-  "CTmean","CTSD","assaydate","plateid","retest")
+  "CTmean","CTSD","assaydate","plateid","comments")
 
 colnames(iac)=colnames
 colnames(na)=colnames
 colnames(ad)=colnames
 colnames(ss)=colnames
 colnames(tt)=colnames
-colnames(al)=c(colnames,"comment")
-colnames(ac)=c(colnames,"comment")
+colnames(al)=colnames
+colnames(ac)=colnames
 
+# drop problematic sample
+na=na[na$comments=="",]
+ad=ad[ad$comments=="",]
+ss=ss[ss$comments=="",]
+tt=tt[tt$comments=="",]
+ac=ac[ac$comments=="",]
 
-# WHAT DOES IT MEAN THAT THERE ARE IAC RESULTS IN THE NA
-# SPREADSHEET? FOR now assuming they should be NA
-na$assay="Na"
-
-# Nils: First off, we generally call any samples that give a positive result with Ct values <40 
-# positive if they are positive in both replicate reactions.  If only one replicate is positive, 
-# then the sample is retested by another two replicates.  If at least one of these is positive 
-# (meaning at least 2 out of 4 overall) the sample is considered to be positive.  
-iac$positive=ifelse(iac$CTmean<40 & is.na(iac$retest),1,0)
-na$positive=ifelse(na$CTmean<40 & is.na(na$retest),1,0)
-ad$positive=ifelse(ad$CTmean<40 & is.na(ad$retest),1,0)
-ss$positive=ifelse(ss$CTmean<40 & is.na(ss$retest),1,0)
-tt$positive=ifelse(tt$CTmean<40 & is.na(tt$retest),1,0)
-al$positive=ifelse(al$CTmean<40 & is.na(al$retest),1,0)
-ac$positive=ifelse(ac$CTmean<40 & is.na(ac$retest),1,0)
-
-iac$positive[is.na(iac$positive)]=0 #retest 2 less than theirs
-na$positive[is.na(na$positive)]=0
-ad$positive[is.na(ad$positive)]=0
-ss$positive[is.na(ss$positive)]=0
-tt$positive[is.na(tt$positive)]=0
-al$positive[is.na(al$positive)]=0 # positive count under theirs by 1
-ac$positive[is.na(ac$positive)]=0
-
-al$comment=NULL
-ac$comment=NULL
 
 qpcr=rbind(iac,na,ad,ss,tt,al,ac)
 qpcr=qpcr[!is.na(qpcr$sampleid),]
-qpcr=qpcr[,c("sampleid","assay",
-        "CTmean","CTSD","positive")]
 
 # correcting data entry error
 qpcr$sampleid[qpcr$sampleid==":559901ETS"]="559901ETS1"
 
-qpcr.w=reshape(qpcr[,c("sampleid","assay",
-  "CTmean","CTSD","positive")],idvar="sampleid",
-  direction="wide",timevar="assay")
+# take mean of results for each sample
+qpcr <- qpcr %>%
+  group_by(sampleid,assay) %>%
+  summarise(CTmean=mean(CTmean),CTSD=mean(CTSD)) %>%
+  mutate(positive=ifelse(CTmean<40,1,0)) %>%
+  mutate(positive=ifelse(is.na(CTmean),0,positive))
 
-qpcr.w=qpcr.w[!is.na(qpcr.w$sampleid),]
+mean.l <- qpcr %>% 
+  group_by(sampleid) %>%
+  select(sampleid,assay,CTmean) %>% 
+  spread(assay,CTmean) %>%
+  rename(CTmean.Ac=Ac, CTmean.Ad=Ad, CTmean.Al=Al,
+         CTmean.IAC=IAC, CTmean.Na=Na, 
+         CTmean.Ss=Ss,CTmean.Tt=Tt)
+
+sd.l <- qpcr %>% 
+  group_by(sampleid) %>%
+  select(sampleid,assay,CTSD) %>% 
+  spread(assay,CTSD) %>%
+  rename(CTSD.Ac=Ac, CTSD.Ad=Ad, CTSD.Al=Al,
+         CTSD.IAC=IAC, CTSD.Na=Na, 
+         CTSD.Ss=Ss,CTSD.Tt=Tt)
+
+pos.l <- qpcr %>% 
+  group_by(sampleid) %>%
+  select(sampleid,assay,positive) %>% 
+  spread(assay,positive) %>%
+  rename(positive.Ac=Ac, positive.Ad=Ad, positive.Al=Al,
+         positive.IAC=IAC, positive.Na=Na, 
+         positive.Ss=Ss,positive.Tt=Tt)
+
+qpcr.w <- full_join(mean.l, sd.l, by=c("sampleid"))
+qpcr.w <- full_join(qpcr.w, pos.l, by=c("sampleid"))
+
 qpcr.w$dataid=substr(qpcr.w$sampleid,1,5)
 qpcr.w$personid=paste(substr(qpcr.w$sampleid,7,7),1,sep="")
 qpcr.w$qpcr="Done"
@@ -84,7 +91,7 @@ kk=read.csv("~/Dropbox/WASHB Parasites/Analysis datasets/Jade/sth.csv")
 kk$dataid=as.character(kk$dataid)
 kk$personid=as.character(kk$personid)
 kk=kk[,c("dataid","personid","block","clusterid","tr",
-         "sex","aged","agem","agey",
+         "sex","dw","aged","agem","agey",
       "alepg","hwepg","ttepg",
        "logalepg","loghwepg","logttepg",
        "al","tt","hw","sth","alint","ttint","hwint")]
@@ -97,8 +104,9 @@ data=full_join(kk,qpcr.w,by=c("dataid","personid"))
 data$qpcr[is.na(data$qpcr)]="Not done"
 qdata=data[data$qpcr=="Done",]
 
-# merging in characteristics for the 11 kids without kk that got qPCR
-# NEEED TO DO!
+# missing characteristics for the 11 kids without kk that got qPCR
+missing=qdata[is.na(qdata$alkk),c("dataid","personid")]
+missing$dataperson=paste0(missing$dataid,missing$personid)
 
 # clean up missing cluster ids
 qdata$clusterid[is.na(qdata$clusterid)]=substr(qdata$dataid[is.na(qdata$clusterid)],1,3)
