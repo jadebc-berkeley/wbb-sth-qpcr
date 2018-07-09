@@ -1,0 +1,298 @@
+--------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/jadederong/Documents/CRG/wash-benefits/bangladesh/src/wbb-sth-qpcr/1-analysis/tfgh-k
+> endall-tau.log
+  log type:  text
+ opened on:   8 Jul 2018, 10:58:05
+
+. **************************************
+. * WASH Benefits Bangladesh STH KK qPCR validation
+. * calculate correlation between epg and DNA copies
+. * using Kendall's tau beta
+. **************************************
+. 
+. insheet using "~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/concentration.csv", clear
+(59 vars, 2,800 obs)
+
+. 
+. replace alepg="." if alepg=="NA"
+(11 real changes made)
+
+. replace hwepg="." if hwepg=="NA"
+(11 real changes made)
+
+. replace ttepg="." if ttepg=="NA"
+(11 real changes made)
+
+. destring alepg hwepg ttepg, replace
+alepg: all characters numeric; replaced as long
+(11 missing values generated)
+hwepg: all characters numeric; replaced as int
+(11 missing values generated)
+ttepg: all characters numeric; replaced as int
+(11 missing values generated)
+
+. 
+. foreach var of varlist copiesal copiesna copiesad copiesac copiestt{
+  2.         replace `var' = "0" if `var'=="NA"
+  3.         destring `var', replace
+  4. }
+(2,445 real changes made)
+copiesal: all characters numeric; replaced as double
+(2,291 real changes made)
+copiesna: all characters numeric; replaced as double
+(2,799 real changes made)
+copiesad: all characters numeric; replaced as double
+(2,691 real changes made)
+copiesac: all characters numeric; replaced as double
+(2,460 real changes made)
+copiestt: all characters numeric; replaced as double
+
+. 
+. 
+. ktau alepg copiesal, stats(taub)
+
+  Number of obs =    2789
+Kendall's tau-a =       0.1104
+Kendall's tau-b =       0.2956
+Kendall's score =  429291
+    SE of score =   24517.779   (corrected for ties)
+
+Test of Ho: alepg and copiesal are independent
+     Prob > |z| =       0.0000  (continuity corrected)
+
+. ktau hwepg copiesna, stats(taub)
+
+  Number of obs =    2789
+Kendall's tau-a =       0.1084
+Kendall's tau-b =       0.4965
+Kendall's score =  421597
+    SE of score =   15086.389   (corrected for ties)
+
+Test of Ho: hwepg and copiesna are independent
+     Prob > |z| =       0.0000  (continuity corrected)
+
+. ktau hwepg copiesac, stats(taub)
+
+  Number of obs =    2789
+Kendall's tau-a =       0.0144
+Kendall's tau-b =       0.1372
+Kendall's score =   56057
+    SE of score =    7526.091   (corrected for ties)
+
+Test of Ho: hwepg and copiesac are independent
+     Prob > |z| =       0.0000  (continuity corrected)
+
+. ktau ttepg copiestt, stats(taub)
+
+  Number of obs =    2789
+Kendall's tau-a =       0.1058
+Kendall's tau-b =       0.6026
+Kendall's score =  411487
+    SE of score =   12336.441   (corrected for ties)
+
+Test of Ho: ttepg and copiestt are independent
+     Prob > |z| =       0.0000  (continuity corrected)
+
+. 
+. 
+. bootstrap r(tau_b), reps(1000) seed(1234) cluster(block): ktau alepg copiesal, stats(taub)
+(running ktau on estimation sample)
+
+Warning:  Because ktau is not an estimation command or does not set e(sample), bootstrap has no way to
+          determine which observations are used in calculating the statistics and so assumes that all
+          observations are used.  This means that no observations will be excluded from the resampling
+          because of missing values or other reasons.
+
+          If the assumption is not true, press Break, save the data, and drop the observations that
+          are to be excluded.  Be sure that the dataset in memory contains only the relevant data.
+
+Bootstrap replications (1000)
+----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
+..................................................    50
+..................................................   100
+..................................................   150
+..................................................   200
+..................................................   250
+..................................................   300
+..................................................   350
+..................................................   400
+..................................................   450
+..................................................   500
+..................................................   550
+..................................................   600
+..................................................   650
+..................................................   700
+..................................................   750
+..................................................   800
+..................................................   850
+..................................................   900
+..................................................   950
+..................................................  1000
+
+Bootstrap results                               Number of obs     =      2,800
+                                                Replications      =      1,000
+
+      command:  ktau alepg copiesal, stats(taub)
+        _bs_1:  r(tau_b)
+
+                                  (Replications based on 69 clusters in block)
+------------------------------------------------------------------------------
+             |   Observed   Bootstrap                         Normal-based
+             |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       _bs_1 |    .295629   .0276079    10.71   0.000     .2415186    .3497395
+------------------------------------------------------------------------------
+
+. bootstrap r(tau_b), reps(1000) seed(1234) cluster(block): ktau hwepg copiesna, stats(taub)
+(running ktau on estimation sample)
+
+Warning:  Because ktau is not an estimation command or does not set e(sample), bootstrap has no way to
+          determine which observations are used in calculating the statistics and so assumes that all
+          observations are used.  This means that no observations will be excluded from the resampling
+          because of missing values or other reasons.
+
+          If the assumption is not true, press Break, save the data, and drop the observations that
+          are to be excluded.  Be sure that the dataset in memory contains only the relevant data.
+
+Bootstrap replications (1000)
+----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
+..................................................    50
+..................................................   100
+..................................................   150
+..................................................   200
+..................................................   250
+..................................................   300
+..................................................   350
+..................................................   400
+..................................................   450
+..................................................   500
+..................................................   550
+..................................................   600
+..................................................   650
+..................................................   700
+..................................................   750
+..................................................   800
+..................................................   850
+..................................................   900
+..................................................   950
+..................................................  1000
+
+Bootstrap results                               Number of obs     =      2,800
+                                                Replications      =      1,000
+
+      command:  ktau hwepg copiesna, stats(taub)
+        _bs_1:  r(tau_b)
+
+                                  (Replications based on 69 clusters in block)
+------------------------------------------------------------------------------
+             |   Observed   Bootstrap                         Normal-based
+             |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       _bs_1 |   .4965392   .0220411    22.53   0.000     .4533395     .539739
+------------------------------------------------------------------------------
+
+. bootstrap r(tau_b), reps(1000) seed(1234) cluster(block): ktau hwepg copiesac, stats(taub)
+(running ktau on estimation sample)
+
+Warning:  Because ktau is not an estimation command or does not set e(sample), bootstrap has no way to
+          determine which observations are used in calculating the statistics and so assumes that all
+          observations are used.  This means that no observations will be excluded from the resampling
+          because of missing values or other reasons.
+
+          If the assumption is not true, press Break, save the data, and drop the observations that
+          are to be excluded.  Be sure that the dataset in memory contains only the relevant data.
+
+Bootstrap replications (1000)
+----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
+..................................................    50
+..................................................   100
+..................................................   150
+..................................................   200
+..................................................   250
+..................................................   300
+..................................................   350
+..................................................   400
+..................................................   450
+..................................................   500
+..................................................   550
+..................................................   600
+..................................................   650
+..................................................   700
+..................................................   750
+..................................................   800
+..................................................   850
+..................................................   900
+..................................................   950
+..................................................  1000
+
+Bootstrap results                               Number of obs     =      2,800
+                                                Replications      =      1,000
+
+      command:  ktau hwepg copiesac, stats(taub)
+        _bs_1:  r(tau_b)
+
+                                  (Replications based on 69 clusters in block)
+------------------------------------------------------------------------------
+             |   Observed   Bootstrap                         Normal-based
+             |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       _bs_1 |   .1372307   .0313153     4.38   0.000     .0758538    .1986076
+------------------------------------------------------------------------------
+
+. bootstrap r(tau_b), reps(1000) seed(1234) cluster(block): ktau ttepg copiestt, stats(taub)
+(running ktau on estimation sample)
+
+Warning:  Because ktau is not an estimation command or does not set e(sample), bootstrap has no way to
+          determine which observations are used in calculating the statistics and so assumes that all
+          observations are used.  This means that no observations will be excluded from the resampling
+          because of missing values or other reasons.
+
+          If the assumption is not true, press Break, save the data, and drop the observations that
+          are to be excluded.  Be sure that the dataset in memory contains only the relevant data.
+
+Bootstrap replications (1000)
+----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
+..................................................    50
+..................................................   100
+..................................................   150
+..................................................   200
+..................................................   250
+..................................................   300
+..................................................   350
+..................................................   400
+..................................................   450
+..................................................   500
+..................................................   550
+..................................................   600
+..................................................   650
+..................................................   700
+..................................................   750
+..................................................   800
+..................................................   850
+..................................................   900
+..................................................   950
+..................................................  1000
+
+Bootstrap results                               Number of obs     =      2,800
+                                                Replications      =      1,000
+
+      command:  ktau ttepg copiestt, stats(taub)
+        _bs_1:  r(tau_b)
+
+                                  (Replications based on 69 clusters in block)
+------------------------------------------------------------------------------
+             |   Observed   Bootstrap                         Normal-based
+             |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       _bs_1 |    .602561   .0220228    27.36   0.000     .5593972    .6457248
+------------------------------------------------------------------------------
+
+. 
+. log close
+      name:  <unnamed>
+       log:  /Users/jadederong/Documents/CRG/wash-benefits/bangladesh/src/wbb-sth-qpcr/1-analysis/tfgh-k
+> endall-tau.log
+  log type:  text
+ closed on:   8 Jul 2018, 11:05:31
+--------------------------------------------------------------------------------------------------------

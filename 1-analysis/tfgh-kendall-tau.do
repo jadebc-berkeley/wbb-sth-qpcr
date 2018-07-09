@@ -1,3 +1,5 @@
+capture log close
+log using "~/Documents/CRG/wash-benefits/bangladesh/src/wbb-sth-qpcr/1-analysis/tfgh-kendall-tau.log", replace
 **************************************
 * WASH Benefits Bangladesh STH KK qPCR validation
 * calculate correlation between epg and DNA copies
@@ -27,3 +29,5 @@ bootstrap r(tau_b), reps(1000) seed(1234) cluster(block): ktau alepg copiesal, s
 bootstrap r(tau_b), reps(1000) seed(1234) cluster(block): ktau hwepg copiesna, stats(taub)
 bootstrap r(tau_b), reps(1000) seed(1234) cluster(block): ktau hwepg copiesac, stats(taub)
 bootstrap r(tau_b), reps(1000) seed(1234) cluster(block): ktau ttepg copiestt, stats(taub)
+
+log close
