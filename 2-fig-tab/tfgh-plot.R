@@ -85,20 +85,6 @@ dev.off()
 #--------------------------------------
 # scatter plot of qPCR CT and KK EPG results
 #--------------------------------------
-# # ADD CODE THAT CONVERTS CT VALUE TO DNA CONCENTRATION
-# 
-# qdata$CTmean.Al=as.numeric(as.character(qdata$CTmean.Al))
-# qdata$CTmean.Ad=as.numeric(as.character(qdata$CTmean.Ad))
-# qdata$CTmean.Tt=as.numeric(as.character(qdata$CTmean.Tt))
-# qdata$CTmean.Ac=as.numeric(as.character(qdata$CTmean.Ac))
-# qdata$CTmean.Na=as.numeric(as.character(qdata$CTmean.Na))
-# 
-# qdata$log10CTmean.Al=log10(qdata$CTmean.Al)
-# qdata$log10CTmean.Ad=log10(qdata$CTmean.Ad)
-# qdata$log10CTmean.Tt=log10(qdata$CTmean.Tt)
-# qdata$log10CTmean.Ac=log10(qdata$CTmean.Ac)
-# qdata$log10CTmean.Na=log10(qdata$CTmean.Na)
-
 cb.lightorange="#E69F00"
 cb.blue= "#56B4E9"
 cb.green="#009E73"
