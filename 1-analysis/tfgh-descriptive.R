@@ -5,5 +5,5 @@ prop.table(table(qdata$sex))
 
 qdata %>%
   summarise(min=min(agem,na.rm=TRUE),
-            max=max(agey,na.rm=TRUE),
+            max=max(agem,na.rm=TRUE),
             mean=mean(agem,na.rm=TRUE))
