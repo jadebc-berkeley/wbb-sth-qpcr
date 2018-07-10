@@ -22,8 +22,7 @@ prev.kk$org=c("Ascaris lumbricoides","Hookworm","Trichuris trichiura")
 colnames(prev.kk)[5:6]=c("lb","ub")
 prev.kk = prev.kk %>%
   mutate(prevkk=ptestci.format(Mean,lb,ub,decimals=1,scale=100)) %>%
-  select(org,N,prevkk) %>%
-  rename(Nkk=N)
+  select(org,Nkk=N,prevkk) 
 
 prev.q=as.data.frame(rbind(al.q,hw.q,na.q,ac.q,ad.q,tt.q))
 prev.q$org=c("Ascaris lumbricoides","Hookworm",
@@ -32,9 +31,7 @@ prev.q$org=c("Ascaris lumbricoides","Hookworm",
 colnames(prev.q)[5:6]=c("lb","ub")
 prev.q = prev.q %>%
   mutate(prevq=ptestci.format(Mean,lb,ub,decimals=1,scale=100)) %>%
-  select(org,N,prevq)%>%
-  rename(Nq=N)
-
+  select(org,Nq=N,prevq)
 # -------------------------------------
 # KK EPG
 # -------------------------------------
