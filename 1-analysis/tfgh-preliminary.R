@@ -6,6 +6,7 @@ rm(list=ls())
 library(reshape2)
 library(ggplot2)
 library(dplyr)
+library(tidyr)
 
 #--------------------------------------
 # read in qPCR data
@@ -38,9 +39,14 @@ ss=ss[ss$comments=="",]
 tt=tt[tt$comments=="",]
 ac=ac[ac$comments=="",]
 
+# correcting assay column in Na
+na <- na %>% mutate(assay="Na")
 
 qpcr=rbind(iac,na,ad,ss,tt,al,ac)
 qpcr=qpcr[!is.na(qpcr$sampleid),]
+
+# check number of results per assay
+table(qpcr$assay)
 
 # correcting data entry error
 qpcr$sampleid[qpcr$sampleid==":559901ETS"]="559901ETS1"
@@ -74,7 +80,7 @@ pos.l <- qpcr %>%
   spread(assay,positive) %>%
   rename(positive.Ac=Ac, positive.Ad=Ad, positive.Al=Al,
          positive.IAC=IAC, positive.Na=Na, 
-         positive.Ss=Ss,positive.Tt=Tt)
+         positive.Ss=Ss,positive.Tt=Tt) 
 
 qpcr.w <- full_join(mean.l, sd.l, by=c("sampleid"))
 qpcr.w <- full_join(qpcr.w, pos.l, by=c("sampleid"))
@@ -83,6 +89,12 @@ qpcr.w$dataid=substr(qpcr.w$sampleid,1,5)
 qpcr.w$personid=paste(substr(qpcr.w$sampleid,7,7),1,sep="")
 qpcr.w$qpcr="Done"
 
+qpcr.w <- qpcr.w %>%
+  mutate(positive.Hw=case_when(
+    positive.Ac==1 | positive.Na==1 | positive.Ad==1 ~ 1,
+    positive.Ac==0 & positive.Na==0 & positive.Ad==0 ~ 0,
+    TRUE ~ NA_real_
+  ))
 
 #--------------------------------------
 # merge in kk data
