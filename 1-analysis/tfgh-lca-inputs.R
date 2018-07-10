@@ -21,3 +21,34 @@ nrow(qdata[qdata$positive.Hw==0 & qdata$hwkk==0,])
 mean(qdata$positive.Hw)
 
 
+#--------------------------------------
+# ascaris
+#--------------------------------------
+qdata=qdata[!is.na(qdata$positive.Al) & !is.na(qdata$alkk),]
+nrow(qdata)
+
+nrow(qdata[qdata$positive.Al==1 & qdata$alkk==1,])
+nrow(qdata[qdata$positive.Al==0 & qdata$alkk==1,])
+nrow(qdata[qdata$positive.Al==1 & qdata$alkk==0,])
+nrow(qdata[qdata$positive.Al==0 & qdata$alkk==0,])
+
+# initial value for prevalence - use qpcr
+mean(qdata$positive.Al)
+
+#--------------------------------------
+# trichuris
+#--------------------------------------
+qdata=qdata[!is.na(qdata$positive.Tt) & !is.na(qdata$ttkk),]
+nrow(qdata)
+
+nrow(qdata[qdata$positive.Tt==1 & qdata$ttkk==1,])
+nrow(qdata[qdata$positive.Tt==0 & qdata$ttkk==1,])
+nrow(qdata[qdata$positive.Tt==1 & qdata$ttkk==0,])
+nrow(qdata[qdata$positive.Tt==0 & qdata$ttkk==0,])
+
+# initial value for prevalence - use qpcr
+mean(qdata$positive.Tt)
+
+
+
+
