@@ -70,7 +70,8 @@ qpcr = qdata.conc %>%
          positive.Tt=ifelse(!is.na(copies.Tt),1,0),
          positive.Ss=ifelse(!is.na(copies.Ss),1,0)) %>%
   mutate(positive.Hw=ifelse(positive.Na==1 |positive.Ac==1 | positive.Ad==1,1,0)) %>%
-  select(c("positive.Al","positive.Tt","positive.Hw")) 
+  select(c("positive.Al","positive.Tt","positive.Hw")) %>%
+  filter(!is.na(positive.Hw))
 
 # counts
 altot=nrow(qpcr[qpcr$positive.Al==1 & qpcr$positive.Hw==0 & qpcr$positive.Tt==0,])
