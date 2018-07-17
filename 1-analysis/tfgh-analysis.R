@@ -118,7 +118,7 @@ tt.q.gmn=washb_mean(qdata$ln.CT.tt, id=qdata$clusterid, print = TRUE)
 
 
 save(al.kk,hw.kk,tt.kk,
-     al.q,hw.q,na.q,ac.q,ad.q,tt.q,
+     al.q,hw.q,na.q,ac.q,ad.q,tt.q,ss.q,
      al.kk.gmn,hw.kk.gmn,tt.kk.gmn,
      al.q.gmn,na.q.gmn,ac.q.gmn,ad.q.gmn,tt.q.gmn,
      file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/prev_results.RData")
