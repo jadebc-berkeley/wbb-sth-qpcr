@@ -94,7 +94,19 @@ qpcr.w <- qpcr.w %>%
     positive.Ac==1 | positive.Na==1 | positive.Ad==1 ~ 1,
     positive.Ac==0 & positive.Na==0 & positive.Ad==0 ~ 0,
     TRUE ~ NA_real_
-  ))
+  )) %>%
+  # manual correction of id that doesn't match list sent to Smith
+  ungroup() %>%
+  mutate(sampleid=ifelse(sampleid=="559901ETS1","59901ETS1",sampleid)) %>%
+  mutate(sampleid=ifelse(sampleid=="18705EOS1","18705ECS1",sampleid)) %>%
+  mutate(personid=substr(sampleid,7,7),
+         dataid=substr(sampleid,1,5)) %>%
+  mutate(personid=ifelse(personid=="T","T1",personid)) %>%
+  mutate(personid=ifelse(personid=="C","C1",personid)) %>%
+  mutate(personid=ifelse(personid=="O","O1",personid)) %>%
+  mutate(personid=ifelse(personid=="W","T2",personid)) 
+
+  
 
 #--------------------------------------
 # merge in kk data
