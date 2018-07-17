@@ -74,7 +74,7 @@ teal2="#41b6c4"
 purple="#B677E6"
 gray="#919191"
 
-mycol=c(cb.lightorange,purple,cb.blue,gray,cb.dblue,cb.green)
+mycol=c(cb.lightorange,purple,cb.blue,cb.pink,cb.dblue,cb.green)
 
 pdf(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Results/wbb-qpcr-kk-bargraph.pdf",
     width=10,height=4)
@@ -108,11 +108,13 @@ al <- qdata.conc %>% filter(positive.Al==1 | alkk==1) %>%
 
 al.plot=ggplot(al, aes(x=alepg, y=copies.Al))+
   geom_point(alpha=0.65,col=cb.lightorange)+
+  geom_smooth(se=FALSE,col="black",data=al[al$alepg>1,], method='loess')+
   scale_y_log10(labels=yseq, breaks=yseq, limits=c(10^(-5), 10^6)) +
   scale_x_log10(labels=xseq, breaks=xseq, limits=c(1, 10^5))+
-  xlab(expression(paste("Mean", " log"[10], italic(" A. lumbricoides"), " EPG")))+
-  ylab(expression(paste("Mean", " log"[10], italic(" A. lumbricoides"), " DNA (ag/",mu,"l)")))+
-  theme_bw()+ggtitle(expression(paste(italic("A. lumbricoides"))))+theme(plot.title = element_text(hjust = 0.5))
+  xlab(expression(paste("log"[10], italic(" A. lumbricoides"), " EPG")))+
+  ylab(expression(paste("log"[10], italic(" A. lumbricoides"), " DNA (ag/",mu,"l)")))+
+  theme_bw()+ggtitle(expression(paste(italic("A. lumbricoides"))))+
+  theme(plot.title = element_text(hjust = 0.5))
 
 # hw plot
 hw <- qdata.conc %>% filter(positive.Hw==1 | hwkk==1) %>%
@@ -130,10 +132,11 @@ hw <- qdata.conc %>% filter(positive.Hw==1 | hwkk==1) %>%
 
 hw.plot=ggplot(hw, aes(x=hwepg, y=copies))+
   geom_point(aes(col=Species),alpha=0.65)+
+  geom_smooth(se=FALSE,col="black",data=hw[hw$hwepg>1,], method='loess')+
   scale_y_log10(labels=yseq, breaks=yseq, limits=c(10^(-5), 10^6)) +
   scale_x_log10(labels=xseq, breaks=xseq, limits=c(1, 10^5))+
-  xlab(expression(paste("Mean", " log"[10], " Hookworm", " EPG")))+
-  ylab(expression(paste("Mean", " log"[10], " Hookworm", " DNA (ag/",mu,"l)")))+
+  xlab(expression(paste("log"[10], " Hookworm", " EPG")))+
+  ylab(expression(paste("log"[10], " Hookworm", " DNA (ag/",mu,"l)")))+
   scale_color_manual(values=c(cb.blue,cb.dblue,cb.pink))+
   theme_bw()+ 
   theme(legend.position = c(0.77, 0.2), legend.background = element_rect(color = "black", 
@@ -148,13 +151,15 @@ tt <- qdata.conc %>% filter(positive.Tt==1 | ttkk==1) %>%
 
 tt.plot=ggplot(tt, aes(x=ttepg, y=copies.Tt))+
   geom_point(alpha=0.65,col=cb.green)+
+  geom_smooth(se=FALSE,col="black",data=tt[tt$ttepg>1,], method='loess')+
   scale_y_log10(labels=yseq, breaks=yseq, limits=c(10^(-5), 10^6)) +
   scale_x_log10(labels=xseq, breaks=xseq, limits=c(1, 10^5))+
-  xlab(expression(paste("Mean", " log"[10], italic(" T. trichiura"), " EPG")))+
-  ylab(expression(paste("Mean", " log"[10], italic(" T. trichiura"), " DNA (ag/",mu,"l)")))+
+  xlab(expression(paste("log"[10], italic(" T. trichiura"), " EPG")))+
+  ylab(expression(paste("log"[10], italic(" T. trichiura"), " DNA (ag/",mu,"l)")))+
   theme_bw()+ggtitle(expression(paste(italic("T. trichiura"))))+theme(plot.title = element_text(hjust = 0.5))
 
 cont.plot=grid.arrange(al.plot,hw.plot,tt.plot,nrow=1)
+
 pdf(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Results/wbb-qpcr-kk-scatter.pdf",
     width=15,height=4)
 grid.draw(cont.plot)
