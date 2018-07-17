@@ -24,10 +24,10 @@ prev.kk = prev.kk %>%
   mutate(prevkk=ptestci.format(Mean,lb,ub,decimals=1,scale=100)) %>%
   select(org,Nkk=N,prevkk) 
 
-prev.q=as.data.frame(rbind(al.q,hw.q,na.q,ac.q,ad.q,tt.q))
+prev.q=as.data.frame(rbind(al.q,hw.q,na.q,ac.q,ad.q,tt.q,ss.q))
 prev.q$org=c("Ascaris lumbricoides","Hookworm",
            "Necator americanus","Ancylostoma ceylanicum","Ancylostoma duodenale",
-           "Trichuris trichiura")
+           "Trichuris trichiura","Strongyloides stercoralis")
 colnames(prev.q)[5:6]=c("lb","ub")
 prev.q = prev.q %>%
   mutate(prevq=ptestci.format(Mean,lb,ub,decimals=1,scale=100)) %>%
@@ -64,10 +64,12 @@ na.dna=medrange(na$copies)
 ac.dna=medrange(ac$copies)
 ad.dna=medrange(ad$copies)
 tt.dna=medrange(tt$copies)
+ss.dna=medrange(ss$copies)
 
-dna=as.data.frame(rbind(al.dna,na.dna,ac.dna,ad.dna,tt.dna))
+dna=as.data.frame(rbind(al.dna,na.dna,ac.dna,ad.dna,tt.dna,ss.dna))
 org=c("Ascaris lumbricoides","Trichuris trichiura",
-          "Necator americanus","Ancylostoma ceylanicum","Ancylostoma duodenale")
+          "Necator americanus","Ancylostoma ceylanicum","Ancylostoma duodenale",
+      "Strongyloides stercoralis")
 dna=cbind(org,dna)
 dna$org=as.character(dna$org)
 colnames(dna)[2]="conc"
@@ -78,6 +80,6 @@ tab=full_join(tab,dna,by="org")
 
 # manual reorder
 tab = tab[,c(1:3,6,4,5,7)]
-tab=tab[c(1,2,4:6,3),]
+tab=tab[c(1,2,4:6,3,7),]
 
 write.csv(tab,file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Results/prev.table.csv",row.names=FALSE)
