@@ -19,14 +19,15 @@ load("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/concentration.RData")
 per.pos = qdata %>% 
   # subset columns
   select(alkk,hwkk,ttkk,
-         positive.Al,positive.Tt,positive.Hw) %>%
+         positive.Al,positive.Tt,positive.Hw,
+         positive.Ac,positive.Na,positive.Ad) %>%
   # calculate percent positive
   summarise_all(funs(mean(.,na.rm=TRUE))) %>%
   gather(lab,per.pos)
 
 
 # calculate percent positive
-n.pos = qdata %>% 
+n.pos = qdata %>%
   # subset columns
   select(alkk,hwkk,ttkk,
          positive.Al,positive.Tt,positive.Na,positive.Ad,
@@ -34,7 +35,7 @@ n.pos = qdata %>%
   # calculate sum of positives
   summarise_all(funs(sum(.,na.rm=TRUE)))  %>%
   gather(lab,n)
-  
+
 bar.data =   
   # merge percent positive
   full_join(n.pos,per.pos,by="lab") %>%
@@ -50,12 +51,15 @@ bar.data =
                   rep("Trichuris",2))) %>%
   mutate(test=c(rep("qPCR",2),rep(c("Kato-Katz","qPCR"),2),
                 "qPCR","Kato-Katz","qPCR")) %>%
-  mutate(per.f=paste0(sprintf("%0.0f",per.pos*100),"%"))
+  mutate(per.pos=per.pos*100,
+         per.f=paste0(sprintf("%0.1f",per.pos),"%"))
 
 # manually reassigning hookworm percentage
-bar.data$per.f[bar.data$lab=="positive.Na"]="21%"
-bar.data$per.f[bar.data$per.f=="NA%"]=NA
+bar.data$per.f[bar.data$lab=="positive.Na"]=
+  paste0(sprintf("%0.1f",mean(qdata$positive.Hw*100,na.rm=TRUE)),"%")
 bar.data=bar.data[bar.data$lab!="positive.Hw",]
+bar.data$per.f[bar.data$org=="Ancylostoma duodenale"]=""
+bar.data$per.f[bar.data$org=="Ancylostoma ceylanicum"]=""
 bar.data$org=factor(bar.data$org,levels=c("Ascaris lumbricoides","Hookworm","Ancylostoma ceylanicum",
     "Ancylostoma duodenale","Necator americanus","Trichuris trichiura"))
 
@@ -67,18 +71,20 @@ cb.pink="#CC79A7"
 cb.dblue="#005787"
 cb.lblue="#A0D9FA"
 teal2="#41b6c4"
+purple="#B677E6"
+gray="#919191"
 
-mycol=c(cb.lightorange,cb.lblue,cb.blue,teal2,cb.dblue,cb.green)
+mycol=c(cb.lightorange,purple,cb.blue,gray,cb.dblue,cb.green)
 
 pdf(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Results/wbb-qpcr-kk-bargraph.pdf",
     width=10,height=4)
-ggplot(bar.data,aes(x=test,y=n,fill=org),col="black")+
+ggplot(bar.data,aes(x=test,y=per.pos,fill=org),col="black")+
   geom_bar(aes(fill=org),stat="identity",colour="black",
            position='stack')+facet_grid(~orgcat)+
   scale_fill_manual("Organism",values=mycol) +
-  scale_y_continuous(limits=c(0,1100))+
+  scale_y_continuous(limits=c(0,40))+
   geom_text(aes(label=per.f,vjust=c(-0.3,-0.3,-0.3,-0.3,-0.3,-2.9,-0.3,-0.3)))+
-  theme_bw()+ylab("Number infected")+xlab("Diagnostic method")
+  theme_bw()+ylab("Prevalence")+xlab("Diagnostic method")
 dev.off()
 
 
