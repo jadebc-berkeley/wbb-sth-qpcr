@@ -8,11 +8,6 @@ log using "~/Documents/CRG/wash-benefits/bangladesh/src/wbb-sth-qpcr/1-analysis/
 
 insheet using "~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/concentration.csv", clear
 
-replace alepg="." if alepg=="NA"
-replace hwepg="." if hwepg=="NA"
-replace ttepg="." if ttepg=="NA"
-destring alepg hwepg ttepg, replace
-
 foreach var of varlist copiesal copiesna copiesad copiesac copiestt{
 	replace `var' = "0" if `var'=="NA"
 	destring `var', replace
