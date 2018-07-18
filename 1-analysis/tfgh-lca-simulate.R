@@ -9,21 +9,7 @@ library(nimble)
 library(reshape2)
 library(ggplot2)
 
-# set.seed(123)
-# se1=rbeta(1000,shape1=13.3, shape2=2)
-# hist(se1)
-# se2=rbeta(1000,shape1=40, shape2=40)
-# hist(se2)
-# 
-# Mode <- function(x) {
-#   ux <- unique(x)
-#   ux[which.max(tabulate(match(x, ux)))]
-# }
-# 
-# Mode(se)
-# quantile(se,c(0,0.05,1))
-# 
-# 
+# visualize prior distributions
 set.seed(123)
 sp=rbeta(1000,shape1=21.2, shape2=1)
 hist(sp)
@@ -32,15 +18,17 @@ set.seed(123)
 sp=rbeta(1000,shape1=5, shape2=5)
 hist(sp)
 
-
 set.seed(123)
 sp=rbeta(1000,shape1=5, shape2=20)
 hist(sp)
-# 
-# 
-# Mode(sp)
-# quantile(sp,c(0,0.05,1))
+
+set.seed(123)
 sp=rbeta(1000,shape1=21.2, shape2=1)
+hist(sp)
+
+# visualize prior distributions
+set.seed(123)
+sp=rbeta(1000,shape1=1, shape2=1)
 hist(sp)
 
 # Easton: 95 % confidence that the speci- ficity of each method was greater than 95 %
@@ -72,9 +60,6 @@ d=data.frame(se=rnorm(1000,mean=0.9, sd=0.1255))
 d$over95=ifelse(d$se>0.8,1,0)
 prop.table(table(d$over95))
 hist(d$se)
-
-
-
 
 
 # assume sensitivity = 0.95, sensitivity = 0.98
