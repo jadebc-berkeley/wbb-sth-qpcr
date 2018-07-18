@@ -67,9 +67,8 @@ tt.dna=medrange(tt$copies)
 ss.dna=medrange(ss$copies)
 
 dna=as.data.frame(rbind(al.dna,na.dna,ac.dna,ad.dna,tt.dna,ss.dna))
-org=c("Ascaris lumbricoides","Trichuris trichiura",
-          "Necator americanus","Ancylostoma ceylanicum","Ancylostoma duodenale",
-      "Strongyloides stercoralis")
+org=c("Ascaris lumbricoides","Necator americanus","Ancylostoma ceylanicum",
+      "Ancylostoma duodenale","Trichuris trichiura","Strongyloides stercoralis")
 dna=cbind(org,dna)
 dna$org=as.character(dna$org)
 colnames(dna)[2]="conc"
