@@ -43,10 +43,11 @@ epg = epg %>%
   select(org,epg)
 
 # -------------------------------------
-# DNA concentration
+# CT value
 # -------------------------------------
 # function to make pretty median (range)
 medrange=function(y){
+  y=y[!is.na(y)]
   min=quantile(y,prob=c(0))
   med=quantile(y,prob=c(0.5))
   max=quantile(y,prob=c(1))
@@ -59,6 +60,21 @@ medrange=function(y){
   return(paste0(med, " (",min, ", ",max,")"))
 }
 
+CT.summary <- qdata %>%
+  select(CTmean.Al, CTmean.Ac, CTmean.Ad, CTmean.Na,
+         CTmean.Tt,CTmean.Ss) %>%
+  summarise_all(funs(medrange)) 
+
+CT.summary <- matrix(t(CT.summary),nrow(CT.summary),1)
+
+org=c("Ascaris lumbricoides","Necator americanus","Ancylostoma ceylanicum",
+      "Ancylostoma duodenale","Trichuris trichiura","Strongyloides stercoralis")
+ct=data.frame(org=org,ct=CT.summary)
+ct$org=as.character(ct$org)
+
+# -------------------------------------
+# DNA concentration - not currently reporting
+# -------------------------------------
 al.dna=medrange(al$copies)
 na.dna=medrange(na$copies)
 ac.dna=medrange(ac$copies)
@@ -75,7 +91,7 @@ colnames(dna)[2]="conc"
 
 tab=full_join(prev.kk,prev.q,by="org") 
 tab=full_join(tab,epg,by="org")
-tab=full_join(tab,dna,by="org")
+tab=full_join(tab,ct,by="org")
 
 # manual reorder
 tab = tab[,c(1:3,6,4,5,7)]

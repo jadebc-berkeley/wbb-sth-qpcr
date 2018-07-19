@@ -98,7 +98,7 @@ cb.orange="#D55E00"
 cb.pink="#CC79A7"
 cb.dblue="#005787"
 
-yseq=c(0.00001,0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 1000, 10000, 100000, 1000000)
+yseq=seq(10,55,5)
 xseq=c(1, 10, 100, 1000, 10000, 100000)
 
 # al plot
@@ -106,40 +106,40 @@ al <- qdata.conc %>% filter(positive.Al==1 | alkk==1) %>%
   # impute 1 for negative values of epg
   mutate(alepg=ifelse(alepg==0, 1, alepg))
 
-al.plot=ggplot(al, aes(x=alepg, y=copies.Al))+
+al.plot=ggplot(al, aes(x=alepg, y=CTmean.Al))+
   geom_point(alpha=0.65,col=cb.lightorange)+
   geom_smooth(se=FALSE,col="black",data=al[al$alepg>1,], method='loess')+
-  scale_y_log10(labels=yseq, breaks=yseq, limits=c(10^(-5), 10^6)) +
+  scale_y_log10(labels=yseq, breaks=yseq, limits=c(10^1.1, 10^1.7)) +
   scale_x_log10(labels=xseq, breaks=xseq, limits=c(1, 10^5))+
   xlab(expression(paste("log"[10], italic(" A. lumbricoides"), " EPG")))+
-  ylab(expression(paste("log"[10], italic(" A. lumbricoides"), " DNA (ag/",mu,"l)")))+
+  ylab(expression(paste("log"[10], italic(" A. lumbricoides")," CT value")))+
   theme_bw()+ggtitle(expression(paste(italic("A. lumbricoides"))))+
   theme(plot.title = element_text(hjust = 0.5))
 
 # hw plot
 hw <- qdata.conc %>% filter(positive.Hw==1 | hwkk==1) %>%
-  select(c(copies.Na, copies.Ac, copies.Ad, hwepg)) %>%
-  gather(hw.species,copies,copies.Na:copies.Ad) %>%
+  select(c(CTmean.Na, CTmean.Ac, CTmean.Ad, hwepg)) %>%
+  gather(hw.species,CT,CTmean.Na:CTmean.Ad) %>%
   mutate(Species=case_when(
-    hw.species=="copies.Ad" ~ "Ancylostoma duodenale",
-    hw.species=="copies.Ac" ~ "Ancylostoma ceylanicum",
-    hw.species=="copies.Na" ~ "Necator americanus"
+    hw.species=="CTmean.Ad" ~ "Ancylostoma duodenale",
+    hw.species=="CTmean.Ac" ~ "Ancylostoma ceylanicum",
+    hw.species=="CTmean.Na" ~ "Necator americanus"
   ))%>%
   # impute 1 for negative values of epg
   mutate(hwepg=ifelse(hwepg==0, 1, hwepg)) %>%
   mutate(Species=factor(Species, levels=c("Necator americanus", 
                 "Ancylostoma ceylanicum", "Ancylostoma duodenale")))
 
-hw.plot=ggplot(hw, aes(x=hwepg, y=copies))+
+hw.plot=ggplot(hw, aes(x=hwepg, y=CT))+
   geom_point(aes(col=Species),alpha=0.65)+
   geom_smooth(se=FALSE,col="black",data=hw[hw$hwepg>1,], method='loess')+
-  scale_y_log10(labels=yseq, breaks=yseq, limits=c(10^(-5), 10^6)) +
+  scale_y_log10(labels=yseq, breaks=yseq, limits=c(10^1.1, 10^1.7)) +
   scale_x_log10(labels=xseq, breaks=xseq, limits=c(1, 10^5))+
   xlab(expression(paste("log"[10], " Hookworm", " EPG")))+
-  ylab(expression(paste("log"[10], " Hookworm", " DNA (ag/",mu,"l)")))+
+  ylab(expression(paste("log"[10], " Hookworm CT value")))+
   scale_color_manual(values=c(cb.blue,cb.dblue,cb.pink))+
   theme_bw()+ 
-  theme(legend.position = c(0.77, 0.2), legend.background = element_rect(color = "black", 
+  theme(legend.position = c(0.77, 0.8), legend.background = element_rect(color = "black", 
     fill = "white", size = 0.2, linetype = "solid"))+
   ggtitle("Hookworm")+theme(plot.title = element_text(hjust = 0.5))
 
@@ -149,13 +149,13 @@ tt <- qdata.conc %>% filter(positive.Tt==1 | ttkk==1) %>%
   # impute 1 for negative values of epg
   mutate(ttepg=ifelse(ttepg==0, 1, ttepg))
 
-tt.plot=ggplot(tt, aes(x=ttepg, y=copies.Tt))+
+tt.plot=ggplot(tt, aes(x=ttepg, y=CTmean.Tt))+
   geom_point(alpha=0.65,col=cb.green)+
   geom_smooth(se=FALSE,col="black",data=tt[tt$ttepg>1,], method='loess')+
-  scale_y_log10(labels=yseq, breaks=yseq, limits=c(10^(-5), 10^6)) +
+  scale_y_log10(labels=yseq, breaks=yseq, limits=c(10^1.1, 10^1.7)) +
   scale_x_log10(labels=xseq, breaks=xseq, limits=c(1, 10^5))+
   xlab(expression(paste("log"[10], italic(" T. trichiura"), " EPG")))+
-  ylab(expression(paste("log"[10], italic(" T. trichiura"), " DNA (ag/",mu,"l)")))+
+  ylab(expression(paste("log"[10], italic(" T. trichiura"), " CT value")))+
   theme_bw()+ggtitle(expression(paste(italic("T. trichiura"))))+theme(plot.title = element_text(hjust = 0.5))
 
 cont.plot=grid.arrange(al.plot,hw.plot,tt.plot,nrow=1)
