@@ -162,6 +162,7 @@ qdata %>% select(positive.Al,alkk,gold.alpos) %>%
 # save data
 #--------------------------------------
 save(qdata,file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/qdata.RData")
+write.csv(qdata,file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/qdata.csv",row.names=FALSE)
 
 #--------------------------------------
 # ids with positive ascaris kk and 
