@@ -3,82 +3,82 @@
        log:  /Users/jadederong/Documents/CRG/wash-benefits/bangladesh/src/wbb-sth-qpcr/1-analysis/tfgh-k
 > endall-tau.log
   log type:  text
- opened on:  17 Jul 2018, 17:06:37
+ opened on:  19 Jul 2018, 08:11:42
 
 . **************************************
 . * WASH Benefits Bangladesh STH KK qPCR validation
-. * calculate correlation between epg and DNA copies
+. * calculate correlation between epg and CT value
 . * using Kendall's tau beta
 . **************************************
 . 
-. insheet using "~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/concentration.csv", clear
-(57 vars, 2,800 obs)
+. insheet using "~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/qdata.csv", clear
+(51 vars, 2,800 obs)
 
 . 
-. foreach var of varlist copiesal copiesna copiesad copiesac copiestt{
+. foreach var of varlist ctmeanac ctmeanad ctmeanal ctmeanna ctmeantt{
   2.         replace `var' = "0" if `var'=="NA"
   3.         destring `var', replace
   4. }
-(2,445 real changes made)
-copiesal: all characters numeric; replaced as double
-(2,285 real changes made)
-copiesna: all characters numeric; replaced as double
-(2,799 real changes made)
-copiesad: all characters numeric; replaced as double
 (2,694 real changes made)
-copiesac: all characters numeric; replaced as double
+ctmeanac: all characters numeric; replaced as double
+(2,799 real changes made)
+ctmeanad: all characters numeric; replaced as double
+(2,445 real changes made)
+ctmeanal: all characters numeric; replaced as double
+(2,285 real changes made)
+ctmeanna: all characters numeric; replaced as double
 (2,457 real changes made)
-copiestt: all characters numeric; replaced as double
+ctmeantt: all characters numeric; replaced as double
 
 . 
 . 
-. ktau alepg copiesal, stats(taub)
+. ktau alepg ctmeanal, stats(taub)
 
   Number of obs =    2800
-Kendall's tau-a =       0.1122
-Kendall's tau-b =       0.2997
-Kendall's score =  439541
+Kendall's tau-a =       0.0953
+Kendall's tau-b =       0.2547
+Kendall's score =  373591
     SE of score =   24711.260   (corrected for ties)
 
-Test of Ho: alepg and copiesal are independent
+Test of Ho: alepg and ctmeanal are independent
      Prob > |z| =       0.0000  (continuity corrected)
 
-. ktau hwepg copiesna, stats(taub)
+. ktau hwepg ctmeanna, stats(taub)
 
   Number of obs =    2800
-Kendall's tau-a =       0.1080
-Kendall's tau-b =       0.4935
-Kendall's score =  423396
+Kendall's tau-a =       0.0905
+Kendall's tau-b =       0.4134
+Kendall's score =  354628
     SE of score =   15207.794   (corrected for ties)
 
-Test of Ho: hwepg and copiesna are independent
+Test of Ho: hwepg and ctmeanna are independent
      Prob > |z| =       0.0000  (continuity corrected)
 
-. ktau hwepg copiesac, stats(taub)
+. ktau hwepg ctmeanac, stats(taub)
 
   Number of obs =    2800
-Kendall's tau-a =       0.0145
-Kendall's tau-b =       0.1406
-Kendall's score =   56884
+Kendall's tau-a =       0.0140
+Kendall's tau-b =       0.1357
+Kendall's score =   54882
     SE of score =    7442.153   (corrected for ties)
 
-Test of Ho: hwepg and copiesac are independent
+Test of Ho: hwepg and ctmeanac are independent
      Prob > |z| =       0.0000  (continuity corrected)
 
-. ktau ttepg copiestt, stats(taub)
+. ktau ttepg ctmeantt, stats(taub)
 
   Number of obs =    2800
-Kendall's tau-a =       0.1059
-Kendall's tau-b =       0.6024
-Kendall's score =  414816
+Kendall's tau-a =       0.0995
+Kendall's tau-b =       0.5665
+Kendall's score =  390034
     SE of score =   12413.068   (corrected for ties)
 
-Test of Ho: ttepg and copiestt are independent
+Test of Ho: ttepg and ctmeantt are independent
      Prob > |z| =       0.0000  (continuity corrected)
 
 . 
 . 
-. bootstrap r(tau_b), reps(1000) seed(1234) cluster(block): ktau alepg copiesal, stats(taub)
+. bootstrap r(tau_b), reps(1000) seed(1234) cluster(block): ktau alepg ctmeanal, stats(taub)
 (running ktau on estimation sample)
 
 Warning:  Because ktau is not an estimation command or does not set e(sample), bootstrap has no way to
@@ -115,7 +115,7 @@ Bootstrap replications (1000)
 Bootstrap results                               Number of obs     =      2,800
                                                 Replications      =      1,000
 
-      command:  ktau alepg copiesal, stats(taub)
+      command:  ktau alepg ctmeanal, stats(taub)
         _bs_1:  r(tau_b)
 
                                   (Replications based on 68 clusters in block)
@@ -123,10 +123,10 @@ Bootstrap results                               Number of obs     =      2,800
              |   Observed   Bootstrap                         Normal-based
              |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
-       _bs_1 |   .2996786   .0288824    10.38   0.000     .2430701    .3562871
+       _bs_1 |    .254714   .0238703    10.67   0.000      .207929    .3014989
 ------------------------------------------------------------------------------
 
-. bootstrap r(tau_b), reps(1000) seed(1234) cluster(block): ktau hwepg copiesna, stats(taub)
+. bootstrap r(tau_b), reps(1000) seed(1234) cluster(block): ktau hwepg ctmeanna, stats(taub)
 (running ktau on estimation sample)
 
 Warning:  Because ktau is not an estimation command or does not set e(sample), bootstrap has no way to
@@ -163,7 +163,7 @@ Bootstrap replications (1000)
 Bootstrap results                               Number of obs     =      2,800
                                                 Replications      =      1,000
 
-      command:  ktau hwepg copiesna, stats(taub)
+      command:  ktau hwepg ctmeanna, stats(taub)
         _bs_1:  r(tau_b)
 
                                   (Replications based on 68 clusters in block)
@@ -171,10 +171,10 @@ Bootstrap results                               Number of obs     =      2,800
              |   Observed   Bootstrap                         Normal-based
              |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
-       _bs_1 |   .4935142   .0226426    21.80   0.000     .4491356    .5378928
+       _bs_1 |   .4133576   .0182933    22.60   0.000     .3775034    .4492118
 ------------------------------------------------------------------------------
 
-. bootstrap r(tau_b), reps(1000) seed(1234) cluster(block): ktau hwepg copiesac, stats(taub)
+. bootstrap r(tau_b), reps(1000) seed(1234) cluster(block): ktau hwepg ctmeanac, stats(taub)
 (running ktau on estimation sample)
 
 Warning:  Because ktau is not an estimation command or does not set e(sample), bootstrap has no way to
@@ -211,7 +211,7 @@ Bootstrap replications (1000)
 Bootstrap results                               Number of obs     =      2,800
                                                 Replications      =      1,000
 
-      command:  ktau hwepg copiesac, stats(taub)
+      command:  ktau hwepg ctmeanac, stats(taub)
         _bs_1:  r(tau_b)
 
                                   (Replications based on 68 clusters in block)
@@ -219,10 +219,10 @@ Bootstrap results                               Number of obs     =      2,800
              |   Observed   Bootstrap                         Normal-based
              |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
-       _bs_1 |    .140602    .032254     4.36   0.000     .0773853    .2038187
+       _bs_1 |   .1356536   .0315625     4.30   0.000     .0737922     .197515
 ------------------------------------------------------------------------------
 
-. bootstrap r(tau_b), reps(1000) seed(1234) cluster(block): ktau ttepg copiestt, stats(taub)
+. bootstrap r(tau_b), reps(1000) seed(1234) cluster(block): ktau ttepg ctmeantt, stats(taub)
 (running ktau on estimation sample)
 
 Warning:  Because ktau is not an estimation command or does not set e(sample), bootstrap has no way to
@@ -259,7 +259,7 @@ Bootstrap replications (1000)
 Bootstrap results                               Number of obs     =      2,800
                                                 Replications      =      1,000
 
-      command:  ktau ttepg copiestt, stats(taub)
+      command:  ktau ttepg ctmeantt, stats(taub)
         _bs_1:  r(tau_b)
 
                                   (Replications based on 68 clusters in block)
@@ -267,7 +267,7 @@ Bootstrap results                               Number of obs     =      2,800
              |   Observed   Bootstrap                         Normal-based
              |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
-       _bs_1 |   .6024472   .0227644    26.46   0.000     .5578298    .6470646
+       _bs_1 |   .5664557   .0194174    29.17   0.000     .5283984    .6045131
 ------------------------------------------------------------------------------
 
 . 
@@ -276,5 +276,5 @@ Bootstrap results                               Number of obs     =      2,800
        log:  /Users/jadederong/Documents/CRG/wash-benefits/bangladesh/src/wbb-sth-qpcr/1-analysis/tfgh-k
 > endall-tau.log
   log type:  text
- closed on:  17 Jul 2018, 17:15:19
+ closed on:  19 Jul 2018, 08:23:36
 --------------------------------------------------------------------------------------------------------
