@@ -64,33 +64,18 @@ quantile(qdata.conc$CTmean.Al[qdata.conc$almh==0],probs=c(0,0.5,1),na.rm=TRUE)
 
 pdf(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Results/wbb-alconc-boxplot.pdf",
     width=5,height=5)
-ggplot(qdata.conc[!is.na(qdata.conc$almh.f),],aes(y=log10(copies.Al),x=almh.f))+
+ggplot(qdata.conc[!is.na(qdata.conc$almh.f),],aes(y=CTmean.Al,x=almh.f))+
   geom_boxplot()+  
   geom_dotplot(aes(fill=almh.f,col=almh.f),binaxis='y',stackdir='center',
-               stackratio=1.3,dotsize=0.7,binwidth=.15, alpha=0.5)+
+               stackratio=1,dotsize=0.7,binwidth=.008, alpha=0.5)+
   xlab("Infection intensity")+
+  scale_y_log10(labels=seq(15,40,5), breaks=seq(15,40,5), limits=c(15, 40)) +
   scale_color_manual(values=c("#CB59EB","#E37F2D"),guide=FALSE)+
   scale_fill_manual(values=c("#CB59EB","#E37F2D"),guide=FALSE)+
-  ylab(expression(paste("Mean", " log"[10], italic(" A. lumbricoides"), " DNA (ag/",mu,"l)")))+
+  ylab(expression(paste("log"[10], italic(" A. lumbricoides"), " Ct value")))+
   theme_bw()
 dev.off()
 
-qdata.conc <- qdata.conc %>%
-  mutate(almh.alt=ifelse(alepg>=15000,1,0),
-         almh.alt.f=as.factor(ifelse(almh.alt==1,"Moderate-heavy intensity\ninfection","Low intensity\ninfection")))
-
-pdf(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Results/wbb-alconc-boxplot.pdf",
-    width=5,height=5)
-ggplot(qdata.conc[!is.na(qdata.conc$almh.alt.f),],aes(y=log10(copies.Al),x=almh.alt.f))+
-  geom_boxplot()+  
-  geom_dotplot(aes(fill=almh.alt.f,col=almh.alt.f),binaxis='y',stackdir='center',
-               stackratio=1.3,dotsize=0.7,binwidth=.15, alpha=0.5)+
-  xlab("Infection intensity")+
-  scale_color_manual(values=c("#CB59EB","#E37F2D"),guide=FALSE)+
-  scale_fill_manual(values=c("#CB59EB","#E37F2D"),guide=FALSE)+
-  ylab(expression(paste("Mean", " log"[10], italic(" A. lumbricoides"), " DNA (ag/",mu,"l)")))+
-  theme_bw()
-dev.off()
 
 #--------------------------------------
 # Estimate geometric mean and 95%CI for each
