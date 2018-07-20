@@ -112,7 +112,7 @@ al.plot=ggplot(al, aes(x=alepg, y=CTmean.Al))+
   scale_y_log10(labels=yseq, breaks=yseq, limits=c(10^1.1, 10^1.7)) +
   scale_x_log10(labels=xseq, breaks=xseq, limits=c(1, 10^5))+
   xlab(expression(paste("log"[10], italic(" A. lumbricoides"), " EPG")))+
-  ylab(expression(paste("log"[10], italic(" A. lumbricoides")," CT value")))+
+  ylab(expression(paste("log"[10], italic(" A. lumbricoides")," Ct value")))+
   theme_bw()+ggtitle(expression(paste(italic("A. lumbricoides"))))+
   theme(plot.title = element_text(hjust = 0.5))
 
@@ -136,7 +136,7 @@ hw.plot=ggplot(hw, aes(x=hwepg, y=CT))+
   scale_y_log10(labels=yseq, breaks=yseq, limits=c(10^1.1, 10^1.7)) +
   scale_x_log10(labels=xseq, breaks=xseq, limits=c(1, 10^5))+
   xlab(expression(paste("log"[10], " Hookworm", " EPG")))+
-  ylab(expression(paste("log"[10], " Hookworm CT value")))+
+  ylab(expression(paste("log"[10], " Hookworm Ct value")))+
   scale_color_manual(values=c(cb.blue,cb.dblue,cb.pink))+
   theme_bw()+ 
   theme(legend.position = c(0.77, 0.8), legend.background = element_rect(color = "black", 
@@ -155,7 +155,7 @@ tt.plot=ggplot(tt, aes(x=ttepg, y=CTmean.Tt))+
   scale_y_log10(labels=yseq, breaks=yseq, limits=c(10^1.1, 10^1.7)) +
   scale_x_log10(labels=xseq, breaks=xseq, limits=c(1, 10^5))+
   xlab(expression(paste("log"[10], italic(" T. trichiura"), " EPG")))+
-  ylab(expression(paste("log"[10], italic(" T. trichiura"), " CT value")))+
+  ylab(expression(paste("log"[10], italic(" T. trichiura"), " Ct value")))+
   theme_bw()+ggtitle(expression(paste(italic("T. trichiura"))))+theme(plot.title = element_text(hjust = 0.5))
 
 cont.plot=grid.arrange(al.plot,hw.plot,tt.plot,nrow=1)
