@@ -52,11 +52,11 @@ medrange=function(y){
   med=quantile(y,prob=c(0.5))
   max=quantile(y,prob=c(1))
   
-  min=formatC(min, format = "e", digits = 2)
-  # med=formatC(med, format = "e", digits = 2)
+  # min=formatC(min, format = "e", digits = 2)
+  min=sprintf("%0.1f",min)
   med=sprintf("%0.1f",med)
-  # max=sprintf("%0.1f",as.numeric(max))
-  max=formatC(max, format = "e", digits = 2)
+  max=sprintf("%0.1f",max)
+  # max=formatC(max, format = "e", digits = 2)
   return(paste0(med, " (",min, ", ",max,")"))
 }
 
@@ -65,7 +65,7 @@ CT.summary <- qdata %>%
          CTmean.Tt,CTmean.Ss) %>%
   summarise_all(funs(medrange)) 
 
-CT.summary <- matrix(t(CT.summary),nrow(CT.summary),1)
+CT.summary <- matrix(t(CT.summary),ncol(CT.summary),1)
 
 org=c("Ascaris lumbricoides","Necator americanus","Ancylostoma ceylanicum",
       "Ancylostoma duodenale","Trichuris trichiura","Strongyloides stercoralis")
@@ -75,6 +75,19 @@ ct$org=as.character(ct$org)
 # -------------------------------------
 # DNA concentration - not currently reporting
 # -------------------------------------
+# function to make pretty median (range)
+medrange=function(y){
+  min=quantile(y,prob=c(0))
+  med=quantile(y,prob=c(0.5))
+  max=quantile(y,prob=c(1))
+  
+  min=formatC(min, format = "e", digits = 2)
+  # med=formatC(med, format = "e", digits = 2)
+  med=sprintf("%0.1f",med)
+  # max=sprintf("%0.1f",as.numeric(max))
+  max=formatC(max, format = "e", digits = 2)
+  return(paste0(med, " (",min, ", ",max,")"))
+}
 al.dna=medrange(al$copies)
 na.dna=medrange(na$copies)
 ac.dna=medrange(ac$copies)
