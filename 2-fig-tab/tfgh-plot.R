@@ -87,6 +87,19 @@ ggplot(bar.data,aes(x=test,y=per.pos,fill=org),col="black")+
   theme_bw()+ylab("Prevalence")+xlab("Diagnostic method")
 dev.off()
 
+pdf(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Results/wbb-qpcr-kk-bargraph-poster.pdf",
+    width=6.5,height=3.5)
+ggplot(bar.data,aes(x=test,y=per.pos,fill=org),col="black")+
+  geom_bar(aes(fill=org),stat="identity",colour="black",
+           position='stack')+facet_grid(~orgcat)+
+  scale_fill_manual("Organism",values=mycol) +
+  scale_y_continuous(limits=c(0,40))+
+  geom_text(aes(label=per.f,vjust=c(-0.3,-0.3,-0.3,-0.3,-0.3,-1.8,-0.3,-0.3)))+
+  theme_bw()+ylab("Prevalence")+xlab("Diagnostic method")+
+  theme(legend.position="bottom")
+dev.off()
+
+
 
 #--------------------------------------
 # scatter plot of qPCR CT and KK EPG results
@@ -144,6 +157,33 @@ hw.plot=ggplot(hw, aes(x=hwepg, y=CT))+
   ggtitle("Hookworm")+theme(plot.title = element_text(hjust = 0.5))
 
 
+hw.plot.poster=ggplot(hw, aes(x=hwepg, y=CT))+
+  geom_point(aes(col=Species),alpha=0.65)+
+  geom_smooth(se=FALSE,col="black",data=hw[hw$hwepg>1,], method='loess')+
+  scale_y_log10(labels=yseq, breaks=yseq, limits=c(10^1.1, 10^1.7)) +
+  scale_x_log10(labels=xseq, breaks=xseq, limits=c(1, 10^5))+
+  xlab(expression(paste("log"[10], " Hookworm", " EPG")))+
+  ylab(expression(paste("log"[10], " Hookworm Ct value")))+
+  scale_color_manual(values=c(cb.blue,cb.dblue,cb.pink), guide=FALSE)+
+  theme_bw()+ 
+  ggtitle("Hookworm")+theme(plot.title = element_text(hjust = 0.5))
+
+
+pdf(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Results/wbb-qpcr-kk-scatter-legend.pdf",
+    width=6,height=4)
+ggplot(hw, aes(x=hwepg, y=CT))+
+  geom_point(aes(col=Species),alpha=0.65)+
+  geom_smooth(se=FALSE,col="black",data=hw[hw$hwepg>1,], method='loess')+
+  scale_y_log10(labels=yseq, breaks=yseq, limits=c(10^1.1, 10^1.7)) +
+  scale_x_log10(labels=xseq, breaks=xseq, limits=c(1, 10^5))+
+  xlab(expression(paste("log"[10], " Hookworm", " EPG")))+
+  ylab(expression(paste("log"[10], " Hookworm Ct value")))+
+  scale_color_manual(values=c(cb.blue,cb.dblue,cb.pink))+
+  theme_bw()+ 
+  ggtitle("Hookworm")+theme(plot.title = element_text(hjust = 0.5))+
+  theme(legend.position="bottom")
+dev.off()
+
 # tt plot
 tt <- qdata.conc %>% filter(positive.Tt==1 | ttkk==1) %>%
   # impute 1 for negative values of epg
@@ -156,11 +196,19 @@ tt.plot=ggplot(tt, aes(x=ttepg, y=CTmean.Tt))+
   scale_x_log10(labels=xseq, breaks=xseq, limits=c(1, 10^5))+
   xlab(expression(paste("log"[10], italic(" T. trichiura"), " EPG")))+
   ylab(expression(paste("log"[10], italic(" T. trichiura"), " Ct value")))+
-  theme_bw()+ggtitle(expression(paste(italic("T. trichiura"))))+theme(plot.title = element_text(hjust = 0.5))
+  theme_bw()+ggtitle(expression(paste(italic("T. trichiura"))))+
+  theme(plot.title = element_text(hjust = 0.5))
 
 cont.plot=grid.arrange(al.plot,hw.plot,tt.plot,nrow=1)
 
 pdf(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Results/wbb-qpcr-kk-scatter.pdf",
     width=15,height=4)
 grid.draw(cont.plot)
+dev.off()
+
+cont.plot.poster=grid.arrange(al.plot,hw.plot.poster,tt.plot,nrow=1)
+
+pdf(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Results/wbb-qpcr-kk-scatter-poster.pdf",
+    width=9,height=3)
+grid.draw(cont.plot.poster)
 dev.off()
