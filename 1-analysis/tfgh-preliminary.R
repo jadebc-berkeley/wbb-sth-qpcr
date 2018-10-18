@@ -106,7 +106,15 @@ qpcr.w <- qpcr.w %>%
   mutate(personid=ifelse(personid=="O","O1",personid)) %>%
   mutate(personid=ifelse(personid=="W","T2",personid)) 
 
-  
+
+#--------------------------------------
+# read in revised Ascaris qPCR data
+#--------------------------------------
+ascaris_new=read.csv("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/Revised ascaris assay/KK v New assay comparison_10-17-18.csv",stringsAsFactors=FALSE)
+colnames(ascaris_new) = c("sampleid", "alepg", "al", "X", "CTmean.Al2", "CTSD.Al2")
+ascaris_new$dataid=substr(ascaris_new$sampleid,1,5)
+ascaris_new$personid=paste(substr(ascaris_new$sampleid,7,7),1,sep="")
+ascaris_new = ascaris_new %>% select(-c(X, alepg, al, sampleid))
 
 #--------------------------------------
 # merge in kk data
@@ -124,7 +132,12 @@ colnames(kk)[which(colnames(kk)=="tt")]="ttkk"
 colnames(kk)[which(colnames(kk)=="al")]="alkk"
 colnames(kk)[which(colnames(kk)=="hw")]="hwkk"
 
+# merge kk and qPCR data
 data=full_join(kk,qpcr.w,by=c("dataid","personid"))
+
+# merge on re-run ascaris qPCR data
+data=full_join(data,ascaris_new,by=c("dataid","personid"))
+
 data$qpcr[is.na(data$qpcr)]="Not done"
 qdata=data[data$qpcr=="Done",]
 
