@@ -118,6 +118,7 @@ ascaris_new = ascaris_new %>% select(-c(X, alepg, al))
 
 # indicator for positive Al 
 ascaris_new <- ascaris_new %>%
+  mutate(CTmean.Al2 = ifelse(CTmean.Al2 == "DNA SAMPLE MISSING", NA,CTmean.Al2)) %>%
   mutate(CTmean.Al2 = as.numeric(CTmean.Al2)) %>%
   mutate(positive.Al2=ifelse(CTmean.Al2<40,1,0)) %>%
   mutate(positive.Al2=ifelse(is.na(CTmean.Al2),0,positive.Al2))
