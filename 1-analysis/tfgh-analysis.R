@@ -21,6 +21,7 @@ hw.kk=washb_mean(qdata$hwkk, id=qdata$clusterid, print = TRUE)
 tt.kk=washb_mean(qdata$ttkk, id=qdata$clusterid, print = TRUE)
 
 al.q=washb_mean(qdata$positive.Al, id=qdata$clusterid, print = TRUE)
+al2.q=washb_mean(qdata$positive.Al2, id=qdata$clusterid, print = TRUE)
 hw.q=washb_mean(qdata$positive.Hw, id=qdata$clusterid, print = TRUE)
 na.q=washb_mean(qdata$positive.Na, id=qdata$clusterid, print = TRUE)
 ac.q=washb_mean(qdata$positive.Ac, id=qdata$clusterid, print = TRUE)
@@ -34,15 +35,20 @@ ss.q=washb_mean(qdata$positive.Ss, id=qdata$clusterid, print = TRUE)
 qdata <- qdata %>%
   mutate(numsth.kk=alkk+hwkk+ttkk,
          numsth.q=positive.Al+positive.Ac+positive.Na+
+           positive.Ad+positive.Tt,
+         numsth.q2 = positive.Al2+positive.Ac+positive.Na+
            positive.Ad+positive.Tt) %>%
   mutate(multisth.kk=ifelse(numsth.kk>1,1,0),
-         multisth.q=ifelse(numsth.q>1,1,0))
+         multisth.q=ifelse(numsth.q>1,1,0),
+         multisth.q2=ifelse(numsth.q2>1,1,0))
 
 prop.table(table(qdata$numsth.kk))*100
 prop.table(table(qdata$numsth.q))*100
+prop.table(table(qdata$numsth.q2))*100
 
 prop.table(table(qdata$multisth.kk))*100
 prop.table(table(qdata$multisth.q))*100
+prop.table(table(qdata$multisth.q2))*100
 
 #--------------------------------------
 # mod/heavy intensity infection
@@ -75,6 +81,7 @@ ggplot(qdata.conc[!is.na(qdata.conc$almh.f),],aes(y=CTmean.Al,x=almh.f))+
   ylab(expression(paste("log"[10], italic(" A. lumbricoides"), " Ct value")))+
   theme_bw()
 dev.off()
+
 
 
 #--------------------------------------
