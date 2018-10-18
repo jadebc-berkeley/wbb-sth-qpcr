@@ -114,7 +114,12 @@ ascaris_new=read.csv("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/Revised ascaris assa
 colnames(ascaris_new) = c("sampleid", "alepg", "al", "X", "CTmean.Al2", "CTSD.Al2")
 ascaris_new$dataid=substr(ascaris_new$sampleid,1,5)
 ascaris_new$personid=paste(substr(ascaris_new$sampleid,7,7),1,sep="")
-ascaris_new = ascaris_new %>% select(-c(X, alepg, al, sampleid))
+ascaris_new = ascaris_new %>% select(-c(X, alepg, al))
+
+# indicator for positive Al 
+ascaris_new <- ascaris_new %>%
+  mutate(positive.Al=ifelse(CTmean.Al2<40,1,0)) %>%
+  mutate(positive.Al=ifelse(is.na(CTmean.Al2),0,positive.Al))
 
 #--------------------------------------
 # merge in kk data
