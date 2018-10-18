@@ -118,8 +118,8 @@ ascaris_new = ascaris_new %>% select(-c(X, alepg, al))
 
 # indicator for positive Al 
 ascaris_new <- ascaris_new %>%
-  mutate(positive.Al=ifelse(CTmean.Al2<40,1,0)) %>%
-  mutate(positive.Al=ifelse(is.na(CTmean.Al2),0,positive.Al))
+  mutate(positive.Al2=ifelse(CTmean.Al2<40,1,0)) %>%
+  mutate(positive.Al2=ifelse(is.na(CTmean.Al2),0,positive.Al2))
 
 #--------------------------------------
 # merge in kk data
