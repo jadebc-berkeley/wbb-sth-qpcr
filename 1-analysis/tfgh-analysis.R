@@ -93,6 +93,7 @@ qdata = qdata %>%
          ln.hwepg=log(hwepg+1),
          ln.ttepg=log(ttepg+1),
          ln.CT.al=log(CTmean.Al+1),
+         ln.CT.al2=log(CTmean.Al2+1),
          ln.CT.na=log(CTmean.Na+1),
          ln.CT.ac=log(CTmean.Ac+1),
          ln.CT.ad=log(CTmean.Ad+1),
@@ -103,6 +104,7 @@ hw.kk.gmn=washb_mean(qdata$ln.hwepg, id=qdata$clusterid, print = TRUE)
 tt.kk.gmn=washb_mean(qdata$ln.ttepg, id=qdata$clusterid, print = TRUE)
 
 al.q.gmn=washb_mean(qdata$ln.CT.al, id=qdata$clusterid, print = TRUE)
+al2.q.gmn=washb_mean(qdata$ln.CT.al2, id=qdata$clusterid, print = TRUE)
 na.q.gmn=washb_mean(qdata$ln.CT.na, id=qdata$clusterid, print = TRUE)
 ac.q.gmn=washb_mean(qdata$ln.CT.ac, id=qdata$clusterid, print = TRUE)
 ad.q.gmn=washb_mean(qdata$ln.CT.ad, id=qdata$clusterid, print = TRUE)
@@ -110,7 +112,7 @@ tt.q.gmn=washb_mean(qdata$ln.CT.tt, id=qdata$clusterid, print = TRUE)
 
 
 save(al.kk,hw.kk,tt.kk,
-     al.q,hw.q,na.q,ac.q,ad.q,tt.q,ss.q,
+     al.q,al2.q,hw.q,na.q,ac.q,ad.q,tt.q,ss.q,
      al.kk.gmn,hw.kk.gmn,tt.kk.gmn,
      al.q.gmn,na.q.gmn,ac.q.gmn,ad.q.gmn,tt.q.gmn,
      file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/prev_results.RData")
