@@ -124,8 +124,10 @@ al.plot=ggplot(al, aes(x=alepg, y=CTmean.Al))+
   geom_smooth(se=FALSE,col="black",data=al[al$alepg>1,], method='loess')+
   scale_y_log10(labels=yseq, breaks=yseq, limits=c(10^1.1, 10^1.7)) +
   scale_x_log10(labels=xseq, breaks=xseq, limits=c(1, 10^5))+
-  xlab(expression(paste("log"[10], italic(" A. lumbricoides"), " EPG")))+
-  ylab(expression(paste("log"[10], italic(" A. lumbricoides")," Ct value")))+
+  xlab("Kato-Katz eggs per gram")+
+  ylab("qPCR Ct value")+
+  # xlab(expression(paste("log"[10], italic(" A. lumbricoides"), " EPG")))+
+  # ylab(expression(paste("log"[10], italic(" A. lumbricoides")," Ct value")))+
   theme_bw()+ggtitle(expression(paste(italic("A. lumbricoides"))))+
   theme(plot.title = element_text(hjust = 0.5))
 
@@ -148,8 +150,10 @@ hw.plot=ggplot(hw, aes(x=hwepg, y=CT))+
   geom_smooth(se=FALSE,col="black",data=hw[hw$hwepg>1,], method='loess')+
   scale_y_log10(labels=yseq, breaks=yseq, limits=c(10^1.1, 10^1.7)) +
   scale_x_log10(labels=xseq, breaks=xseq, limits=c(1, 10^5))+
-  xlab(expression(paste("log"[10], " Hookworm", " EPG")))+
-  ylab(expression(paste("log"[10], " Hookworm Ct value")))+
+  xlab("Kato-Katz eggs per gram")+
+  ylab("qPCR Ct value")+
+  # xlab(expression(paste("log"[10], " Hookworm", " EPG")))+
+  # ylab(expression(paste("log"[10], " Hookworm Ct value")))+
   scale_color_manual(values=c(cb.blue,cb.dblue,cb.pink))+
   theme_bw()+ 
   theme(legend.position = c(0.77, 0.8), legend.background = element_rect(color = "black", 
@@ -162,8 +166,10 @@ hw.plot.poster=ggplot(hw, aes(x=hwepg, y=CT))+
   geom_smooth(se=FALSE,col="black",data=hw[hw$hwepg>1,], method='loess')+
   scale_y_log10(labels=yseq, breaks=yseq, limits=c(10^1.1, 10^1.7)) +
   scale_x_log10(labels=xseq, breaks=xseq, limits=c(1, 10^5))+
-  xlab(expression(paste("log"[10], " Hookworm", " EPG")))+
-  ylab(expression(paste("log"[10], " Hookworm Ct value")))+
+  xlab("Kato-Katz eggs per gram")+
+  ylab("qPCR Ct value")+
+  # xlab(expression(paste("log"[10], " Hookworm", " EPG")))+
+  # ylab(expression(paste("log"[10], " Hookworm Ct value")))+
   scale_color_manual(values=c(cb.blue,cb.dblue,cb.pink), guide=FALSE)+
   theme_bw()+ 
   ggtitle("Hookworm")+theme(plot.title = element_text(hjust = 0.5))
@@ -176,8 +182,10 @@ ggplot(hw, aes(x=hwepg, y=CT))+
   geom_smooth(se=FALSE,col="black",data=hw[hw$hwepg>1,], method='loess')+
   scale_y_log10(labels=yseq, breaks=yseq, limits=c(10^1.1, 10^1.7)) +
   scale_x_log10(labels=xseq, breaks=xseq, limits=c(1, 10^5))+
-  xlab(expression(paste("log"[10], " Hookworm", " EPG")))+
-  ylab(expression(paste("log"[10], " Hookworm Ct value")))+
+  xlab("Kato-Katz eggs per gram")+
+  ylab("qPCR Ct value")+
+  # xlab(expression(paste("log"[10], " Hookworm", " EPG")))+
+  # ylab(expression(paste("log"[10], " Hookworm Ct value")))+
   scale_color_manual(values=c(cb.blue,cb.dblue,cb.pink))+
   theme_bw()+ 
   ggtitle("Hookworm")+theme(plot.title = element_text(hjust = 0.5))+
@@ -194,8 +202,10 @@ tt.plot=ggplot(tt, aes(x=ttepg, y=CTmean.Tt))+
   geom_smooth(se=FALSE,col="black",data=tt[tt$ttepg>1,], method='loess')+
   scale_y_log10(labels=yseq, breaks=yseq, limits=c(10^1.1, 10^1.7)) +
   scale_x_log10(labels=xseq, breaks=xseq, limits=c(1, 10^5))+
-  xlab(expression(paste("log"[10], italic(" T. trichiura"), " EPG")))+
-  ylab(expression(paste("log"[10], italic(" T. trichiura"), " Ct value")))+
+  xlab("Kato-Katz eggs per gram")+
+  ylab("qPCR Ct value")+
+  # xlab(expression(paste("log"[10], italic(" T. trichiura"), " EPG")))+
+  # ylab(expression(paste("log"[10], italic(" T. trichiura"), " Ct value")))+
   theme_bw()+ggtitle(expression(paste(italic("T. trichiura"))))+
   theme(plot.title = element_text(hjust = 0.5))
 
