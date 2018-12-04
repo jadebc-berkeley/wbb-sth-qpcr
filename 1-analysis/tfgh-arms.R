@@ -25,9 +25,10 @@ d$allsth=NULL
 
 # subset to columns needed for unadjusted PR
 df = d %>% 
-  select(block,clusterid,tr,positive.Al,positive.Na,positive.Ac,
+  select(block,clusterid,tr,positive.Al,positive.Al2,positive.Na,positive.Ac,
          positive.Ad,positive.Hw,positive.Tt) %>%
-  rename(al=positive.Al,na=positive.Na,ac=positive.Ac,
+  rename(al=positive.Al,al2=positive.Al2,
+         na=positive.Na,ac=positive.Ac,
          ad=positive.Ad,hw=positive.Hw,tt=positive.Tt) %>%
   mutate(block=as.factor(block),
          sth=ifelse(al==1|na==1|ac==1|ad==1|hw==1|tt==1,1,0)) 
@@ -58,6 +59,8 @@ psth_n_prev_j=data.frame(cbind(n.al,N.al,n.hw,N.hw,n.na,N.na,
 #----------------------------------------------
 al_prev=t(sapply(levels(df$tr), function(x) washb_mean(
   Y=df$al[df$tr==x],id=df$clusterid[df$tr==x],print=FALSE)))
+al_prev2=t(sapply(levels(df$tr), function(x) washb_mean(
+  Y=df$al2[df$tr==x],id=df$clusterid[df$tr==x],print=FALSE)))
 hw_prev=t(sapply(levels(df$tr), function(x) washb_mean(
   Y=df$hw[df$tr==x],id=df$clusterid[df$tr==x],print=FALSE)))
 na_prev=t(sapply(levels(df$tr), function(x) washb_mean(
@@ -98,6 +101,9 @@ trlist=c("Water","Sanitation", "WSH")
 # Poisson regression for RRs
 al_rr_h1_unadj_j=t(apply(matrix(trlist), 1,function(x) washb_mh(Y=df$al,tr=df$tr,strat=df$block,
      contrast=c("Control",x),measure="RR")))
+
+al2_rr_h1_unadj_j=t(apply(matrix(trlist), 1,function(x) washb_mh(Y=df$al2,tr=df$tr,strat=df$block,
+      contrast=c("Control",x),measure="RR")))
 
 hw_rr_h1_unadj_j=t(apply(matrix(trlist),1 ,function(x) washb_mh(Y=df$hw,tr=df$tr,strat=df$block,
      contrast=c("Control",x),measure="RR")))
