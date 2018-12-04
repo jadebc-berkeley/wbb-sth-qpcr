@@ -24,7 +24,7 @@ prev.kk = prev.kk %>%
   mutate(prevkk=ptestci.format(Mean,lb,ub,decimals=1,scale=100)) %>%
   select(org,Nkk=N,prevkk) 
 
-prev.q=as.data.frame(rbind(al.q,hw.q,na.q,ac.q,ad.q,tt.q,ss.q))
+prev.q=as.data.frame(rbind(al2.q,hw.q,na.q,ac.q,ad.q,tt.q,ss.q))
 prev.q$org=c("Ascaris lumbricoides","Hookworm",
            "Necator americanus","Ancylostoma ceylanicum","Ancylostoma duodenale",
            "Trichuris trichiura","Strongyloides stercoralis")
@@ -61,7 +61,7 @@ medrange=function(y){
 }
 
 CT.summary <- qdata %>%
-  select(CTmean.Al, CTmean.Ac, CTmean.Ad, CTmean.Na,
+  select(CTmean.Al2, CTmean.Ac, CTmean.Ad, CTmean.Na,
          CTmean.Tt,CTmean.Ss) %>%
   summarise_all(funs(medrange)) 
 
