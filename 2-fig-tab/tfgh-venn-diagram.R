@@ -8,7 +8,6 @@ library(VennDiagram)
 library(venneuler)
 
 load("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/qdata.RData")
-load("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/concentration.RData")
 
 # ---------------------------------------
 # kato katz plot
@@ -65,90 +64,83 @@ dev.off()
 # ---------------------------------------
 # qpcr plot
 # ---------------------------------------
-# CHECK THIS TO QDATA INSTEAD OF QDATA.CONC
-qpcr = qdata %>%
-  mutate(positive.Al2=ifelse(!is.na(copies.Al2),1,0),
-         positive.Tt=ifelse(!is.na(copies.Tt),1,0),
-         positive.Ss=ifelse(!is.na(copies.Ss),1,0)) %>%
-  mutate(positive.Hw=ifelse(positive.Na==1 |positive.Ac==1 | positive.Ad==1,1,0)) %>%
-  select(c("positive.Al","positive.Tt","positive.Hw")) %>%
-  filter(!is.na(positive.Hw))
-
 # counts
-altot=nrow(qpcr[qpcr$positive.Al==1 & qpcr$positive.Hw==0 & qpcr$positive.Tt==0,])
-hwtot=nrow(qpcr[qpcr$positive.Al==0 & qpcr$positive.Hw==1 & qpcr$positive.Tt==0,])
-tttot=nrow(qpcr[qpcr$positive.Al==0 & qpcr$positive.Hw==0 & qpcr$positive.Tt==1,])
+altot=nrow(qdata[qdata$positive.Al2==1 & qdata$positive.Hw==0 & qdata$positive.Tt==0,])
+hwtot=nrow(qdata[qdata$positive.Al==0 & qdata$positive.Hw==1 & qdata$positive.Tt==0,])
+tttot=nrow(qdata[qdata$positive.Al==0 & qdata$positive.Hw==0 & qdata$positive.Tt==1,])
 
 # intersections
-alhw=nrow(qpcr[qpcr$positive.Al==1 & qpcr$positive.Hw==1 & qpcr$positive.Tt==0,])
-altt=nrow(qpcr[qpcr$positive.Al==1 & qpcr$positive.Hw==0 & qpcr$positive.Tt==1,])
-hwtt=nrow(qpcr[qpcr$positive.Al==0 & qpcr$positive.Hw==1 & qpcr$positive.Tt==1,])
+alhw=nrow(qdata[qdata$positive.Al==1 & qdata$positive.Hw==1 & qdata$positive.Tt==0,])
+altt=nrow(qdata[qdata$positive.Al==1 & qdata$positive.Hw==0 & qdata$positive.Tt==1,])
+hwtt=nrow(qdata[qdata$positive.Al==0 & qdata$positive.Hw==1 & qdata$positive.Tt==1,])
 
-alhwtt=nrow(qpcr[qpcr$positive.Al==1 & qpcr$positive.Hw==1 & qpcr$positive.Tt==1,])
+alhwtt=nrow(qdata[qdata$positive.Al2==1 & qdata$positive.Hw==1 & qdata$positive.Tt==1,])
 
-dna <- venneuler(qpcr)
+qpcr <- venneuler(c(Ascaris=altot, Hookworm=hwtot, Trichuris=tttot,
+                 "Ascaris&Hookworm"=alhw,"Hookworm&Trichuris"=hwtt,
+                 "Trichuris&Ascaris"=altt,"Ascaris&Hookworm&Trichuris"=alhwtt))
+qpcr$labels <- c("","","")
 
-dna$labels <- c("","","")
-
-centers=dna$centers
+centers=qpcr$centers
 
 pdf(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Results/wbb-venn-qpcr.pdf",
     width=6,height=6)
-  plot(dna, col=c(cb.lightorange, cb.blue,cb.green))
+  plot(qpcr, col=c(cb.lightorange, cb.blue,cb.green))
   # titles
-  text(x=centers[1,1]+0.17,y=centers[1,2]+0.25, labels=expression(paste(italic("A. lumbricoides"))))
-  text(x=centers[2,1]-0.23,y=centers[2,2]+0.26, labels="Hookworm")
-  text(x=centers[3,1]-0.19,y=centers[3,2]-0.22, labels=expression(paste(italic("T. trichiura"))))
+  text(x=centers[1,1]+0.15,y=centers[1,2]+0.25, labels=expression(paste(italic("A. lumbricoides"))))
+  text(x=centers[2,1]-0.20,y=centers[2,2]+0.25, labels="Hookworm")
+  text(x=centers[3,1]-0.19,y=centers[3,2]-0.19, labels=expression(paste(italic("T. trichiura"))))
   
   # non intersections
-  text(x=centers[1,1]+0.13,y=centers[1,2]-0.03, labels=paste(altot))
-  text(x=centers[2,1]-0.07,y=centers[2,2]+0.13, labels=paste(hwtot))
-  text(x=centers[3,1]-0.03,y=centers[3,2]-0.13, labels=paste(tttot))
+  text(x=centers[1,1]+0.10,y=centers[1,2]-0.02, labels=paste(altot))
+  text(x=centers[2,1]-0.01,y=centers[2,2]+0.05, labels=paste(hwtot))
+  text(x=centers[3,1]-0.02,y=centers[3,2]-0.09, labels=paste(tttot))
+  
   # intersections
-  text(x=centers[1,1],y=centers[1,2]-0.15, labels=paste(altt))
-  text(x=centers[1,1]-0.1,y=centers[1,2]-0.04, labels=paste(alhwtt))
-  text(x=centers[3,1]-0.12,y=centers[3,2]+0.04, labels=paste(hwtt))
-  text(x=centers[1,1]-0.02,y=centers[1,2]+0.13, labels=paste(alhw))
+  text(x=centers[1,1]-0.10,y=centers[1,2]-0.12, labels=paste(altt))
+  text(x=centers[1,1]-0.16,y=centers[1,2]-0.02, labels=paste(alhwtt))
+  text(x=centers[3,1]-0.07,y=centers[3,2]+0.07, labels=paste(hwtt))
+  text(x=centers[1,1]-0.1,y=centers[1,2]+0.10, labels=paste(alhw))
 dev.off()
 
 
 # ---------------------------------------
 # qpcr hw plot
 # ---------------------------------------
-qpcr.hw = qdata.conc %>%
-  mutate(positive.Ac=ifelse(!is.na(copies.Ac),1,0),
-         positive.Na=ifelse(!is.na(copies.Na),1,0),
-         positive.Ad=ifelse(!is.na(copies.Ad),1,0)) %>%
-  select(c("positive.Ac","positive.Na","positive.Ad")) 
-
 # counts
-actot=nrow(qpcr.hw[qpcr.hw$positive.Ac==1 & qpcr.hw$positive.Na==0 & qpcr.hw$positive.Ad==0,])
-natot=nrow(qpcr.hw[qpcr.hw$positive.Ac==0 & qpcr.hw$positive.Na==1 & qpcr.hw$positive.Ad==0,])
-adtot=nrow(qpcr.hw[qpcr.hw$positive.Ac==0 & qpcr.hw$positive.Na==0 & qpcr.hw$positive.Ad==1,])
+actot=nrow(qdata[qdata$positive.Ac==1 & qdata$positive.Na==0 & qdata$positive.Ad==0,])
+natot=nrow(qdata[qdata$positive.Ac==0 & qdata$positive.Na==1 & qdata$positive.Ad==0,])
+adtot=nrow(qdata[qdata$positive.Ac==0 & qdata$positive.Na==0 & qdata$positive.Ad==1,])
 
 # intersections
-acna=nrow(qpcr.hw[qpcr.hw$positive.Ac==1 & qpcr.hw$positive.Na==1 & qpcr.hw$positive.Ad==0,])
-acad=nrow(qpcr.hw[qpcr.hw$positive.Ac==1 & qpcr.hw$positive.Na==0 & qpcr.hw$positive.Ad==1,])
-naad=nrow(qpcr.hw[qpcr.hw$positive.Ac==0 & qpcr.hw$positive.Na==1 & qpcr.hw$positive.Ad==1,])
-acnaad=nrow(qpcr.hw[qpcr.hw$positive.Ac==1 & qpcr.hw$positive.Na==1 & qpcr.hw$positive.Ad==1,])
+acna=nrow(qdata[qdata$positive.Ac==1 & qdata$positive.Na==1 & qdata$positive.Ad==0,])
+acad=nrow(qdata[qdata$positive.Ac==1 & qdata$positive.Na==0 & qdata$positive.Ad==1,])
+naad=nrow(qdata[qdata$positive.Ac==0 & qdata$positive.Na==1 & qdata$positive.Ad==1,])
+acnaad=nrow(qdata[qdata$positive.Ac==1 & qdata$positive.Na==1 & qdata$positive.Ad==1,])
 
-dna.hw <- venneuler(qpcr.hw)
+qpcr.hw <- venneuler(c("A. ceylanicum"=actot, 
+                    "N. americanus"=natot, 
+                    "A. duodenale"=adtot,
+                    "A. ceylanicum&N. americanus"=acna,
+                    "A. ceylanicum&A. duodenale"=acad,
+                    "N. americanus&A. duodenale"=naad,
+                    "A. ceylanicum&N. americanus&A. duodenale"=acnaad))
 
-dna.hw$labels <- c("","","")
+qpcr.hw$labels <- c("","","")
 
-centers=dna.hw$centers
+centers=qpcr.hw$centers
 
 pdf(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Results/wbb-venn-qpcr-hw.pdf",
     width=6,height=6)
-plot(dna.hw, col=c(cb.lightorange, cb.blue, purple,cb.green))
+plot(qpcr.hw, col=c(cb.lightorange, cb.blue, purple,cb.green))
 # titles
-text(x=centers[1,1],y=centers[1,2]+0.165, labels=expression(paste(italic("A. ceylanicum"))))
+text(x=centers[1,1],y=centers[1,2]+0.15, labels=expression(paste(italic("A. ceylanicum"))))
 text(x=centers[2,1],y=centers[2,2]-0.32, labels=expression(paste(italic("N. americanus"))))
 text(x=centers[3,1]-0.08,y=centers[3,2]+0.04, labels=expression(paste(italic("A. duodenale"))))
 # non intersections
 text(x=centers[1,1],y=centers[1,2]+0.03, labels=paste(actot))
 text(x=centers[2,1],y=centers[2,2]-0.02, labels=paste(natot))
 # intersections
-text(x=centers[1,1],y=centers[1,2]-0.08, labels=paste(acna))
-text(x=centers[1,1]-0.25,y=centers[1,2]-0.16, labels=paste(naad),cex=0.75)
+text(x=centers[1,1]+0.01,y=centers[1,2]-0.08, labels=paste(acna))
+text(x=centers[1,1]-0.2,y=centers[1,2]-0.2, labels=paste(naad),cex=0.75)
 dev.off()
