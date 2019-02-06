@@ -10,7 +10,6 @@ library(ggplot2)
 library(gridExtra)
 load("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/qdata.RData")
 load("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/prev_results.RData")
-load("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/concentration.RData")
 
 source("~/Documents/CRG/wash-benefits/bangladesh/src/wbb-sth-qpcr/2-fig-tab/0-base-table-functions.R")
 
@@ -32,6 +31,7 @@ colnames(prev.q)[5:6]=c("lb","ub")
 prev.q = prev.q %>%
   mutate(prevq=ptestci.format(Mean,lb,ub,decimals=1,scale=100)) %>%
   select(org,Nq=N,prevq)
+
 # -------------------------------------
 # KK EPG
 # -------------------------------------
@@ -71,36 +71,6 @@ org=c("Ascaris lumbricoides","Necator americanus","Ancylostoma ceylanicum",
       "Ancylostoma duodenale","Trichuris trichiura","Strongyloides stercoralis")
 ct=data.frame(org=org,ct=CT.summary)
 ct$org=as.character(ct$org)
-
-# -------------------------------------
-# DNA concentration - not currently reporting
-# -------------------------------------
-# function to make pretty median (range)
-medrange=function(y){
-  min=quantile(y,prob=c(0))
-  med=quantile(y,prob=c(0.5))
-  max=quantile(y,prob=c(1))
-  
-  min=formatC(min, format = "e", digits = 2)
-  # med=formatC(med, format = "e", digits = 2)
-  med=sprintf("%0.1f",med)
-  # max=sprintf("%0.1f",as.numeric(max))
-  max=formatC(max, format = "e", digits = 2)
-  return(paste0(med, " (",min, ", ",max,")"))
-}
-al.dna=medrange(al$copies)
-na.dna=medrange(na$copies)
-ac.dna=medrange(ac$copies)
-ad.dna=medrange(ad$copies)
-tt.dna=medrange(tt$copies)
-ss.dna=medrange(ss$copies)
-
-dna=as.data.frame(rbind(al.dna,na.dna,ac.dna,ad.dna,tt.dna,ss.dna))
-org=c("Ascaris lumbricoides","Necator americanus","Ancylostoma ceylanicum",
-      "Ancylostoma duodenale","Trichuris trichiura","Strongyloides stercoralis")
-dna=cbind(org,dna)
-dna$org=as.character(dna$org)
-colnames(dna)[2]="conc"
 
 tab=full_join(prev.kk,prev.q,by="org") 
 tab=full_join(tab,epg,by="org")
