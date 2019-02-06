@@ -1,6 +1,6 @@
 #######################################
 # WASH Benefits Bangladesh STH KK qPCR validation
-# Clean data
+# Clean and merge qPCR and KK data
 #######################################
 rm(list=ls())
 library(reshape2)
@@ -166,63 +166,19 @@ qdata = qdata %>%
   mutate(gold.alpos=ifelse(alkk==1 | positive.Al==1,1,0)) %>%
   mutate(gold.sthpos=ifelse(sth==1 | positive.Al==1| positive.Hw==1 | positive.Tt==1,1,0))
 
-# tabulate hookworm
-qdata %>% select(positive.Hw,hwkk,gold.hwpos) %>%
-  summarise(qPCR=mean(positive.Hw),kk=mean(hwkk,na.rm=TRUE),gold=mean(gold.hwpos,na.rm=TRUE))
-
-# tabulate trichuris
-qdata %>% select(positive.Tt,ttkk,gold.ttpos) %>%
-  summarise(qPCR=mean(positive.Tt),kk=mean(ttkk,na.rm=TRUE),gold=mean(gold.ttpos,na.rm=TRUE))
-
-# tabulate ascaris
-qdata %>% select(positive.Al,alkk,gold.alpos) %>%
-  summarise(qPCR=mean(positive.Al),kk=mean(alkk,na.rm=TRUE),gold=mean(gold.alpos,na.rm=TRUE))
+# -------------------------------------------
+# create indicators for moderate/heavy kk infection
+# -------------------------------------------
+qdata <- qdata %>%
+  mutate(almh=ifelse(alepg>=5000,1,0),
+         hwmh=ifelse(hwepg>=2000,1,0),
+         ttmh=ifelse(ttepg>=1000,1,0),
+         almh.f=as.factor(ifelse(almh==1,"Moderate-heavy intensity\ninfection","Low intensity\ninfection")),
+         hwmh.f=as.factor(ifelse(hwmh==1,"Moderate-heavy intensity","Low intensity")),
+         ttmh.f=as.factor(ifelse(ttmh==1,"Moderate-heavy intensity","Low intensity")))
 
 #--------------------------------------
 # save data
 #--------------------------------------
 save(qdata,file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/qdata.RData")
 write.csv(qdata,file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/qdata.csv",row.names=FALSE)
-
-#--------------------------------------
-# ids with positive ascaris kk and 
-# all negative for qPCR
-#--------------------------------------
-qdata$keep=ifelse(qdata$alepg>0 & qdata$positive.Ad==0 &
-  qdata$positive.Na==0 & qdata$positive.Tt==0 & 
-  qdata$positive.Al==0 & qdata$positive.Ac==0 &
-  qdata$hwepg==0 & qdata$ttepg==0,1,0)
-
-keep=qdata[qdata$keep==1,]
-keep=keep[!is.na(keep$alint),]
-keep=keep[rev(order(keep$alepg)),]
-keep[1:6,c("dataid","personid")]
-keep[7:16,c("dataid","personid")]
-keep[17:29,c("dataid","personid")]
-
-# requested by Nils on 2/22/18
-# kk and qpcr positive for tt and nothing else
-qdata$keep2=ifelse(qdata$ttkk==1 & qdata$hwkk==0 & qdata$alkk==0 & 
-      qdata$positive.Tt==1 & qdata$positive.Na!=1 & qdata$positive.Ad!=1 & 
-      qdata$positive.Ss!=1 & qdata$positive.Al!=1 & qdata$positive.Ac!=1,1,0)
-as.matrix(paste0(qdata$dataid[qdata$keep2==1],"E",qdata$personid[qdata$keep2==1],"S1"))
-
-# kk and qpcr positive for Na and nothing else
-qdata$keep3=ifelse(qdata$ttkk==0 & qdata$hwkk==1 & qdata$alkk==0 & 
-       qdata$positive.Tt!=1 & qdata$positive.Na==1 & qdata$positive.Ad!=1 & 
-       qdata$positive.Ss!=1 & qdata$positive.Al!=1 & qdata$positive.Ac!=1,1,0)
-as.matrix(paste0(qdata$dataid[qdata$keep3==1],"E",qdata$personid[qdata$keep3==1],"S1"))
-
-# kk and qpcr positive for Al and nothing else
-qdata$keep4=ifelse(qdata$ttkk==0 & qdata$hwkk==0 & qdata$alkk==1 & 
-       qdata$positive.Tt!=1 & qdata$positive.Na!=1 & qdata$positive.Ad!=1 & 
-       qdata$positive.Ss!=1 & qdata$positive.Al==1 & qdata$positive.Ac!=1,1,0)
-as.matrix(paste0(qdata$dataid[qdata$keep4==1],"E",qdata$personid[qdata$keep4==1],"S1"))
-
-# kk and qpcr negative for all
-qdata$keep5=ifelse(qdata$ttkk==0 & qdata$hwkk==0 & qdata$alkk==0 & 
-      qdata$positive.Tt!=1 & qdata$positive.Na!=1 & qdata$positive.Ad!=1 & 
-      qdata$positive.Ss!=1 & qdata$positive.Al!=1 & qdata$positive.Ac!=1,1,0)
-as.matrix(paste0(qdata$dataid[qdata$keep5==1],"E",qdata$personid[qdata$keep5==1],"S1")[1:15])
-
-
