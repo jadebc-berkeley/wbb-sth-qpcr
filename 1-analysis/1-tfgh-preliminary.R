@@ -123,6 +123,17 @@ ascaris_new <- ascaris_new %>%
   mutate(positive.Al2=ifelse(CTmean.Al2<40,1,0)) %>%
   mutate(positive.Al2=ifelse(is.na(CTmean.Al2),0,positive.Al2))
 
+# manual correction of id that doesn't match list sent to Smith
+ascaris_new = ascaris_new %>%
+  ungroup() %>%
+    mutate(sampleid=ifelse(sampleid=="18705EOS1","18705ECS1",sampleid)) %>%
+    mutate(personid=substr(sampleid,7,7),
+           dataid=substr(sampleid,1,5)) %>%
+    mutate(personid=ifelse(personid=="T","T1",personid)) %>%
+    mutate(personid=ifelse(personid=="C","C1",personid)) %>%
+    mutate(personid=ifelse(personid=="O","O1",personid)) %>%
+    mutate(personid=ifelse(personid=="W","T2",personid)) 
+
 #--------------------------------------
 # merge in kk data
 #--------------------------------------
@@ -143,17 +154,12 @@ colnames(kk)[which(colnames(kk)=="hw")]="hwkk"
 data=full_join(kk,qpcr.w,by=c("dataid","personid"))
 
 # merge on re-run ascaris qPCR data
-data=full_join(data,ascaris_new,by=c("dataid","personid"))
+data=full_join(data,ascaris_new,by=c("dataid","personid","sampleid"))
 
 data$qpcr[is.na(data$qpcr)]="Not done"
+
+# subset to rows in which qpcr was done
 qdata=data[data$qpcr=="Done",]
-
-# missing characteristics for the 11 kids without kk that got qPCR
-missing=qdata[is.na(qdata$alkk),c("dataid","personid")]
-missing$dataperson=paste0(missing$dataid,missing$personid)
-
-# clean up missing cluster ids
-qdata$clusterid[is.na(qdata$clusterid)]=substr(qdata$dataid[is.na(qdata$clusterid)],1,3)
 
 # -------------------------------------------
 # create gold standard by pooling together 
