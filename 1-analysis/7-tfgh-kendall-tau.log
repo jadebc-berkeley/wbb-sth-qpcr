@@ -1,9 +1,9 @@
---------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------
       name:  <unnamed>
-       log:  /Users/jadederong/Documents/CRG/wash-benefits/bangladesh/src/wbb-sth-qpcr/1-analysis/tfgh-k
-> endall-tau.log
+       log:  /Users/jadederong/Documents/CRG/wash-benefits/bangladesh/src/wbb-sth-qpcr/1-analysis/7-tfgh-
+> kendall-tau.log
   log type:  text
- opened on:  19 Jul 2018, 08:11:42
+ opened on:   6 Feb 2019, 14:19:30
 
 . **************************************
 . * WASH Benefits Bangladesh STH KK qPCR validation
@@ -12,10 +12,10 @@
 . **************************************
 . 
 . insheet using "~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/qdata.csv", clear
-(51 vars, 2,800 obs)
+(60 vars, 2,800 obs)
 
 . 
-. foreach var of varlist ctmeanac ctmeanad ctmeanal ctmeanna ctmeantt{
+. foreach var of varlist ctmeanac ctmeanad ctmeanal2 ctmeanna ctmeantt{
   2.         replace `var' = "0" if `var'=="NA"
   3.         destring `var', replace
   4. }
@@ -23,8 +23,8 @@
 ctmeanac: all characters numeric; replaced as double
 (2,799 real changes made)
 ctmeanad: all characters numeric; replaced as double
-(2,445 real changes made)
-ctmeanal: all characters numeric; replaced as double
+(2,157 real changes made)
+ctmeanal2: all characters numeric; replaced as double
 (2,285 real changes made)
 ctmeanna: all characters numeric; replaced as double
 (2,457 real changes made)
@@ -32,15 +32,15 @@ ctmeantt: all characters numeric; replaced as double
 
 . 
 . 
-. ktau alepg ctmeanal, stats(taub)
+. ktau alepg ctmeanal2, stats(taub)
 
   Number of obs =    2800
-Kendall's tau-a =       0.0953
-Kendall's tau-b =       0.2547
-Kendall's score =  373591
-    SE of score =   24711.260   (corrected for ties)
+Kendall's tau-a =       0.0647
+Kendall's tau-b =       0.1320
+Kendall's score =  253382
+    SE of score =   31495.203   (corrected for ties)
 
-Test of Ho: alepg and ctmeanal are independent
+Test of Ho: alepg and ctmeanal2 are independent
      Prob > |z| =       0.0000  (continuity corrected)
 
 . ktau hwepg ctmeanna, stats(taub)
@@ -78,7 +78,7 @@ Test of Ho: ttepg and ctmeantt are independent
 
 . 
 . 
-. bootstrap r(tau_b), reps(1000) seed(1234) cluster(block): ktau alepg ctmeanal, stats(taub)
+. bootstrap r(tau_b), reps(1000) seed(1234) cluster(block): ktau alepg ctmeanal2, stats(taub)
 (running ktau on estimation sample)
 
 Warning:  Because ktau is not an estimation command or does not set e(sample), bootstrap has no way to
@@ -86,8 +86,8 @@ Warning:  Because ktau is not an estimation command or does not set e(sample), b
           observations are used.  This means that no observations will be excluded from the resampling
           because of missing values or other reasons.
 
-          If the assumption is not true, press Break, save the data, and drop the observations that
-          are to be excluded.  Be sure that the dataset in memory contains only the relevant data.
+          If the assumption is not true, press Break, save the data, and drop the observations that are
+          to be excluded.  Be sure that the dataset in memory contains only the relevant data.
 
 Bootstrap replications (1000)
 ----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
@@ -115,7 +115,7 @@ Bootstrap replications (1000)
 Bootstrap results                               Number of obs     =      2,800
                                                 Replications      =      1,000
 
-      command:  ktau alepg ctmeanal, stats(taub)
+      command:  ktau alepg ctmeanal2, stats(taub)
         _bs_1:  r(tau_b)
 
                                   (Replications based on 68 clusters in block)
@@ -123,7 +123,7 @@ Bootstrap results                               Number of obs     =      2,800
              |   Observed   Bootstrap                         Normal-based
              |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
-       _bs_1 |    .254714   .0238703    10.67   0.000      .207929    .3014989
+       _bs_1 |   .1320404   .0150501     8.77   0.000     .1025428     .161538
 ------------------------------------------------------------------------------
 
 . bootstrap r(tau_b), reps(1000) seed(1234) cluster(block): ktau hwepg ctmeanna, stats(taub)
@@ -134,8 +134,8 @@ Warning:  Because ktau is not an estimation command or does not set e(sample), b
           observations are used.  This means that no observations will be excluded from the resampling
           because of missing values or other reasons.
 
-          If the assumption is not true, press Break, save the data, and drop the observations that
-          are to be excluded.  Be sure that the dataset in memory contains only the relevant data.
+          If the assumption is not true, press Break, save the data, and drop the observations that are
+          to be excluded.  Be sure that the dataset in memory contains only the relevant data.
 
 Bootstrap replications (1000)
 ----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
@@ -182,8 +182,8 @@ Warning:  Because ktau is not an estimation command or does not set e(sample), b
           observations are used.  This means that no observations will be excluded from the resampling
           because of missing values or other reasons.
 
-          If the assumption is not true, press Break, save the data, and drop the observations that
-          are to be excluded.  Be sure that the dataset in memory contains only the relevant data.
+          If the assumption is not true, press Break, save the data, and drop the observations that are
+          to be excluded.  Be sure that the dataset in memory contains only the relevant data.
 
 Bootstrap replications (1000)
 ----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
@@ -230,8 +230,8 @@ Warning:  Because ktau is not an estimation command or does not set e(sample), b
           observations are used.  This means that no observations will be excluded from the resampling
           because of missing values or other reasons.
 
-          If the assumption is not true, press Break, save the data, and drop the observations that
-          are to be excluded.  Be sure that the dataset in memory contains only the relevant data.
+          If the assumption is not true, press Break, save the data, and drop the observations that are
+          to be excluded.  Be sure that the dataset in memory contains only the relevant data.
 
 Bootstrap replications (1000)
 ----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
@@ -273,8 +273,8 @@ Bootstrap results                               Number of obs     =      2,800
 . 
 . log close
       name:  <unnamed>
-       log:  /Users/jadederong/Documents/CRG/wash-benefits/bangladesh/src/wbb-sth-qpcr/1-analysis/tfgh-k
-> endall-tau.log
+       log:  /Users/jadederong/Documents/CRG/wash-benefits/bangladesh/src/wbb-sth-qpcr/1-analysis/7-tfgh-
+> kendall-tau.log
   log type:  text
- closed on:  19 Jul 2018, 08:23:36
---------------------------------------------------------------------------------------------------------
+ closed on:   6 Feb 2019, 14:25:47
+---------------------------------------------------------------------------------------------------------
