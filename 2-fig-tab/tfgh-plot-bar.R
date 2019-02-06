@@ -74,7 +74,7 @@ gray="#919191"
 
 mycol=c(cb.lightorange,purple,cb.blue,cb.pink,cb.dblue,cb.green)
 
-pdf(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Results/wbb-qpcr-kk-bargraph-newal.pdf",
+pdf(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Results/wbb-qpcr-kk-bargraph.pdf",
     width=10,height=4)
 ggplot(bar.data,aes(x=test,y=per.pos,fill=org),col="black")+
   geom_bar(aes(fill=org),stat="identity",colour="black",
@@ -85,7 +85,7 @@ ggplot(bar.data,aes(x=test,y=per.pos,fill=org),col="black")+
   theme_bw()+ylab("Prevalence")+xlab("Diagnostic method")
 dev.off()
 
-pdf(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Results/wbb-qpcr-kk-bargraph-poster-newal.pdf",
+pdf(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Results/wbb-qpcr-kk-bargraph-poster.pdf",
     width=4,height=3.5)
 ggplot(bar.data,aes(x=test,y=per.pos,fill=org),col="black")+
   geom_bar(aes(fill=org),stat="identity",colour="black",

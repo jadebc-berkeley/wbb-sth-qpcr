@@ -58,12 +58,10 @@ hw <- qdata %>% filter(positive.Hw==1 | hwkk==1) %>%
 hw.plot=ggplot(hw, aes(x=hwepg, y=CT))+
   geom_point(aes(col=Species),alpha=0.65)+
   geom_smooth(se=FALSE,col="black",data=hw[hw$hwepg>1,], method='loess')+
-  scale_y_log10(labels=yseq, breaks=yseq, limits=c(10^0.5, 10^1.7)) +
+  scale_y_log10(labels=yseq, breaks=yseq, limits=c(10^1.1, 10^1.7)) +
   scale_x_log10(labels=xseq, breaks=xseq, limits=c(1, 10^5))+
   xlab("Kato-Katz eggs per gram")+
   ylab("qPCR Ct value")+
-  # xlab(expression(paste("log"[10], " Hookworm", " EPG")))+
-  # ylab(expression(paste("log"[10], " Hookworm Ct value")))+
   scale_color_manual(values=c(cb.blue,cb.dblue,cb.pink))+
   theme_bw()+ 
   theme(legend.position = c(0.77, 0.8), legend.background = element_rect(color = "black", 
@@ -78,8 +76,6 @@ hw.plot.poster=ggplot(hw, aes(x=hwepg, y=CT))+
   scale_x_log10(labels=xseq, breaks=xseq, limits=c(1, 10^5))+
   xlab("Kato-Katz eggs per gram")+
   ylab("qPCR Ct value")+
-  # xlab(expression(paste("log"[10], " Hookworm", " EPG")))+
-  # ylab(expression(paste("log"[10], " Hookworm Ct value")))+
   scale_color_manual(values=c(cb.blue,cb.dblue,cb.pink), guide=FALSE)+
   theme_bw()+ 
   ggtitle("Hookworm")+theme(plot.title = element_text(hjust = 0.5))
@@ -93,25 +89,23 @@ tt <- qdata %>% filter(positive.Tt==1 | ttkk==1) %>%
 tt.plot=ggplot(tt, aes(x=ttepg, y=CTmean.Tt))+
   geom_point(alpha=0.65,col=cb.green)+
   geom_smooth(se=FALSE,col="black",data=tt[tt$ttepg>1,], method='loess')+
-  scale_y_log10(labels=yseq, breaks=yseq, limits=c(10^1.1, 10^1.7)) +
+  scale_y_log10(labels=yseq, breaks=yseq, limits=c(10^1.2, 10^1.7)) +
   scale_x_log10(labels=xseq, breaks=xseq, limits=c(1, 10^5))+
   xlab("Kato-Katz eggs per gram")+
   ylab("qPCR Ct value")+
-  # xlab(expression(paste("log"[10], italic(" T. trichiura"), " EPG")))+
-  # ylab(expression(paste("log"[10], italic(" T. trichiura"), " Ct value")))+
   theme_bw()+ggtitle(expression(paste(italic("T. trichiura"))))+
   theme(plot.title = element_text(hjust = 0.5))
 
 cont.plot=grid.arrange(al.plot,hw.plot,tt.plot,nrow=1)
 
-pdf(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Results/wbb-qpcr-kk-scatter-newal.pdf",
+pdf(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Results/wbb-qpcr-kk-scatter.pdf",
     width=15,height=4)
 grid.draw(cont.plot)
 dev.off()
 
 cont.plot.poster=grid.arrange(al.plot,hw.plot.poster,tt.plot,nrow=1)
 
-pdf(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Results/wbb-qpcr-kk-scatter-poster-newal.pdf",
+pdf(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Results/wbb-qpcr-kk-scatter-poster.pdf",
     width=11,height=3)
 grid.draw(cont.plot.poster)
 dev.off()
