@@ -65,8 +65,9 @@ dev.off()
 # ---------------------------------------
 # qpcr plot
 # ---------------------------------------
-qpcr = qdata.conc %>%
-  mutate(positive.Al=ifelse(!is.na(copies.Al),1,0),
+# CHECK THIS TO QDATA INSTEAD OF QDATA.CONC
+qpcr = qdata %>%
+  mutate(positive.Al2=ifelse(!is.na(copies.Al2),1,0),
          positive.Tt=ifelse(!is.na(copies.Tt),1,0),
          positive.Ss=ifelse(!is.na(copies.Ss),1,0)) %>%
   mutate(positive.Hw=ifelse(positive.Na==1 |positive.Ac==1 | positive.Ad==1,1,0)) %>%
