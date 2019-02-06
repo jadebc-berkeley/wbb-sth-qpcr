@@ -19,7 +19,8 @@ al.data <- qdata %>%
   mutate(test=case_when(
     test=="positive.Al" ~ "qpcr",
     test=="alkk"~ "kk"
-  ))
+  ),
+  block = as.factor(block))
 
 hw.data <- qdata %>%
   # subset to relevant columns
@@ -29,7 +30,9 @@ hw.data <- qdata %>%
   mutate(test=case_when(
     test=="positive.Hw" ~ "qpcr",
     test=="hwkk"~ "kk"
-  ))
+  ),
+  block = as.factor(block)) %>%
+  filter(!is.na(positive))
 
 tt.data <- qdata %>%
   # subset to relevant columns
@@ -39,19 +42,19 @@ tt.data <- qdata %>%
   mutate(test=case_when(
     test=="positive.Tt" ~ "qpcr",
     test=="ttkk"~ "kk"
-  ))
+  ),
+  block = as.factor(block))%>%
+  filter(!is.na(positive))
   
 # permutation tests with block as cluster
 set.seed(242524)
 p.al <- washb_permute(Y=al.data$positive,tr=al.data$test,
              pair=al.data$block,contrast=c("kk","qpcr"),nreps=100000)
 
-# NOT WORKING DUE TO DATA SPARSITY
 set.seed(242524)
 p.hw <- washb_permute(Y=hw.data$positive,tr=hw.data$test,
              pair=hw.data$block,contrast=c("kk","qpcr"),nreps=100000)
 
-# NOT WORKING DUE TO DATA SPARSITY
 set.seed(242524)
 p.tt <- washb_permute(Y=tt.data$positive,tr=tt.data$test,
              pair=tt.data$block,contrast=c("kk","qpcr"),nreps=100000)
