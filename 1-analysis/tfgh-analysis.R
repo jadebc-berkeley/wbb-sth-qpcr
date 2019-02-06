@@ -2,15 +2,14 @@
 # WASH Benefits Bangladesh STH KK qPCR validation
 # calculate prevalence and geometric mean
 # using each diagnostic
-# 
 #######################################
 rm(list=ls())
 library(dplyr)
 library(clusrank)
 library(tidyr)
 library(washb)
+library(ggplot2)
 load("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/qdata.RData")
-load("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/concentration.RData")
 
 #--------------------------------------
 # Estimate prevalence and 95%CI for each
@@ -53,35 +52,12 @@ prop.table(table(qdata$multisth.q2))*100
 #--------------------------------------
 # mod/heavy intensity infection
 #--------------------------------------
-qdata.conc <- qdata.conc %>%
-  mutate(almh=ifelse(alepg>=5000,1,0),
-         hwmh=ifelse(hwepg>=2000,1,0),
-         ttmh=ifelse(ttepg>=1000,1,0),
-         almh.f=as.factor(ifelse(almh==1,"Moderate-heavy intensity\ninfection","Low intensity\ninfection")),
-         hwmh.f=as.factor(ifelse(hwmh==1,"Moderate-heavy intensity","Low intensity")),
-         ttmh.f=as.factor(ifelse(ttmh==1,"Moderate-heavy intensity","Low intensity")))
+prop.table(table(qdata$almh))*100
+prop.table(table(qdata$hwmh))*100
+prop.table(table(qdata$ttmh))*100
 
-prop.table(table(qdata.conc$almh))*100
-prop.table(table(qdata.conc$hwmh))*100
-prop.table(table(qdata.conc$ttmh))*100
-
-quantile(qdata.conc$CTmean.Al[qdata.conc$almh==1],probs=c(0,0.5,1),na.rm=TRUE)
-quantile(qdata.conc$CTmean.Al[qdata.conc$almh==0],probs=c(0,0.5,1),na.rm=TRUE)
-
-pdf(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Results/wbb-alconc-boxplot.pdf",
-    width=5,height=5)
-ggplot(qdata.conc[!is.na(qdata.conc$almh.f),],aes(y=CTmean.Al,x=almh.f))+
-  geom_boxplot()+  
-  geom_dotplot(aes(fill=almh.f,col=almh.f),binaxis='y',stackdir='center',
-               stackratio=1,dotsize=0.7,binwidth=.008, alpha=0.5)+
-  xlab("Infection intensity")+
-  scale_y_log10(labels=seq(15,40,5), breaks=seq(15,40,5), limits=c(15, 40)) +
-  scale_color_manual(values=c("#CB59EB","#E37F2D"),guide=FALSE)+
-  scale_fill_manual(values=c("#CB59EB","#E37F2D"),guide=FALSE)+
-  ylab(expression(paste("log"[10], italic(" A. lumbricoides"), " Ct value")))+
-  theme_bw()
-dev.off()
-
+quantile(qdata$CTmean.Al[qdata$almh==1],probs=c(0,0.5,1),na.rm=TRUE)
+quantile(qdata$CTmean.Al[qdata$almh==0],probs=c(0,0.5,1),na.rm=TRUE)
 
 
 #--------------------------------------
