@@ -18,3 +18,40 @@ repNA=function(x){
   return(x)
 }
 
+# make a 2x2 table with the count and percent
+# in parentheses
+# inputs: 
+# tab = 2x2 table of counts
+# ptab = 2x2 table of percentages
+make2x2 = function(tab, ptab, label){
+  a = tab[1,1]
+  b = tab[1,2]
+  c = tab[2,1]
+  d = tab[2,2]
+  
+  ptab = ptab*100
+  ptabf = sprintf("%0.0f", ptab)
+  ap = ptabf[1]
+  bp = ptabf[3]
+  cp = ptabf[2]
+  dp = ptabf[4]
+  
+  out = rbind(
+    cbind(
+      label, "qPCR +", "qPCR -"
+    ),
+    cbind(
+      "Kato-Katz +",
+      paste0(a, " (", ap, "%)"),
+      paste0(b, " (", bp, "%)")
+    ),
+    cbind(
+      "Kato-Katz -",
+      paste0(c, " (", cp, "%)"),
+      paste0(d, " (", dp, "%)")
+    )
+  )
+  
+  return(as.data.frame(out))
+  
+}
