@@ -26,6 +26,6 @@ ggplot(qdata,aes(y=CTmean.Al,x=almh.f))+
   scale_y_log10(labels=seq(15,40,5), breaks=seq(15,40,5), limits=c(15, 40)) +
   scale_color_manual(values=c("#CB59EB","#E37F2D"),guide=FALSE)+
   scale_fill_manual(values=c("#CB59EB","#E37F2D"),guide=FALSE)+
-  ylab(expression(paste("log"[10], italic(" A. lumbricoides"), " Ct value")))+
+  ylab(expression(paste(italic(" A. lumbricoides"), " Ct value")))+
   theme_bw()
 dev.off()
