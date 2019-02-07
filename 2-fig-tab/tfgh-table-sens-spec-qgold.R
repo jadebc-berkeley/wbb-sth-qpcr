@@ -18,12 +18,12 @@ N.tt=nrow(qdata[!is.na(qdata$positive.Tt) & !is.na(qdata$ttkk),])
 
 sens=kk.sens.qgold %>%
   select(org, Mean, lb=Lower.95.CI, ub=Upper.95.CI) %>%
-  mutate(sens=ptestci.format(Mean,lb,ub,decimals=1,scale=100)) %>%
+  mutate(sens=ptestci.format(Mean,lb,ub,decimals=0,scale=100)) %>%
   select(org,sens)
 
 spec=kk.spec.qgold %>%
   select(org, Mean, lb=Lower.95.CI, ub=Upper.95.CI) %>%
-  mutate(spec=ptestci.format(Mean,lb,ub,decimals=1,scale=100)) %>%
+  mutate(spec=ptestci.format(Mean,lb,ub,decimals=0,scale=100)) %>%
   select(org,spec)
 
 out=full_join(sens,spec,by=c("org"))
