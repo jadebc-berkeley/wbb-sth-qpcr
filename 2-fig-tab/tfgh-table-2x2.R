@@ -10,6 +10,7 @@ library(ggplot2)
 library(grid)
 library(gridExtra)
 load("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/qdata.RData")
+source("~/Documents/CRG/wash-benefits/bangladesh/src/wbb-sth-qpcr/2-fig-tab/0-base-table-functions.R")
 
 qdata = qdata %>%
   mutate(positive.Al2.lab = ifelse(positive.Al2==1, "qPCR +", "qPCR -"),
@@ -34,3 +35,11 @@ tttab = table(qdata$ttkk.lab, qdata$positive.Tt.lab)
 alptab = prop.table(table(qdata$alkk.lab, qdata$positive.Al2.lab))
 hwptab = prop.table(table(qdata$hwkk.lab, qdata$positive.Hw.lab))
 ttptab = prop.table(table(qdata$ttkk.lab, qdata$positive.Tt.lab))
+
+al_results = make2x2(altab, alptab, label = "A. lumbricoides")
+hw_results = make2x2(hwtab, hwptab, label = "Hookworm")
+tt_results = make2x2(tttab, ttptab, label = "T. trichiura")
+
+all_tables = bind_rows(al_results, hw_results, tt_results)
+
+write.csv(all_tables, file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Results/2x2.table.csv",row.names=FALSE)
