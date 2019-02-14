@@ -18,6 +18,7 @@ load("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/qdata.RData")
 al.kk=washb_mean(qdata$alkk, id=qdata$clusterid, print = TRUE)
 hw.kk=washb_mean(qdata$hwkk, id=qdata$clusterid, print = TRUE)
 tt.kk=washb_mean(qdata$ttkk, id=qdata$clusterid, print = TRUE)
+sth.kk=washb_mean(qdata$sth, id=qdata$clusterid, print = TRUE)
 
 al.q=washb_mean(qdata$positive.Al, id=qdata$clusterid, print = TRUE)
 al2.q=washb_mean(qdata$positive.Al2, id=qdata$clusterid, print = TRUE)
@@ -27,6 +28,7 @@ ac.q=washb_mean(qdata$positive.Ac, id=qdata$clusterid, print = TRUE)
 ad.q=washb_mean(qdata$positive.Ad, id=qdata$clusterid, print = TRUE)
 tt.q=washb_mean(qdata$positive.Tt, id=qdata$clusterid, print = TRUE)
 ss.q=washb_mean(qdata$positive.Ss, id=qdata$clusterid, print = TRUE)
+sth.q=washb_mean(qdata$positive.Sth, id=qdata$clusterid, print = TRUE)
 
 #--------------------------------------
 # co-infection
