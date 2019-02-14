@@ -169,8 +169,8 @@ qdata = qdata %>%
   mutate(positive.Hw=ifelse(positive.Na==1 | positive.Ac==1 | positive.Ad==1,1,0)) %>%
   mutate(gold.hwpos=ifelse(hwkk==1 | positive.Hw==1,1,0)) %>%
   mutate(gold.ttpos=ifelse(ttkk==1 | positive.Tt==1,1,0)) %>%
-  mutate(gold.alpos=ifelse(alkk==1 | positive.Al==1,1,0)) %>%
-  mutate(gold.sthpos=ifelse(sth==1 | positive.Al==1| positive.Hw==1 | positive.Tt==1,1,0))
+  mutate(gold.alpos=ifelse(alkk==1 | positive.Al2==1,1,0)) %>%
+  mutate(gold.sthpos=ifelse(sth==1 | positive.Al2==1| positive.Hw==1 | positive.Tt==1,1,0))
 
 # -------------------------------------------
 # create indicators for moderate/heavy kk infection
@@ -182,6 +182,18 @@ qdata <- qdata %>%
          almh.f=as.factor(ifelse(almh==1,"Moderate-heavy intensity\ninfection","Low intensity\ninfection")),
          hwmh.f=as.factor(ifelse(hwmh==1,"Moderate-heavy intensity","Low intensity")),
          ttmh.f=as.factor(ifelse(ttmh==1,"Moderate-heavy intensity","Low intensity")))
+
+# -------------------------------------------
+# create any STH
+# -------------------------------------------
+qdata = qdata %>%
+  mutate(positive.Sth = ifelse(
+      positive.Al2 == 1 |
+      positive.Na == 1 |
+      positive.Ac == 1 | 
+      positive.Ad == 1 |
+      positive.Tt == 1 , 1,  0
+  ))
 
 #--------------------------------------
 # save data
