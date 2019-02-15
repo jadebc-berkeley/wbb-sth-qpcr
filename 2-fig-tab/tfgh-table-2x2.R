@@ -10,6 +10,7 @@ library(ggplot2)
 library(grid)
 library(gridExtra)
 load("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/qdata.RData")
+load("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/kappa_test.RData")
 source("~/Documents/CRG/wash-benefits/bangladesh/src/wbb-sth-qpcr/2-fig-tab/0-base-table-functions.R")
 
 qdata = qdata %>%
@@ -41,5 +42,10 @@ hw_results = make2x2(hwtab, hwptab, label = "Hookworm")
 tt_results = make2x2(tttab, ttptab, label = "T. trichiura")
 
 all_tables = bind_rows(al_results, hw_results, tt_results)
+
+all_tables = all_tables %>% 
+  mutate(kappa = c("", paste0(round(al.kappa$value, 2), " (<0.001)"), "",
+                   "", paste0(round(hw.kappa$value, 2), " (<0.001)"), "",
+                   "", paste0(round(tt.kappa$value, 2), " (<0.001)"), ""))
 
 write.csv(all_tables, file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Results/2x2.table.csv",row.names=FALSE)
