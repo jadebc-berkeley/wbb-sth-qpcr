@@ -35,10 +35,8 @@ al.plot=ggplot(al, aes(x=alepg, y=CTmean.Al2))+
   scale_y_log10(labels=yseq, breaks=yseq, limits=c(10^0.5, 10^1.7)) +
   scale_x_log10(labels=xseq, breaks=xseq, limits=c(1, 10^5))+
   xlab("Kato-Katz eggs per gram")+
-  ylab("qPCR Ct value")+
-  # xlab(expression(paste("log"[10], italic(" A. lumbricoides"), " EPG")))+
-  # ylab(expression(paste("log"[10], italic(" A. lumbricoides")," Ct value")))+
-  theme_bw()+ggtitle(expression(paste(italic("A. lumbricoides"))))+
+  ylab("qPCR Cq value")+
+  theme_bw()+ggtitle(expression(paste(italic("Ascaris lumbricoides"))))+
   theme(plot.title = element_text(hjust = 0.5))
 
 # hw plot
@@ -61,11 +59,13 @@ hw.plot=ggplot(hw, aes(x=hwepg, y=CT))+
   scale_y_log10(labels=yseq, breaks=yseq, limits=c(10^1.1, 10^1.7)) +
   scale_x_log10(labels=xseq, breaks=xseq, limits=c(1, 10^5))+
   xlab("Kato-Katz eggs per gram")+
-  ylab("qPCR Ct value")+
+  ylab("qPCR Cq value")+
   scale_color_manual(values=c(cb.blue,cb.dblue,cb.pink))+
   theme_bw()+ 
-  theme(legend.position = c(0.77, 0.8), legend.background = element_rect(color = "black", 
-                                                                         fill = "white", size = 0.2, linetype = "solid"))+
+  theme(legend.position = c(0.77, 0.8), 
+        legend.background = element_rect(color = "black", 
+          fill = "white", size = 0.2, linetype = "solid"),
+        legend.text = element_text(face = "italic"))+
   ggtitle("Hookworm")+theme(plot.title = element_text(hjust = 0.5))
 
 
@@ -92,8 +92,8 @@ tt.plot=ggplot(tt, aes(x=ttepg, y=CTmean.Tt))+
   scale_y_log10(labels=yseq, breaks=yseq, limits=c(10^1.2, 10^1.7)) +
   scale_x_log10(labels=xseq, breaks=xseq, limits=c(1, 10^5))+
   xlab("Kato-Katz eggs per gram")+
-  ylab("qPCR Ct value")+
-  theme_bw()+ggtitle(expression(paste(italic("T. trichiura"))))+
+  ylab("qPCR Cq value")+
+  theme_bw()+ggtitle(expression(paste(italic("Trichuris trichiura"))))+
   theme(plot.title = element_text(hjust = 0.5))
 
 cont.plot=grid.arrange(al.plot,hw.plot,tt.plot,nrow=1)

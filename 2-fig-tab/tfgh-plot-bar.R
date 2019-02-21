@@ -79,10 +79,18 @@ pdf(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Results/wbb-qpcr-kk-bargraph.pdf",
 ggplot(bar.data,aes(x=test,y=per.pos,fill=org),col="black")+
   geom_bar(aes(fill=org),stat="identity",colour="black",
            position='stack')+facet_grid(~orgcat)+
-  scale_fill_manual("Organism",values=mycol) +
-  scale_y_continuous(limits=c(0,40))+
-  geom_text(aes(label=per.f,vjust=c(-0.3,-0.3,-0.3,-0.3,-0.3,-2.9,-0.3,-0.3)))+
-  theme_bw()+ylab("Prevalence")+xlab("Diagnostic method")
+  scale_fill_manual("Organism",values=mycol,
+                    labels=expression(italic("Ascaris lumbricoides"),
+                                      "Hookworm",
+                                      italic("Ancylostoma ceylanicum"),
+                                      italic("Ancylostoma duodenale"),
+                                      italic("Necator americanus"),
+                                      italic("Trichuris trichiura"))) +
+  scale_y_continuous(limits=c(0,40)) +
+  geom_text(aes(label=per.f,vjust=c(-0.3,-0.3,-0.3,-0.3,-0.3,-2.9,-0.3,-0.3))) +
+  theme_bw() +
+  theme(legend.text.align = 0) +
+  ylab("Prevalence")+xlab("Diagnostic method")
 dev.off()
 
 pdf(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Results/wbb-qpcr-kk-bargraph-poster.pdf",

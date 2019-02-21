@@ -26,7 +26,7 @@ ggplot(qdata,aes(y=CTmean.Al2,x=almh.f))+
   xlab("Infection intensity")+
   scale_color_manual(values=c("#F7CA65","#BD8302"),guide=FALSE)+
   scale_fill_manual(values=c("#F7CA65","#BD8302"),guide=FALSE)+
-  ylab(expression(paste(italic(" A. lumbricoides"), " Ct value")))+
+  ylab(expression(paste(italic(" Ascaris lumbricoides"), " Cq value")))+
   theme_bw()
 dev.off()
 
