@@ -1,9 +1,9 @@
----------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
       name:  <unnamed>
-       log:  /Users/jadederong/Documents/CRG/wash-benefits/bangladesh/src/wbb-sth-qpcr/1-analysis/7-tfgh-
-> kendall-tau.log
+       log:  /Users/jadederong/Documents/CRG/wash-benefits/bangladesh/src/wbb-sth-qpcr/1-
+> analysis/7-tfgh-kendall-tau.log
   log type:  text
- opened on:   6 Feb 2019, 14:19:30
+ opened on:  21 Feb 2019, 12:48:42
 
 . **************************************
 . * WASH Benefits Bangladesh STH KK qPCR validation
@@ -12,82 +12,91 @@
 . **************************************
 . 
 . insheet using "~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/qdata.csv", clear
-(60 vars, 2,800 obs)
+(61 vars, 2,800 obs)
 
 . 
 . foreach var of varlist ctmeanac ctmeanad ctmeanal2 ctmeanna ctmeantt{
-  2.         replace `var' = "0" if `var'=="NA"
+  2.         replace `var' = "" if `var'=="NA"
   3.         destring `var', replace
   4. }
 (2,694 real changes made)
 ctmeanac: all characters numeric; replaced as double
+(2694 missing values generated)
 (2,799 real changes made)
 ctmeanad: all characters numeric; replaced as double
+(2799 missing values generated)
 (2,157 real changes made)
 ctmeanal2: all characters numeric; replaced as double
+(2157 missing values generated)
 (2,285 real changes made)
 ctmeanna: all characters numeric; replaced as double
+(2285 missing values generated)
 (2,457 real changes made)
 ctmeantt: all characters numeric; replaced as double
+(2457 missing values generated)
 
+. 
 . 
 . 
 . ktau alepg ctmeanal2, stats(taub)
 
-  Number of obs =    2800
-Kendall's tau-a =       0.0647
-Kendall's tau-b =       0.1320
-Kendall's score =  253382
-    SE of score =   31495.203   (corrected for ties)
+  Number of obs =     643
+Kendall's tau-a =      -0.3745
+Kendall's tau-b =      -0.4386
+Kendall's score =  -77290
+    SE of score =    5054.509   (corrected for ties)
 
 Test of Ho: alepg and ctmeanal2 are independent
      Prob > |z| =       0.0000  (continuity corrected)
 
 . ktau hwepg ctmeanna, stats(taub)
 
-  Number of obs =    2800
-Kendall's tau-a =       0.0905
-Kendall's tau-b =       0.4134
-Kendall's score =  354628
-    SE of score =   15207.794   (corrected for ties)
+  Number of obs =     515
+Kendall's tau-a =      -0.2598
+Kendall's tau-b =      -0.3458
+Kendall's score =  -34384
+    SE of score =    3302.852   (corrected for ties)
 
 Test of Ho: hwepg and ctmeanna are independent
      Prob > |z| =       0.0000  (continuity corrected)
 
 . ktau hwepg ctmeanac, stats(taub)
 
-  Number of obs =    2800
-Kendall's tau-a =       0.0140
-Kendall's tau-b =       0.1357
-Kendall's score =   54882
-    SE of score =    7442.153   (corrected for ties)
+  Number of obs =     106
+Kendall's tau-a =      -0.1799
+Kendall's tau-b =      -0.2661
+Kendall's score =   -1001
+    SE of score =     283.604   (corrected for ties)
 
 Test of Ho: hwepg and ctmeanac are independent
-     Prob > |z| =       0.0000  (continuity corrected)
+     Prob > |z| =       0.0004  (continuity corrected)
 
 . ktau ttepg ctmeantt, stats(taub)
 
-  Number of obs =    2800
-Kendall's tau-a =       0.0995
-Kendall's tau-b =       0.5665
-Kendall's score =  390034
-    SE of score =   12413.068   (corrected for ties)
+  Number of obs =     343
+Kendall's tau-a =      -0.2113
+Kendall's tau-b =      -0.2478
+Kendall's score =  -12391
+    SE of score =    1972.262   (corrected for ties)
 
 Test of Ho: ttepg and ctmeantt are independent
      Prob > |z| =       0.0000  (continuity corrected)
 
 . 
 . 
-. bootstrap r(tau_b), reps(1000) seed(1234) cluster(block): ktau alepg ctmeanal2, stats(taub)
+. bootstrap r(tau_b), reps(1000) seed(1234) cluster(block): ktau alepg ctmeanal2, stats(t
+> aub)
 (running ktau on estimation sample)
 
-Warning:  Because ktau is not an estimation command or does not set e(sample), bootstrap has no way to
-          determine which observations are used in calculating the statistics and so assumes that all
-          observations are used.  This means that no observations will be excluded from the resampling
-          because of missing values or other reasons.
+Warning:  Because ktau is not an estimation command or does not set e(sample),
+          bootstrap has no way to determine which observations are used in calculating
+          the statistics and so assumes that all observations are used.  This means
+          that no observations will be excluded from the resampling because of missing
+          values or other reasons.
 
-          If the assumption is not true, press Break, save the data, and drop the observations that are
-          to be excluded.  Be sure that the dataset in memory contains only the relevant data.
+          If the assumption is not true, press Break, save the data, and drop the
+          observations that are to be excluded.  Be sure that the dataset in memory
+          contains only the relevant data.
 
 Bootstrap replications (1000)
 ----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
@@ -123,19 +132,22 @@ Bootstrap results                               Number of obs     =      2,800
              |   Observed   Bootstrap                         Normal-based
              |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
-       _bs_1 |   .1320404   .0150501     8.77   0.000     .1025428     .161538
+       _bs_1 |  -.4386392    .033638   -13.04   0.000    -.5045684   -.3727099
 ------------------------------------------------------------------------------
 
-. bootstrap r(tau_b), reps(1000) seed(1234) cluster(block): ktau hwepg ctmeanna, stats(taub)
+. bootstrap r(tau_b), reps(1000) seed(1234) cluster(block): ktau hwepg ctmeanna, stats(ta
+> ub)
 (running ktau on estimation sample)
 
-Warning:  Because ktau is not an estimation command or does not set e(sample), bootstrap has no way to
-          determine which observations are used in calculating the statistics and so assumes that all
-          observations are used.  This means that no observations will be excluded from the resampling
-          because of missing values or other reasons.
+Warning:  Because ktau is not an estimation command or does not set e(sample),
+          bootstrap has no way to determine which observations are used in calculating
+          the statistics and so assumes that all observations are used.  This means
+          that no observations will be excluded from the resampling because of missing
+          values or other reasons.
 
-          If the assumption is not true, press Break, save the data, and drop the observations that are
-          to be excluded.  Be sure that the dataset in memory contains only the relevant data.
+          If the assumption is not true, press Break, save the data, and drop the
+          observations that are to be excluded.  Be sure that the dataset in memory
+          contains only the relevant data.
 
 Bootstrap replications (1000)
 ----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
@@ -171,19 +183,22 @@ Bootstrap results                               Number of obs     =      2,800
              |   Observed   Bootstrap                         Normal-based
              |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
-       _bs_1 |   .4133576   .0182933    22.60   0.000     .3775034    .4492118
+       _bs_1 |  -.3457696   .0285826   -12.10   0.000    -.4017905   -.2897488
 ------------------------------------------------------------------------------
 
-. bootstrap r(tau_b), reps(1000) seed(1234) cluster(block): ktau hwepg ctmeanac, stats(taub)
+. bootstrap r(tau_b), reps(1000) seed(1234) cluster(block): ktau hwepg ctmeanac, stats(ta
+> ub)
 (running ktau on estimation sample)
 
-Warning:  Because ktau is not an estimation command or does not set e(sample), bootstrap has no way to
-          determine which observations are used in calculating the statistics and so assumes that all
-          observations are used.  This means that no observations will be excluded from the resampling
-          because of missing values or other reasons.
+Warning:  Because ktau is not an estimation command or does not set e(sample),
+          bootstrap has no way to determine which observations are used in calculating
+          the statistics and so assumes that all observations are used.  This means
+          that no observations will be excluded from the resampling because of missing
+          values or other reasons.
 
-          If the assumption is not true, press Break, save the data, and drop the observations that are
-          to be excluded.  Be sure that the dataset in memory contains only the relevant data.
+          If the assumption is not true, press Break, save the data, and drop the
+          observations that are to be excluded.  Be sure that the dataset in memory
+          contains only the relevant data.
 
 Bootstrap replications (1000)
 ----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
@@ -219,19 +234,22 @@ Bootstrap results                               Number of obs     =      2,800
              |   Observed   Bootstrap                         Normal-based
              |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
-       _bs_1 |   .1356536   .0315625     4.30   0.000     .0737922     .197515
+       _bs_1 |  -.2660899   .0666105    -3.99   0.000    -.3966441   -.1355356
 ------------------------------------------------------------------------------
 
-. bootstrap r(tau_b), reps(1000) seed(1234) cluster(block): ktau ttepg ctmeantt, stats(taub)
+. bootstrap r(tau_b), reps(1000) seed(1234) cluster(block): ktau ttepg ctmeantt, stats(ta
+> ub)
 (running ktau on estimation sample)
 
-Warning:  Because ktau is not an estimation command or does not set e(sample), bootstrap has no way to
-          determine which observations are used in calculating the statistics and so assumes that all
-          observations are used.  This means that no observations will be excluded from the resampling
-          because of missing values or other reasons.
+Warning:  Because ktau is not an estimation command or does not set e(sample),
+          bootstrap has no way to determine which observations are used in calculating
+          the statistics and so assumes that all observations are used.  This means
+          that no observations will be excluded from the resampling because of missing
+          values or other reasons.
 
-          If the assumption is not true, press Break, save the data, and drop the observations that are
-          to be excluded.  Be sure that the dataset in memory contains only the relevant data.
+          If the assumption is not true, press Break, save the data, and drop the
+          observations that are to be excluded.  Be sure that the dataset in memory
+          contains only the relevant data.
 
 Bootstrap replications (1000)
 ----+--- 1 ---+--- 2 ---+--- 3 ---+--- 4 ---+--- 5 
@@ -267,14 +285,14 @@ Bootstrap results                               Number of obs     =      2,800
              |   Observed   Bootstrap                         Normal-based
              |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
-       _bs_1 |   .5664557   .0194174    29.17   0.000     .5283984    .6045131
+       _bs_1 |  -.2478042   .0430547    -5.76   0.000    -.3321898   -.1634186
 ------------------------------------------------------------------------------
 
 . 
 . log close
       name:  <unnamed>
-       log:  /Users/jadederong/Documents/CRG/wash-benefits/bangladesh/src/wbb-sth-qpcr/1-analysis/7-tfgh-
-> kendall-tau.log
+       log:  /Users/jadederong/Documents/CRG/wash-benefits/bangladesh/src/wbb-sth-qpcr/1-
+> analysis/7-tfgh-kendall-tau.log
   log type:  text
- closed on:   6 Feb 2019, 14:25:47
----------------------------------------------------------------------------------------------------------
+ closed on:  21 Feb 2019, 12:50:23
+-----------------------------------------------------------------------------------------
