@@ -1,6 +1,6 @@
 #######################################
 # WASH Benefits Bangladesh STH KK qPCR validation
-# inputs for bayesian lca
+# produce initial values for bayesian lca models
 #######################################
 rm(list=ls())
 library(dplyr)
