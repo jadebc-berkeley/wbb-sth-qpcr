@@ -9,7 +9,7 @@ library(ggplot2)
 library(dplyr)
 library(tidyr)
 
-load(qdata,file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/qdata.RData")
+load("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/qdata.RData")
 
 #--------------------------------------
 # ids with positive ascaris kk and 
