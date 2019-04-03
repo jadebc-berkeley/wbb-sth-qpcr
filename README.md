@@ -12,18 +12,18 @@ All data required to run the analyses will be made available in concert with the
 
 **`1-analysis`** : analysis scripts
 
-* **`1-tfgh-preliminary.R`**: R script that reads in raw data and prepares the analysis data (which is shared on OSF)
-* **`2-tfgh-descriptive.R`**: R script that summarizes characteristics of study participants
-* **`3-tfgh-prev-mean.R`**: R script that calculates prevalence and geometric mean of STH using each diagnostic
-* **`4-tfgh-perm-test.R`**: R script that performs a clustered permutation test to assess whether prevalence is different between kk and qPCR
-* **`5-tfgh-kendall-tau.do`**: Stata script that performs kendall's Tau test 
-* **`6-tfgh-sens-qpcr-gold.R`**: R script that estimates sensitivity, specificity of kk using qPCR as the gold standard
-* **`7-tfgh-sens-pooled-gold.R`**: R script that estimates sensitivity, specificity of kk using either diagnostic as the gold standard
-* **`8-tfgh-lca-inputs.R`**: R script that produces the initial values for Bayesian latent class analysis models
-* **`9-tfgh-lca-al.odc`**: WinBugs script that runs Bayesian LCA model for *A. lumbricoides*
-* **`9-tfgh-lca-hw.odc`**: WinBugs script that runs Bayesian LCA model for hookworm
-* **`9-tfgh-lca-tt.odc`**: WinBugs script that runs Bayesian LCA model for *T. trichiura*
-* **`10-tfgh-kappa-test`**: R script that performs kappa test of agreement between KK and qPCR classification
+* `1-tfgh-preliminary.R`: R script that reads in raw data and prepares the analysis data (which is shared on OSF)
+* `2-tfgh-descriptive.R`: R script that summarizes characteristics of study participants
+* `3-tfgh-prev-mean.R`: R script that calculates prevalence and geometric mean of STH using each diagnostic
+* `4-tfgh-perm-test.R`: R script that performs a clustered permutation test to assess whether prevalence is different between kk and qPCR
+* `5-tfgh-kendall-tau.do`: Stata script that performs kendall's Tau test 
+* `6-tfgh-sens-qpcr-gold.R`: R script that estimates sensitivity, specificity of kk using qPCR as the gold standard
+* `7-tfgh-sens-pooled-gold.R`: R script that estimates sensitivity, specificity of kk using either diagnostic as the gold standard
+* `8-tfgh-lca-inputs.R`: R script that produces the initial values for Bayesian latent class analysis models
+* `9-tfgh-lca-al.odc`: WinBugs script that runs Bayesian LCA model for *A. lumbricoides*
+* `9-tfgh-lca-hw.odc`: WinBugs script that runs Bayesian LCA model for hookworm
+* `9-tfgh-lca-tt.odc`: WinBugs script that runs Bayesian LCA model for *T. trichiura*
+* `10-tfgh-kappa-test`: R script that performs kappa test of agreement between KK and qPCR classification
 
 
 **`2-fig-tab`** :  tables and figures
