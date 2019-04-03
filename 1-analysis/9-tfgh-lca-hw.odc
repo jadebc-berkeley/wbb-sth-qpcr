@@ -1,0 +1,26 @@
+model{
+x[1:4] ~ dmulti(p[1:4], n)
+p[1] <- (pi*(Se1*Se2+covDp)) + ((1-pi)*(1-Sp1)*(1-Sp2)+covDn)
+p[2] <- (pi*(Se1*(1-Se2)-covDp)) + ((1-pi)*(1-Sp1)*Sp2-covDn)
+p[3] <- (pi*((1-Se1)*Se2-covDp)) + ((1-pi)*(Sp1*(1-Sp2)-covDn))
+p[4] <- (pi*((1-Se1)*(1-Se2)+covDp)) + ((1-pi)*(Sp1*Sp2+covDn))
+
+ls <- (Se1-1)*(1-Se2)
+lc <- (Sp1-1)*(1-Sp2)
+us <- min(Se1,Se2) - (Se1*Se2)
+uc <- min(Sp1,Sp2) - (Sp1*Sp2)
+
+pi ~ dbeta(1,1) 
+Se1 ~ dbeta(3,3) 
+Sp1 ~ dunif(0.95, 1) 
+Se2 ~ dunif(0.8, 1)
+Sp2 ~ dunif(0.95, 1)
+
+covDn ~ dunif(lc, uc) 
+covDp ~ dunif(ls, us)
+rhoD <- covDp / sqrt(Se1*(1-Se1)*Se2*(1-Se2))
+rhoDc <- covDn / sqrt(Sp1*(1-Sp1)*Sp2*(1-Sp2))
+}
+
+list(n=2788, x=c(195, 14, 403, 2187)) # hw data
+list(pi=0.21, Se1=0.526, Se2=0.98, Sp1=0.98, Sp2=0.97) # initial values
