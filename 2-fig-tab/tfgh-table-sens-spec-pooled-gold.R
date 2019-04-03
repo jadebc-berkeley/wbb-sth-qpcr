@@ -1,6 +1,6 @@
 #######################################
 # WASH Benefits Bangladesh STH KK qPCR validation
-# estimate sensitivity, specificity
+# table of estimates of sensitivity, specificity
 # using pooled kk qPCR as gold standard
 #######################################
 rm(list=ls())

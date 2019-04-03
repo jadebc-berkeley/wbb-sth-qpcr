@@ -1,6 +1,6 @@
 #######################################
 # WASH Benefits Bangladesh STH KK qPCR validation
-# table of concordance discordance
+# 2x2 table of concordance discordance
 #######################################
 rm(list=ls())
 library(dplyr)
