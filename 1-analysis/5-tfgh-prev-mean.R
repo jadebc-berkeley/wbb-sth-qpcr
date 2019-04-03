@@ -81,6 +81,14 @@ al.kk.gmn=washb_mean(qdata$ln.alepg, id=qdata$clusterid, print = TRUE)
 hw.kk.gmn=washb_mean(qdata$ln.hwepg, id=qdata$clusterid, print = TRUE)
 tt.kk.gmn=washb_mean(qdata$ln.ttepg, id=qdata$clusterid, print = TRUE)
 
+al.kk.gmn.pos=washb_mean(qdata$ln.alepg[qdata$alepg>0], 
+                         id=qdata$clusterid[qdata$alepg>0], print = TRUE)
+hw.kk.gmn.pos=washb_mean(qdata$ln.hwepg[qdata$hwepg>0], 
+                         id=qdata$clusterid[qdata$hwepg>0], print = TRUE)
+tt.kk.gmn.pos=washb_mean(qdata$ln.ttepg[qdata$ttepg>0], 
+                         id=qdata$clusterid[qdata$ttepg>0], print = TRUE)
+
+
 al.q.gmn=washb_mean(qdata$ln.CT.al, id=qdata$clusterid, print = TRUE)
 al2.q.gmn=washb_mean(qdata$ln.CT.al2, id=qdata$clusterid, print = TRUE)
 na.q.gmn=washb_mean(qdata$ln.CT.na, id=qdata$clusterid, print = TRUE)
