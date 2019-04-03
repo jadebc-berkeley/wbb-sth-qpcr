@@ -39,7 +39,7 @@ epg=as.data.frame(rbind(al.kk.gmn,hw.kk.gmn,tt.kk.gmn))
 epg$org=c("Ascaris lumbricoides","Hookworm","Trichuris trichiura")
 colnames(epg)[5:6]=c("lb","ub")
 epg = epg %>%
-  mutate(epg=ptestci.format(Mean,lb,ub,decimals=1,scale=100)) %>%
+  mutate(epg=ptestci.format(Mean,lb,ub,decimals=1,scale=1)) %>%
   select(org,epg)
 
 # -------------------------------------
@@ -63,7 +63,7 @@ medrange=function(y){
 CT.summary <- qdata %>%
   select(CTmean.Al2, CTmean.Ac, CTmean.Ad, CTmean.Na,
          CTmean.Tt,CTmean.Ss) %>%
-  summarise_all(funs(medrange)) 
+  summarise_all(list(medrange)) 
 
 CT.summary <- matrix(t(CT.summary),ncol(CT.summary),1)
 
