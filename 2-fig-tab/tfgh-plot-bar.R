@@ -1,6 +1,6 @@
 #######################################
 # WASH Benefits Bangladesh STH KK qPCR validation
-# plot qpcr vs. kk data
+# plot qpcr vs. kk prevalence
 #######################################
 rm(list=ls())
 library(dplyr)
