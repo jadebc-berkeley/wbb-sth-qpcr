@@ -1,5 +1,5 @@
 capture log close
-log using "~/Documents/CRG/wash-benefits/bangladesh/src/wbb-sth-qpcr/1-analysis/7-tfgh-kendall-tau.log", replace
+log using "~/Documents/CRG/wash-benefits/bangladesh/src/wbb-sth-qpcr/1-analysis/5-tfgh-kendall-tau.log", replace
 **************************************
 * WASH Benefits Bangladesh STH KK qPCR validation
 * calculate correlation between epg and CT value

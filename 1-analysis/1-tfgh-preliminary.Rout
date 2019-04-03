@@ -1,0 +1,254 @@
+
+R version 3.4.3 (2017-11-30) -- "Kite-Eating Tree"
+Copyright (C) 2017 The R Foundation for Statistical Computing
+Platform: x86_64-apple-darwin15.6.0 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> #######################################
+> # WASH Benefits Bangladesh STH KK qPCR validation
+> # Clean and merge qPCR and KK data
+> #######################################
+> rm(list=ls())
+> library(reshape2)
+> library(ggplot2)
+Warning message:
+package ‘ggplot2’ was built under R version 3.4.4 
+> library(dplyr)
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+Warning message:
+package ‘dplyr’ was built under R version 3.4.4 
+> library(tidyr)
+
+Attaching package: ‘tidyr’
+
+The following object is masked from ‘package:reshape2’:
+
+    smiths
+
+Warning message:
+package ‘tidyr’ was built under R version 3.4.4 
+> 
+> #--------------------------------------
+> # read in qPCR data
+> #--------------------------------------
+> data.dir="~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/Final file/"
+> res.name="FINAL FINAL FINAL Master Results File - Bangladesh - 4-30-18"
+> iac=read.csv(file=paste0(data.dir,res.name,"-IAC.csv"),stringsAsFactors=FALSE)
+> na=read.csv(file=paste0(data.dir,res.name,"-NA.csv"),stringsAsFactors=FALSE)
+> ad=read.csv(file=paste0(data.dir,res.name,"-AD.csv"),stringsAsFactors=FALSE)
+> ss=read.csv(file=paste0(data.dir,res.name,"-SS.csv"),stringsAsFactors=FALSE)
+> tt=read.csv(file=paste0(data.dir,res.name,"-TT.csv"),stringsAsFactors=FALSE)
+> al=read.csv(file=paste0(data.dir,res.name,"-AL.csv"),stringsAsFactors=FALSE)
+> ac=read.csv(file=paste0(data.dir,res.name,"-AC.csv"),stringsAsFactors=FALSE)
+> 
+> colnames=c("sampleid","sampleno","assay",
++   "CTmean","CTSD","assaydate","plateid","comments")
+> 
+> colnames(iac)=colnames
+> colnames(na)=colnames
+> colnames(ad)=colnames
+> colnames(ss)=colnames
+> colnames(tt)=colnames
+> colnames(al)=colnames
+> colnames(ac)=colnames
+> 
+> # drop problematic sample
+> na=na[na$comments=="",]
+> ad=ad[ad$comments=="",]
+> ss=ss[ss$comments=="",]
+> tt=tt[tt$comments=="",]
+> ac=ac[ac$comments=="",]
+> 
+> # correcting assay column in Na
+> na <- na %>% mutate(assay="Na")
+> 
+> qpcr=rbind(iac,na,ad,ss,tt,al,ac)
+> qpcr=qpcr[!is.na(qpcr$sampleid),]
+> 
+> # check number of results per assay
+> table(qpcr$assay)
+
+  Ac   Ad   Al  IAC   Na   Ss   Tt 
+2799 2799 2800 2800 2799 2799 2799 
+> 
+> # correcting data entry error
+> qpcr$sampleid[qpcr$sampleid==":559901ETS"]="559901ETS1"
+> 
+> # take mean of results for each sample
+> qpcr.mean <- qpcr %>%
++   group_by(sampleid,assay) %>%
++   summarise(CTmean=mean(CTmean),CTSD=mean(CTSD)) %>%
++   mutate(positive=ifelse(CTmean<40,1,0)) %>%
++   mutate(positive=ifelse(is.na(CTmean),0,positive))
+> 
+> mean.l <- qpcr.mean %>% 
++   group_by(sampleid) %>%
++   select(sampleid,assay,CTmean) %>% 
++   spread(assay,CTmean) %>%
++   rename(CTmean.Ac=Ac, CTmean.Ad=Ad, CTmean.Al=Al,
++          CTmean.IAC=IAC, CTmean.Na=Na, 
++          CTmean.Ss=Ss,CTmean.Tt=Tt)
+> 
+> sd.l <- qpcr.mean %>% 
++   group_by(sampleid) %>%
++   select(sampleid,assay,CTSD) %>% 
++   spread(assay,CTSD) %>%
++   rename(CTSD.Ac=Ac, CTSD.Ad=Ad, CTSD.Al=Al,
++          CTSD.IAC=IAC, CTSD.Na=Na, 
++          CTSD.Ss=Ss,CTSD.Tt=Tt)
+> 
+> pos.l <- qpcr.mean %>% 
++   group_by(sampleid) %>%
++   select(sampleid,assay,positive) %>% 
++   spread(assay,positive) %>%
++   rename(positive.Ac=Ac, positive.Ad=Ad, positive.Al=Al,
++          positive.IAC=IAC, positive.Na=Na, 
++          positive.Ss=Ss,positive.Tt=Tt) 
+> 
+> qpcr.w <- full_join(mean.l, sd.l, by=c("sampleid"))
+> qpcr.w <- full_join(qpcr.w, pos.l, by=c("sampleid"))
+> 
+> qpcr.w$dataid=substr(qpcr.w$sampleid,1,5)
+> qpcr.w$personid=paste(substr(qpcr.w$sampleid,7,7),1,sep="")
+> qpcr.w$qpcr="Done"
+> 
+> qpcr.w <- qpcr.w %>%
++   mutate(positive.Hw=case_when(
++     positive.Ac==1 | positive.Na==1 | positive.Ad==1 ~ 1,
++     positive.Ac==0 & positive.Na==0 & positive.Ad==0 ~ 0,
++     TRUE ~ NA_real_
++   )) %>%
++   # manual correction of id that doesn't match list sent to Smith
++   ungroup() %>%
++   mutate(sampleid=ifelse(sampleid=="559901ETS1","59901ETS1",sampleid)) %>%
++   mutate(sampleid=ifelse(sampleid=="18705EOS1","18705ECS1",sampleid)) %>%
++   mutate(personid=substr(sampleid,7,7),
++          dataid=substr(sampleid,1,5)) %>%
++   mutate(personid=ifelse(personid=="T","T1",personid)) %>%
++   mutate(personid=ifelse(personid=="C","C1",personid)) %>%
++   mutate(personid=ifelse(personid=="O","O1",personid)) %>%
++   mutate(personid=ifelse(personid=="W","T2",personid)) 
+> 
+> 
+> #--------------------------------------
+> # read in revised Ascaris qPCR data
+> #--------------------------------------
+> # ascaris_new=read.csv("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/Revised ascaris assay/KK v New assay comparison_10-17-18.csv",stringsAsFactors=FALSE)
+> ascaris_new=read.csv("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/Revised ascaris assay/KK v New assay comparison_4-3-19_Updated with data for missing samples.csv", stringsAsFactors=FALSE)
+> 
+> colnames(ascaris_new) = c("sampleid", "alepg", "al", "X", "CTmean.Al2", "CTSD.Al2", "XX")
+> ascaris_new$dataid=substr(ascaris_new$sampleid,1,5)
+> ascaris_new$personid=paste(substr(ascaris_new$sampleid,7,7),1,sep="")
+> ascaris_new = ascaris_new %>% select(-c(X,XX, alepg, al))
+> 
+> # indicator for positive Al 
+> ascaris_new <- ascaris_new %>%
++   # mutate(CTmean.Al2 = ifelse(CTmean.Al2 == "DNA SAMPLE MISSING", NA,CTmean.Al2)) %>%
++   mutate(CTmean.Al2 = as.numeric(CTmean.Al2)) %>%
++   mutate(positive.Al2=ifelse(CTmean.Al2<40,1,0)) %>%
++   mutate(positive.Al2=ifelse(is.na(CTmean.Al2),0,positive.Al2))
+> 
+> # manual correction of id that doesn't match list sent to Smith
+> ascaris_new = ascaris_new %>%
++   ungroup() %>%
++     mutate(sampleid=ifelse(sampleid=="18705EOS1","18705ECS1",sampleid)) %>%
++     mutate(personid=substr(sampleid,7,7),
++            dataid=substr(sampleid,1,5)) %>%
++     mutate(personid=ifelse(personid=="T","T1",personid)) %>%
++     mutate(personid=ifelse(personid=="C","C1",personid)) %>%
++     mutate(personid=ifelse(personid=="O","O1",personid)) %>%
++     mutate(personid=ifelse(personid=="W","T2",personid)) 
+> 
+> #--------------------------------------
+> # merge in kk data
+> #--------------------------------------
+> kk=read.csv("~/Dropbox/WASHB Parasites/Analysis datasets/Jade/sth.csv")
+> kk$dataid=as.character(kk$dataid)
+> kk$personid=as.character(kk$personid)
+> kk=kk[,c("dataid","personid","block","clusterid","tr",
++          "sex","dw","aged","agem","agey",
++       "alepg","hwepg","ttepg",
++        "logalepg","loghwepg","logttepg",
++        "al","tt","hw","sth","alint","ttint","hwint")]
+> 
+> colnames(kk)[which(colnames(kk)=="tt")]="ttkk"
+> colnames(kk)[which(colnames(kk)=="al")]="alkk"
+> colnames(kk)[which(colnames(kk)=="hw")]="hwkk"
+> 
+> # merge kk and qPCR data
+> data=full_join(kk,qpcr.w,by=c("dataid","personid"))
+> 
+> # merge on re-run ascaris qPCR data
+> data=full_join(data,ascaris_new,by=c("dataid","personid","sampleid"))
+> 
+> data$qpcr[is.na(data$qpcr)]="Not done"
+> 
+> # subset to rows in which qpcr was done
+> qdata=data[data$qpcr=="Done",]
+> 
+> # -------------------------------------------
+> # create gold standard by pooling together 
+> # kk and qPCR results
+> # -------------------------------------------
+> qdata = qdata %>% 
++   mutate(positive.Hw=ifelse(positive.Na==1 | positive.Ac==1 | positive.Ad==1,1,0)) %>%
++   mutate(gold.hwpos=ifelse(hwkk==1 | positive.Hw==1,1,0)) %>%
++   mutate(gold.ttpos=ifelse(ttkk==1 | positive.Tt==1,1,0)) %>%
++   mutate(gold.alpos=ifelse(alkk==1 | positive.Al2==1,1,0)) %>%
++   mutate(gold.sthpos=ifelse(sth==1 | positive.Al2==1| positive.Hw==1 | positive.Tt==1,1,0))
+> 
+> # -------------------------------------------
+> # create indicators for moderate/heavy kk infection
+> # -------------------------------------------
+> qdata <- qdata %>%
++   mutate(almh=ifelse(alepg>=5000,1,0),
++          hwmh=ifelse(hwepg>=2000,1,0),
++          ttmh=ifelse(ttepg>=1000,1,0),
++          almh.f=as.factor(ifelse(almh==1,"Moderate-heavy intensity\ninfection","Low intensity\ninfection")),
++          hwmh.f=as.factor(ifelse(hwmh==1,"Moderate-heavy intensity","Low intensity")),
++          ttmh.f=as.factor(ifelse(ttmh==1,"Moderate-heavy intensity","Low intensity")))
+> 
+> # -------------------------------------------
+> # create any STH
+> # -------------------------------------------
+> qdata = qdata %>%
++   mutate(positive.Sth = ifelse(
++       positive.Al2 == 1 |
++       positive.Na == 1 |
++       positive.Ac == 1 | 
++       positive.Ad == 1 |
++       positive.Tt == 1 , 1,  0
++   ))
+> 
+> #--------------------------------------
+> # save data
+> #--------------------------------------
+> save(qdata,file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/qdata.RData")
+> write.csv(qdata,file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/qdata.csv",row.names=FALSE)
+> 
+> proc.time()
+   user  system elapsed 
+  3.801   0.134   4.106 

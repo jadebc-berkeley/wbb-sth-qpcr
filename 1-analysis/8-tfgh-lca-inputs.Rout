@@ -1,0 +1,129 @@
+
+R version 3.4.3 (2017-11-30) -- "Kite-Eating Tree"
+Copyright (C) 2017 The R Foundation for Statistical Computing
+Platform: x86_64-apple-darwin15.6.0 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Previously saved workspace restored]
+
+> #######################################
+> # WASH Benefits Bangladesh STH KK qPCR validation
+> # produce initial values for bayesian lca models
+> #######################################
+> rm(list=ls())
+> library(dplyr)
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+Warning message:
+package ‘dplyr’ was built under R version 3.4.4 
+> load("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/qdata.RData")
+> 
+> #--------------------------------------
+> # hookworm
+> #--------------------------------------
+> qdata=qdata[!is.na(qdata$positive.Hw) & !is.na(qdata$hwkk),]
+> nrow(qdata)
+[1] 2799
+> 
+> nrow(qdata[qdata$positive.Hw==1 & qdata$hwkk==1,])
+[1] 195
+> nrow(qdata[qdata$positive.Hw==0 & qdata$hwkk==1,])
+[1] 14
+> nrow(qdata[qdata$positive.Hw==1 & qdata$hwkk==0,])
+[1] 403
+> nrow(qdata[qdata$positive.Hw==0 & qdata$hwkk==0,])
+[1] 2187
+> 
+> # initial value for prevalence - use qpcr
+> mean(qdata$positive.Hw)
+[1] 0.2136477
+> 
+> 
+> #--------------------------------------
+> # ascaris
+> #--------------------------------------
+> qdata=qdata[!is.na(qdata$positive.Al) & !is.na(qdata$alkk),]
+> nrow(qdata)
+[1] 2799
+> 
+> nrow(qdata[qdata$positive.Al==1 & qdata$alkk==1,])
+[1] 228
+> nrow(qdata[qdata$positive.Al==0 & qdata$alkk==1,])
+[1] 807
+> nrow(qdata[qdata$positive.Al==1 & qdata$alkk==0,])
+[1] 127
+> nrow(qdata[qdata$positive.Al==0 & qdata$alkk==0,])
+[1] 1637
+> 
+> # initial value for prevalence - use qpcr
+> mean(qdata$positive.Al)
+[1] 0.126831
+> 
+> # new assay
+> qdata=qdata[!is.na(qdata$positive.Al2) & !is.na(qdata$alkk),]
+> nrow(qdata)
+[1] 2798
+> 
+> nrow(qdata[qdata$positive.Al2==1 & qdata$alkk==1,])
+[1] 319
+> nrow(qdata[qdata$positive.Al2==0 & qdata$alkk==1,])
+[1] 715
+> nrow(qdata[qdata$positive.Al2==1 & qdata$alkk==0,])
+[1] 333
+> nrow(qdata[qdata$positive.Al2==0 & qdata$alkk==0,])
+[1] 1431
+> 
+> # initial value for prevalence - use qpcr
+> mean(qdata$positive.Al2)
+[1] 0.2330236
+> 
+> 
+> #--------------------------------------
+> # trichuris
+> #--------------------------------------
+> qdata=qdata[!is.na(qdata$positive.Tt) & !is.na(qdata$ttkk),]
+> nrow(qdata)
+[1] 2798
+> 
+> nrow(qdata[qdata$positive.Tt==1 & qdata$ttkk==1,])
+[1] 167
+> nrow(qdata[qdata$positive.Tt==0 & qdata$ttkk==1,])
+[1] 28
+> nrow(qdata[qdata$positive.Tt==1 & qdata$ttkk==0,])
+[1] 176
+> nrow(qdata[qdata$positive.Tt==0 & qdata$ttkk==0,])
+[1] 2427
+> 
+> # initial value for prevalence - use qpcr
+> mean(qdata$positive.Tt)
+[1] 0.1225876
+> 
+> 
+> 
+> 
+> 
+> proc.time()
+   user  system elapsed 
+  0.596   0.058   0.723 

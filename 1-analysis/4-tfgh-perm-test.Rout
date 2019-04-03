@@ -1,0 +1,159 @@
+
+R version 3.4.3 (2017-11-30) -- "Kite-Eating Tree"
+Copyright (C) 2017 The R Foundation for Statistical Computing
+Platform: x86_64-apple-darwin15.6.0 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Previously saved workspace restored]
+
+> #######################################
+> # WASH Benefits Bangladesh STH KK qPCR validation
+> # clustered permutation test
+> # to assess whether prevalence is different
+> # between kk and qPCR
+> #######################################
+> rm(list=ls())
+> library(dplyr)
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+Warning message:
+package ‘dplyr’ was built under R version 3.4.4 
+> library(clusrank)
+> library(tidyr)
+Warning message:
+package ‘tidyr’ was built under R version 3.4.4 
+> library(washb)
+Welcome to the washb package
+Version: 0.2.1
+Created on 2017-02-02
+
+This software was developed with funding from the
+Bill & Melinda Gates Foundation (grant number OPPGD759).
+
+The package's reference manual and vignette are also online:
+https://ben-arnold.github.io/washb
+
+> load("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/qdata.RData")
+> 
+> al.data <- qdata %>%
++   # subset to relevant columns
++   select(c(dataid,personid,block,clusterid,positive.Al,alkk)) %>%
++   # convert to long format
++   gather(test,positive,positive.Al:alkk) %>%
++   mutate(test=case_when(
++     test=="positive.Al" ~ "qpcr",
++     test=="alkk"~ "kk"
++   ),
++   block = as.factor(block))
+> 
+> hw.data <- qdata %>%
++   # subset to relevant columns
++   select(c(dataid,personid,block,clusterid,positive.Hw,hwkk)) %>%
++   # convert to long format
++   gather(test,positive,positive.Hw:hwkk) %>%
++   mutate(test=case_when(
++     test=="positive.Hw" ~ "qpcr",
++     test=="hwkk"~ "kk"
++   ),
++   block = as.factor(block)) %>%
++   filter(!is.na(positive))
+> 
+> tt.data <- qdata %>%
++   # subset to relevant columns
++   select(c(dataid,personid,block,clusterid,positive.Tt,ttkk)) %>%
++   # convert to long format
++   gather(test,positive,positive.Tt:ttkk) %>%
++   mutate(test=case_when(
++     test=="positive.Tt" ~ "qpcr",
++     test=="ttkk"~ "kk"
++   ),
++   block = as.factor(block))%>%
++   filter(!is.na(positive))
+>   
+> # permutation tests with block as cluster
+> set.seed(242524)
+> p.al <- washb_permute(Y=al.data$positive,tr=al.data$test,
++              pair=al.data$block,contrast=c("kk","qpcr"),nreps=100000)
+Loading required package: coin
+Loading required package: survival
+
+Attaching package: ‘survival’
+
+The following object is masked from ‘package:clusrank’:
+
+    cluster
+
+Loading required package: plyr
+------------------------------------------------------------------------------
+You have loaded plyr after dplyr - this is likely to cause problems.
+If you need functions from both plyr and dplyr, please load plyr first, then dplyr:
+library(plyr); library(dplyr)
+------------------------------------------------------------------------------
+
+Attaching package: ‘plyr’
+
+The following objects are masked from ‘package:dplyr’:
+
+    arrange, count, desc, failwith, id, mutate, rename, summarise,
+    summarize
+
+
+	Approximative Wilcoxon-Pratt Signed-Rank Test
+
+data:  y by x (pos, neg) 
+	 stratified by block
+Z = 6.9996, p-value < 2.2e-16
+alternative hypothesis: true mu is not equal to 0
+
+> 
+> set.seed(242524)
+> p.hw <- washb_permute(Y=hw.data$positive,tr=hw.data$test,
++              pair=hw.data$block,contrast=c("kk","qpcr"),nreps=100000)
+
+	Approximative Wilcoxon-Pratt Signed-Rank Test
+
+data:  y by x (pos, neg) 
+	 stratified by block
+Z = -7.1497, p-value < 2.2e-16
+alternative hypothesis: true mu is not equal to 0
+
+> 
+> set.seed(242524)
+> p.tt <- washb_permute(Y=tt.data$positive,tr=tt.data$test,
++              pair=tt.data$block,contrast=c("kk","qpcr"),nreps=100000)
+
+	Approximative Wilcoxon-Pratt Signed-Rank Test
+
+data:  y by x (pos, neg) 
+	 stratified by block
+Z = -5.9461, p-value < 2.2e-16
+alternative hypothesis: true mu is not equal to 0
+
+> 
+> 
+> 
+> proc.time()
+   user  system elapsed 
+  3.261   0.157   3.745 

@@ -1,0 +1,62 @@
+
+R version 3.4.3 (2017-11-30) -- "Kite-Eating Tree"
+Copyright (C) 2017 The R Foundation for Statistical Computing
+Platform: x86_64-apple-darwin15.6.0 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Previously saved workspace restored]
+
+> #######################################
+> # WASH Benefits Bangladesh STH KK qPCR validation
+> # characteristics of study participants
+> #######################################
+> rm(list=ls())
+> library(dplyr)
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+Warning message:
+package ‘dplyr’ was built under R version 3.4.4 
+> 
+> load("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/qdata.RData")
+> 
+> prop.table(table(qdata$sex))
+
+       female   male 
+0.0000 0.5075 0.4925 
+> prop.table(table(qdata$dw))
+
+       0        1 
+0.335143 0.664857 
+> 
+> qdata %>%
++   summarise(min=min(agem,na.rm=TRUE),
++             max=max(agem,na.rm=TRUE),
++             mean=mean(agem,na.rm=TRUE))
+       min      max   mean
+1 22.09313 144.0985 56.958
+> 
+> proc.time()
+   user  system elapsed 
+  0.742   0.054   0.862 

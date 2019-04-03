@@ -1,0 +1,161 @@
+
+R version 3.4.3 (2017-11-30) -- "Kite-Eating Tree"
+Copyright (C) 2017 The R Foundation for Statistical Computing
+Platform: x86_64-apple-darwin15.6.0 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Previously saved workspace restored]
+
+> #######################################
+> # WASH Benefits Bangladesh STH KK qPCR validation
+> # estimate sensitivity, specificity
+> # of kk using either method as gold
+> #######################################
+> rm(list=ls())
+> library(dplyr)
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+Warning message:
+package ‘dplyr’ was built under R version 3.4.4 
+> library(washb)
+Welcome to the washb package
+Version: 0.2.1
+Created on 2017-02-02
+
+This software was developed with funding from the
+Bill & Melinda Gates Foundation (grant number OPPGD759).
+
+The package's reference manual and vignette are also online:
+https://ben-arnold.github.io/washb
+
+> load("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/qdata.RData")
+> 
+> # subset to relevant columns
+> d = qdata %>%
++   select(dataid,personid,clusterid,positive.Al2,positive.Hw,
++          positive.Tt,alkk,hwkk,ttkk)
+> 
+> #----------------------------------------
+> # calculate sensitivity
+> #----------------------------------------
+> ald1= d %>% filter(positive.Al2==1) %>%
++   filter(!is.na(alkk)) %>%
++   filter(!is.na(positive.Al2)) 
+> al.kk.sens=washb_mean(ald1$alkk,id=ald1$clusterid)
+
+Attaching package: ‘zoo’
+
+The following objects are masked from ‘package:base’:
+
+    as.Date, as.Date.numeric
+
+       N      Mean        SD  Robust SE Lower 95%CI Upper 95%CI
+[1,] 652 0.4892638 0.5002685 0.01938702   0.4512652   0.5272624
+Warning messages:
+1: package ‘lmtest’ was built under R version 3.4.4 
+2: package ‘zoo’ was built under R version 3.4.4 
+> al.q.sens=washb_mean(ald1$positive.Al2,id=ald1$clusterid)
+       N Mean SD    Robust SE Lower 95%CI Upper 95%CI
+[1,] 652    1  0 5.472683e-16           1           1
+> 
+> hwd1= d %>% filter(hwkk==1 | positive.Hw==1) %>%
++   filter(!is.na(hwkk)) %>%
++   filter(!is.na(positive.Hw)) 
+> hw.kk.sens=washb_mean(hwd1$hwkk,id=hwd1$clusterid)
+       N      Mean        SD  Robust SE Lower 95%CI Upper 95%CI
+[1,] 612 0.3415033 0.4746018 0.02138885   0.2995811   0.3834254
+> hw.q.sens=washb_mean(hwd1$positive.Hw,id=hwd1$clusterid)
+       N      Mean        SD   Robust SE Lower 95%CI Upper 95%CI
+[1,] 612 0.9771242 0.1496299 0.005989612   0.9653845   0.9888638
+> 
+> ttd1= d %>% filter(ttkk==1 | positive.Tt==1) %>%
++   filter(!is.na(ttkk)) %>%
++   filter(!is.na(positive.Tt)) 
+> tt.kk.sens=washb_mean(ttd1$ttkk,id=ttd1$clusterid)
+       N      Mean        SD  Robust SE Lower 95%CI Upper 95%CI
+[1,] 371 0.5256065 0.5000182 0.02709851   0.4724934   0.5787195
+> tt.q.sens=washb_mean(ttd1$positive.Tt,id=ttd1$clusterid)
+       N      Mean        SD  Robust SE Lower 95%CI Upper 95%CI
+[1,] 371 0.9245283 0.2645077 0.01400398   0.8970805   0.9519761
+> 
+> kk.sens.pooled.gold=data.frame(rbind(al.kk.sens,hw.kk.sens,tt.kk.sens))
+> kk.sens.pooled.gold$org=c("A. lumbricoides","Hookworm","T. trichiura")
+> 
+> q.sens.pooled.gold=data.frame(rbind(al.q.sens,hw.q.sens,tt.q.sens))
+> q.sens.pooled.gold$org=c("A. lumbricoides","Hookworm","T. trichiura")
+> 
+> #----------------------------------------
+> # calculate specificity
+> #----------------------------------------
+> ald2= d %>% filter(positive.Al2==0) %>%
++   filter(!is.na(alkk)) %>%
++   filter(!is.na(positive.Al2)) %>% 
++   mutate(alkkneg=ifelse(alkk==1,0,1),
++          alqneg = ifelse(positive.Al2==1, 0, 1))
+> al.kk.spec=washb_mean(ald2$alkkneg,id=ald2$clusterid)
+        N      Mean        SD Robust SE Lower 95%CI Upper 95%CI
+[1,] 2147 0.6665114 0.4715692 0.0131356   0.6407656   0.6922572
+> al.q.spec=washb_mean(ald2$alqneg,id=ald2$clusterid)
+        N Mean SD    Robust SE Lower 95%CI Upper 95%CI
+[1,] 2147    1  0 2.757243e-15           1           1
+> 
+> hwd2= d %>% filter(positive.Hw==0 | hwkk==0) %>%
++   filter(!is.na(hwkk)) %>%
++   filter(!is.na(positive.Hw)) %>%
++   mutate(hwkkneg=ifelse(hwkk==1,0,1),
++          hwqneg = ifelse(positive.Hw==1,0,1))
+> hw.kk.spec=washb_mean(hwd2$hwkkneg,id=hwd2$clusterid)
+        N      Mean         SD   Robust SE Lower 95%CI Upper 95%CI
+[1,] 2604 0.9946237 0.07314023 0.001408752   0.9918625   0.9973848
+> hw.q.spec=washb_mean(hwd2$hwqneg,id=hwd2$clusterid)
+        N      Mean       SD   Robust SE Lower 95%CI Upper 95%CI
+[1,] 2604 0.8452381 0.361747 0.008341313   0.8288891   0.8615871
+> 
+> ttd2= d %>% filter(positive.Tt==0 | ttkk==0) %>%
++   filter(!is.na(ttkk)) %>%
++   filter(!is.na(positive.Tt)) %>%
++   mutate(ttkkneg=ifelse(ttkk==1,0,1),
++          ttqneg=ifelse(positive.Tt==1,0,1))
+> tt.kk.spec=washb_mean(ttd2$ttkkneg,id=ttd2$clusterid)
+        N      Mean        SD   Robust SE Lower 95%CI Upper 95%CI
+[1,] 2632 0.9893617 0.1026115 0.001993384   0.9854547   0.9932687
+> tt.q.spec=washb_mean(ttd2$ttqneg,id=ttd2$clusterid)
+        N      Mean       SD   Robust SE Lower 95%CI Upper 95%CI
+[1,] 2632 0.9331307 0.249843 0.005917774   0.9215319   0.9447295
+> 
+> kk.spec.pooled.gold=data.frame(rbind(al.kk.spec,hw.kk.spec,tt.kk.spec))
+> kk.spec.pooled.gold$org=c("A. lumbricoides","Hookworm","T. trichiura")
+> 
+> q.spec.pooled.gold=data.frame(rbind(al.q.spec,hw.q.spec,tt.q.spec))
+> q.spec.pooled.gold$org=c("A. lumbricoides","Hookworm","T. trichiura")
+> 
+> save(kk.sens.pooled.gold, kk.spec.pooled.gold,
++      q.sens.pooled.gold, q.spec.pooled.gold,
++      file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/sensspec_pooled_gold.RData")
+> 
+> 
+> proc.time()
+   user  system elapsed 
+  0.926   0.073   1.097 
