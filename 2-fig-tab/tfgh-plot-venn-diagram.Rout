@@ -1,0 +1,228 @@
+
+R version 3.4.3 (2017-11-30) -- "Kite-Eating Tree"
+Copyright (C) 2017 The R Foundation for Statistical Computing
+Platform: x86_64-apple-darwin15.6.0 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> #######################################
+> # WASH Benefits Bangladesh STH KK qPCR validation
+> # venn diagram of co-infection
+> #######################################
+> rm(list=ls())
+> library(dplyr)
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+Warning message:
+package ‘dplyr’ was built under R version 3.4.4 
+> library(VennDiagram)
+Loading required package: grid
+Loading required package: futile.logger
+Warning message:
+package ‘VennDiagram’ was built under R version 3.4.4 
+> library(venneuler)
+Loading required package: rJava
+> 
+> load("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/qdata.RData")
+> 
+> # get n's - KK
+> get_kk_n = function(data, al, hw, tt){
++   x = data %>% filter(
++     alkk == al,
++     hwkk == hw, 
++     ttkk == tt
++   ) %>%
++     summarise(n = n())
++   return(as.numeric(x))
++ }
+> 
+> # get n's - qPCR
+> get_q_n = function(data, al, hw, tt){
++   x = data %>% filter(
++     positive.Al2 == al,
++     positive.Hw == hw, 
++     positive.Tt == tt
++   ) %>%
++     summarise(n = n())
++   return(as.numeric(x))
++ }
+> 
+> # get n's - qPCR Hw
+> get_hw_n = function(data, ac, na, ad){
++   x = data %>% filter(
++     positive.Ac == ac,
++     positive.Na == na, 
++     positive.Ad == ad
++   ) %>%
++     summarise(n = n())
++   return(as.numeric(x))
++ }
+> 
+> 
+> # ---------------------------------------
+> # kato katz plot
+> # ---------------------------------------
+> kk=qdata[,c("alkk","hwkk","ttkk")]
+> kk$coinf=rowSums(kk,na.rm=TRUE)
+> 
+> # intersections
+> alhw=get_kk_n(kk, al = 1, hw = 1, tt = 0)
+> hwtt=get_kk_n(kk, al = 0, hw = 1, tt = 1)
+> altt=get_kk_n(kk, al = 1, hw = 0, tt = 1)
+> alhwtt=get_kk_n(kk, al = 1, hw = 1, tt = 1)
+> 
+> altot=get_kk_n(kk, al = 1, hw = 0, tt = 0)
+> hwtot=get_kk_n(kk, al = 0, hw = 1, tt = 0)
+> tttot=get_kk_n(kk, al = 0, hw = 0, tt = 1)
+> 
+> # circles proportional to size 
+> v <- venneuler(c(Ascaris=altot, Hookworm=hwtot, Trichuris=tttot,
++                  "Ascaris&Hookworm"=alhw,"Hookworm&Trichuris"=hwtt,
++                  "Trichuris&Ascaris"=altt,"Ascaris&Hookworm&Trichuris"=alhwtt))
+> v$labels <- c(
++   "","",""
++ )
+> 
+> cb.lightorange="#E69F00"
+> cb.blue= "#56B4E9"
+> cb.green="#009E73"
+> cb.orange="#D55E00"
+> cb.pink="#CC79A7"
+> cb.dblue="#005787"
+> purple="#9E4AED"
+> 
+> pdf(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Results/wbb-venn-kk.pdf",
++     width=6,height=6)
+>   plot(v, col=c(cb.lightorange, cb.blue, cb.green))
+>   # titles
+>   text(x=v$centers[1,1],y=v$centers[1,2]+0.32, labels=expression(paste(italic("A. lumbricoides"))))
+>   text(x=v$centers[1,1]+0.3,y=v$centers[1,2]-0.28, labels="Hookworm")
+>   text(x=v$centers[1,1]+0.3,y=v$centers[1,2]+0.22, labels=expression(paste(italic("T. trichiura"))))
+>   
+>   # non intersections
+>   text(x=v$centers[1,1],y=v$centers[1,2], labels=paste(altot))
+>   text(x=v$centers[2,1]+0.06,y=v$centers[2,2]-0.05, labels=paste(hwtot))
+>   text(x=v$centers[3,1]+0.06,y=v$centers[3,2]+0.02, labels=paste(tttot))
+>   
+>   # intersections
+>   text(x=v$centers[1,1]+0.23,y=v$centers[1,2]+0.07, labels=paste(altt))
+>   text(x=v$centers[1,1]+0.18,y=v$centers[1,2]-0.13, labels=paste(alhw))
+>   text(x=v$centers[1,1]+0.23,y=v$centers[1,2]-0.035, labels=paste(alhwtt))
+>   text(x=v$centers[1,1]+0.32,y=v$centers[1,2]-0.047, labels=paste(hwtt))
+> dev.off()
+null device 
+          1 
+> 
+> # ---------------------------------------
+> # qpcr plot
+> # ---------------------------------------
+> # counts
+> altot=get_q_n(data = qdata, al = 1, hw = 0, tt = 0)
+> hwtot=get_q_n(data = qdata, al = 0, hw = 1, tt = 0)
+> tttot=get_q_n(data = qdata, al = 0, hw = 0, tt = 1)
+> 
+> # intersections
+> alhw=get_q_n(data = qdata, al = 1, hw = 1, tt = 0)
+> altt=get_q_n(data = qdata, al = 1, hw = 0, tt = 1)
+> hwtt=get_q_n(data = qdata, al = 0, hw = 1, tt = 1)
+> 
+> alhwtt=get_q_n(data = qdata, al = 1, hw = 1, tt = 1)
+> 
+> qpcr <- venneuler(c(Ascaris=altot, Hookworm=hwtot, Trichuris=tttot,
++                  "Ascaris&Hookworm"=alhw,"Hookworm&Trichuris"=hwtt,
++                  "Trichuris&Ascaris"=altt,"Ascaris&Hookworm&Trichuris"=alhwtt))
+> qpcr$labels <- c("","","")
+> 
+> centers=qpcr$centers
+> 
+> pdf(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Results/wbb-venn-qpcr.pdf",
++     width=6,height=6)
+>   plot(qpcr, col=c(cb.lightorange, cb.blue,cb.green))
+>   # titles
+>   text(x=centers[1,1]+0.0,y=centers[1,2]+0.26, labels=expression(paste(italic("A. lumbricoides"))))
+>   text(x=centers[2,1]-0.2,y=centers[2,2]-0.22, labels="Hookworm")
+>   text(x=centers[3,1]-0.12,y=centers[3,2]+0.2, labels=expression(paste(italic("T. trichiura"))))
+>   
+>   # non intersections
+>   text(x=centers[1,1]+0.04,y=centers[1,2]+0.08, labels=paste(altot))# done
+>   text(x=centers[2,1]-0.01,y=centers[2,2]-0.1, labels=paste(hwtot))# done
+>   text(x=centers[3,1]-0.08,y=centers[3,2]+0.02, labels=paste(tttot))# done
+>   
+>   # intersections
+>   text(x=centers[1,1]-0.16,y=centers[1,2]+0.02, labels=paste(altt))
+>   text(x=centers[1,1]-0.13,y=centers[1,2]-0.1, labels=paste(alhwtt)) # done
+>   text(x=centers[3,1]-0.02,y=centers[3,2]-0.1, labels=paste(hwtt))
+>   text(x=centers[1,1]+0.02,y=centers[1,2]-0.15, labels=paste(alhw)) # done
+> dev.off()
+null device 
+          1 
+> 
+> 
+> # ---------------------------------------
+> # qpcr hw plot
+> # ---------------------------------------
+> # counts
+> actot=get_hw_n(qdata, ac = 1, na = 0, ad = 0)
+> natot=get_hw_n(qdata, ac = 0, na = 1, ad = 0)
+> adtot=get_hw_n(qdata, ac = 0, na = 0, ad = 1)
+> 
+> # intersections
+> acna=get_hw_n(qdata, ac = 1, na = 1, ad = 0)
+> acad=get_hw_n(qdata, ac = 1, na = 0, ad = 1)
+> naad=get_hw_n(qdata, ac = 0, na = 1, ad = 1)
+> 
+> acnaad=get_hw_n(qdata, ac = 1, na = 1, ad = 1)
+> 
+> qpcr.hw <- venneuler(c("A. ceylanicum"=actot, 
++                     "N. americanus"=natot, 
++                     "A. duodenale"=adtot,
++                     "A. ceylanicum&N. americanus"=acna,
++                     "A. ceylanicum&A. duodenale"=acad,
++                     "N. americanus&A. duodenale"=naad,
++                     "A. ceylanicum&N. americanus&A. duodenale"=acnaad))
+> 
+> qpcr.hw$labels <- c("","","")
+> 
+> centers=qpcr.hw$centers
+> 
+> pdf(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Results/wbb-venn-qpcr-hw.pdf",
++     width=6,height=6)
+> plot(qpcr.hw, col=c(cb.lightorange, cb.blue, purple,cb.green))
+> # titles
+> text(x=centers[1,1],y=centers[1,2]+0.15, labels=expression(paste(italic("A. ceylanicum"))))
+> text(x=centers[2,1],y=centers[2,2]-0.32, labels=expression(paste(italic("N. americanus"))))
+> text(x=centers[3,1]-0.08,y=centers[3,2]+0.04, labels=expression(paste(italic("A. duodenale"))))
+> # non intersections
+> text(x=centers[1,1],y=centers[1,2]+0.03, labels=paste(actot))
+> text(x=centers[2,1],y=centers[2,2]-0.02, labels=paste(natot))
+> # intersections
+> text(x=centers[1,1]+0.0,y=centers[1,2]-0.09, labels=paste(acna))
+> text(x=centers[1,1]-0.245,y=centers[1,2]-0.165, labels=paste(naad),cex=0.75)
+> dev.off()
+null device 
+          1 
+> 
+> proc.time()
+   user  system elapsed 
+  2.777   0.239   2.942 

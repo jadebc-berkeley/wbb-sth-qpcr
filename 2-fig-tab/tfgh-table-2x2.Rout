@@ -1,0 +1,108 @@
+
+R version 3.4.3 (2017-11-30) -- "Kite-Eating Tree"
+Copyright (C) 2017 The R Foundation for Statistical Computing
+Platform: x86_64-apple-darwin15.6.0 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Previously saved workspace restored]
+
+> #######################################
+> # WASH Benefits Bangladesh STH KK qPCR validation
+> # 2x2 table of concordance discordance
+> #######################################
+> rm(list=ls())
+> library(dplyr)
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+Warning message:
+package ‘dplyr’ was built under R version 3.4.4 
+> library(tidyr)
+Warning message:
+package ‘tidyr’ was built under R version 3.4.4 
+> library(reshape2)
+
+Attaching package: ‘reshape2’
+
+The following object is masked from ‘package:tidyr’:
+
+    smiths
+
+> library(ggplot2)
+Warning message:
+package ‘ggplot2’ was built under R version 3.4.4 
+> library(grid)
+> library(gridExtra)
+
+Attaching package: ‘gridExtra’
+
+The following object is masked from ‘package:dplyr’:
+
+    combine
+
+> load("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/qdata.RData")
+> load("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/kappa_test.RData")
+> source("~/Documents/CRG/wash-benefits/bangladesh/src/wbb-sth-qpcr/2-fig-tab/0-base-table-functions.R")
+> 
+> qdata = qdata %>%
++   mutate(positive.Al2.lab = ifelse(positive.Al2==1, "qPCR +", "qPCR -"),
++          positive.Hw.lab = ifelse(positive.Hw==1, "qPCR +", "qPCR -"),
++          positive.Tt.lab = ifelse(positive.Tt==1, "qPCR +", "qPCR -"),
++          alkk.lab = ifelse(alkk==1, "KK +", "KK -"),
++          hwkk.lab = ifelse(hwkk==1, "KK +", "KK -"),
++          ttkk.lab = ifelse(ttkk==1, "KK +", "KK -"))
+> 
+> qdata = qdata %>% 
++   mutate(positive.Al2.lab = factor(positive.Al2.lab, levels=c("qPCR +", "qPCR -")),
++          positive.Hw.lab = factor(positive.Hw.lab, levels=c("qPCR +", "qPCR -")),
++          positive.Tt.lab = factor(positive.Tt.lab, levels=c("qPCR +", "qPCR -")),
++          alkk.lab = factor(alkk.lab, levels=c("KK +", "KK -")),
++          hwkk.lab = factor(hwkk.lab, levels=c("KK +", "KK -")),
++          ttkk.lab = factor(ttkk.lab, levels=c("KK +", "KK -")))
+> 
+> altab = table(qdata$alkk.lab, qdata$positive.Al2.lab)
+> hwtab = table(qdata$hwkk.lab, qdata$positive.Hw.lab)
+> tttab = table(qdata$ttkk.lab, qdata$positive.Tt.lab)
+> 
+> alptab = prop.table(table(qdata$alkk.lab, qdata$positive.Al2.lab))
+> hwptab = prop.table(table(qdata$hwkk.lab, qdata$positive.Hw.lab))
+> ttptab = prop.table(table(qdata$ttkk.lab, qdata$positive.Tt.lab))
+> 
+> al_results = make2x2(altab, alptab, label = "A. lumbricoides")
+> hw_results = make2x2(hwtab, hwptab, label = "Hookworm")
+> tt_results = make2x2(tttab, ttptab, label = "T. trichiura")
+> 
+> all_tables = bind_rows(al_results, hw_results, tt_results)
+There were 12 warnings (use warnings() to see them)
+> 
+> all_tables = all_tables %>% 
++   mutate(kappa = c("", paste0(round(al.kappa$value, 2), " (<0.001)"), "",
++                    "", paste0(round(hw.kappa$value, 2), " (<0.001)"), "",
++                    "", paste0(round(tt.kappa$value, 2), " (<0.001)"), ""))
+> 
+> write.csv(all_tables, file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Results/2x2.table.csv",row.names=FALSE)
+> 
+> proc.time()
+   user  system elapsed 
+  0.948   0.085   1.211 
