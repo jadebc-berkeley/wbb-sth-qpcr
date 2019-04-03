@@ -12,6 +12,7 @@ All data required to run the analyses will be made available in concert with the
 
 **`1-analysis`** : analysis scripts
 
+* `0-run-analysis.sh`: bash script that reproduces entire R workflow in this subdirectory
 * `1-tfgh-preliminary.R`: R script that reads in raw data and prepares the analysis data (which is shared on OSF)
 * `2-tfgh-descriptive.R`: R script that summarizes characteristics of study participants
 * `3-tfgh-prev-mean.R`: R script that calculates prevalence and geometric mean of STH using each diagnostic
@@ -27,3 +28,24 @@ All data required to run the analyses will be made available in concert with the
 
 
 **`2-fig-tab`** :  tables and figures
+
+* `0-base-plot-functions.R`: R script that includes functions used for plotting
+* `0-base-table-functions.R`: R script that includes functions used for table generation
+* `tfgh-boxplot-al.R`: R script that creates a box plot comparing the qPCR Cq values for *A. lumbricoides* within levels of Kato-Katz infection intensity
+* `tfgh-boxplot-al.R`: R script that creates a box plot comparing the qPCR Cq values for *A. lumbricoides* within levels of Kato-Katz infection intensity (manuscript Figure 4)
+* `tfgh-plot-bar.R`: R script that creates a bar plot comparing the prevalence of each STH using Kato-Katz vs. qPCR (manuscript Figure 1)
+* `tfgh-plot-scatter.R`: R script that creates a scatter plot comparing qPCR Cq values vs. Kato-Katz eggs per gram values (manuscript Figure 3)
+* `tfgh-plot-venn-diagram.R`: R script that creates a venn diagram of co-infection (manuscript Figure 2)
+* `tfgh-table-2x2.R`: R script that creates 2x2 tables of concordance and discordance between Kato-Katz and qPCR (manuscript Table 3)
+* `tfgh-table-prevint.R`: R script that creates a table comparing the prevalence from each diagnostic, geometric mean of Kato-Katz eggs per gram, and median Cq values from qPCR (manuscript Table 2)
+* `tfgh-table-sens-spec-pooled-gold.R`: R script that creates a table comparing estimates of sensitivity, specificity using either method as gold standard (manuscript Table 4, Panel 2)
+* `tfgh-table-sens-spec-qgold.R`: R script that creates a table comparing estimates of sensitivity, specificity using pooled kk qPCR as gold standard (not included in manuscript)
+
+
+
+
+
+
+
+
+
