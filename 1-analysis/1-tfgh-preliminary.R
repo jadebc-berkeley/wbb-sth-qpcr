@@ -52,13 +52,13 @@ table(qpcr$assay)
 qpcr$sampleid[qpcr$sampleid==":559901ETS"]="559901ETS1"
 
 # take mean of results for each sample
-qpcr <- qpcr %>%
+qpcr.mean <- qpcr %>%
   group_by(sampleid,assay) %>%
   summarise(CTmean=mean(CTmean),CTSD=mean(CTSD)) %>%
   mutate(positive=ifelse(CTmean<40,1,0)) %>%
   mutate(positive=ifelse(is.na(CTmean),0,positive))
 
-mean.l <- qpcr %>% 
+mean.l <- qpcr.mean %>% 
   group_by(sampleid) %>%
   select(sampleid,assay,CTmean) %>% 
   spread(assay,CTmean) %>%
@@ -66,7 +66,7 @@ mean.l <- qpcr %>%
          CTmean.IAC=IAC, CTmean.Na=Na, 
          CTmean.Ss=Ss,CTmean.Tt=Tt)
 
-sd.l <- qpcr %>% 
+sd.l <- qpcr.mean %>% 
   group_by(sampleid) %>%
   select(sampleid,assay,CTSD) %>% 
   spread(assay,CTSD) %>%
@@ -74,7 +74,7 @@ sd.l <- qpcr %>%
          CTSD.IAC=IAC, CTSD.Na=Na, 
          CTSD.Ss=Ss,CTSD.Tt=Tt)
 
-pos.l <- qpcr %>% 
+pos.l <- qpcr.mean %>% 
   group_by(sampleid) %>%
   select(sampleid,assay,positive) %>% 
   spread(assay,positive) %>%
@@ -110,15 +110,17 @@ qpcr.w <- qpcr.w %>%
 #--------------------------------------
 # read in revised Ascaris qPCR data
 #--------------------------------------
-ascaris_new=read.csv("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/Revised ascaris assay/KK v New assay comparison_10-17-18.csv",stringsAsFactors=FALSE)
-colnames(ascaris_new) = c("sampleid", "alepg", "al", "X", "CTmean.Al2", "CTSD.Al2")
+# ascaris_new=read.csv("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/Revised ascaris assay/KK v New assay comparison_10-17-18.csv",stringsAsFactors=FALSE)
+ascaris_new=read.csv("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/Revised ascaris assay/KK v New assay comparison_4-3-19_Updated with data for missing samples.csv", stringsAsFactors=FALSE)
+
+colnames(ascaris_new) = c("sampleid", "alepg", "al", "X", "CTmean.Al2", "CTSD.Al2", "XX")
 ascaris_new$dataid=substr(ascaris_new$sampleid,1,5)
 ascaris_new$personid=paste(substr(ascaris_new$sampleid,7,7),1,sep="")
-ascaris_new = ascaris_new %>% select(-c(X, alepg, al))
+ascaris_new = ascaris_new %>% select(-c(X,XX, alepg, al))
 
 # indicator for positive Al 
 ascaris_new <- ascaris_new %>%
-  mutate(CTmean.Al2 = ifelse(CTmean.Al2 == "DNA SAMPLE MISSING", NA,CTmean.Al2)) %>%
+  # mutate(CTmean.Al2 = ifelse(CTmean.Al2 == "DNA SAMPLE MISSING", NA,CTmean.Al2)) %>%
   mutate(CTmean.Al2 = as.numeric(CTmean.Al2)) %>%
   mutate(positive.Al2=ifelse(CTmean.Al2<40,1,0)) %>%
   mutate(positive.Al2=ifelse(is.na(CTmean.Al2),0,positive.Al2))
