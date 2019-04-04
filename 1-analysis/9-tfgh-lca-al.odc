@@ -22,5 +22,5 @@ rhoD <- covDp / sqrt(Se1*(1-Se1)*Se2*(1-Se2))
 rhoDc <- covDn / sqrt(Sp1*(1-Sp1)*Sp2*(1-Sp2))
 }
 
-list(n=2800, x=c(310, 721, 329, 1428)) #ascaris data 
-list(pi=0.230, Se1=0.642, Se2=0.98, Sp1=0.669, Sp2=0.97) # initial values
+list(n=2799, x=c(319, 716, 333, 1431)) #ascaris data 
+list(pi=0.232, Se1=0.642, Se2=0.98, Sp1=0.669, Sp2=0.97) # initial values
