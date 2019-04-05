@@ -3,12 +3,10 @@
 # plot qpcr vs. kk prevalence
 #######################################
 rm(list=ls())
-library(dplyr)
-library(tidyr)
-library(reshape2)
-library(ggplot2)
-library(grid)
-library(gridExtra)
+
+# configure directories, load libraries and base functions
+source(paste0(here::here(), "/0-config.R"))
+
 load("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/qdata.RData")
 
 
@@ -76,7 +74,7 @@ gray="#919191"
 
 mycol=c(cb.lightorange,purple,cb.blue,cb.pink,cb.dblue,cb.green)
 
-pdf(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Results/wbb-qpcr-kk-bargraph.pdf",
+pdf(file=paste0(fig_dir, "wbb-qpcr-kk-bargraph.pdf"),
     width=10,height=4)
 ggplot(bar.data,aes(x=test,y=per.pos,fill=org),col="black")+
   geom_bar(aes(fill=org),stat="identity",colour="black",
@@ -89,13 +87,24 @@ ggplot(bar.data,aes(x=test,y=per.pos,fill=org),col="black")+
                                       italic("Necator americanus"),
                                       italic("Trichuris trichiura"))) +
   scale_y_continuous(limits=c(0,40)) +
-  geom_text(aes(label=per.f,vjust=c(-0.3,-0.3,-0.3,-0.3,-0.3,-2.9,-0.3,-0.3))) +
+  geom_text(aes(label=per.f,vjust=c(-0.3,-0.3,-0.3,-0.3,-0.3,-2.9,-0.3,-0.3)), size=5) +
   theme_bw() +
-  theme(legend.text.align = 0) +
-  ylab("Prevalence")+xlab("Diagnostic method")
+  
+  # customize font size, legend
+  theme(legend.text.align = 0,
+        axis.text.x = element_text(size=12),
+        axis.title.x = element_text(size=14, margin = margin(t = 10, r = 0, b = 0, l = 0)),
+        axis.text.y = element_text(size=12),
+        axis.title.y = element_text(size=14, margin = margin(t = 0, r = 10, b = 0, l = 0)),
+        strip.text = element_text(size=14),
+        legend.text = element_text(size=12),
+        legend.title = element_text(size=14)) +
+  
+  ylab("Prevalence") +
+  xlab("Diagnostic method")
 dev.off()
 
-pdf(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Results/wbb-qpcr-kk-bargraph-poster.pdf",
+pdf(file=paste0(fig_dir, "wbb-qpcr-kk-bargraph-poster.pdf"),
     width=4,height=3.5)
 ggplot(bar.data,aes(x=test,y=per.pos,fill=org),col="black")+
   geom_bar(aes(fill=org),stat="identity",colour="black",
