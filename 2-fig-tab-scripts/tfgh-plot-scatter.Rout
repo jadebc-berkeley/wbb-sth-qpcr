@@ -22,9 +22,15 @@ Type 'q()' to quit R.
 > #######################################
 > # WASH Benefits Bangladesh STH KK qPCR validation
 > # scatter plot qpcr Cq values vs. kk EPG values
+> 
+> # by Jade Benjamin-Chung
+> # jadebc@berkeley.edu
 > #######################################
 > rm(list=ls())
-> library(dplyr)
+> 
+> # configure directories, load libraries and base functions
+> source(paste0(here::here(), "/0-config.R"))
+here() starts at /Users/jadederong/Documents/CRG/wash-benefits/bangladesh/src/wbb-sth-qpcr
 
 Attaching package: ‘dplyr’
 
@@ -36,12 +42,6 @@ The following objects are masked from ‘package:base’:
 
     intersect, setdiff, setequal, union
 
-Warning message:
-package ‘dplyr’ was built under R version 3.4.4 
-> library(tidyr)
-Warning message:
-package ‘tidyr’ was built under R version 3.4.4 
-> library(reshape2)
 
 Attaching package: ‘reshape2’
 
@@ -49,11 +49,6 @@ The following object is masked from ‘package:tidyr’:
 
     smiths
 
-> library(ggplot2)
-Warning message:
-package ‘ggplot2’ was built under R version 3.4.4 
-> library(grid)
-> library(gridExtra)
 
 Attaching package: ‘gridExtra’
 
@@ -61,7 +56,28 @@ The following object is masked from ‘package:dplyr’:
 
     combine
 
-> load("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/qdata.RData")
+Welcome to the washb package
+Version: 0.2.1
+Created on 2017-02-02
+
+This software was developed with funding from the
+Bill & Melinda Gates Foundation (grant number OPPGD759).
+
+The package's reference manual and vignette are also online:
+https://ben-arnold.github.io/washb
+
+Loading required package: futile.logger
+Loading required package: rJava
+Loading required package: lpSolve
+Warning messages:
+1: package ‘ggplot2’ was built under R version 3.4.4 
+2: package ‘dplyr’ was built under R version 3.4.4 
+3: package ‘tidyr’ was built under R version 3.4.4 
+4: package ‘VennDiagram’ was built under R version 3.4.4 
+5: package ‘irr’ was built under R version 3.4.4 
+> 
+> # load data
+> load(paste0(data_dir,"qdata.RData"))
 > 
 > #--------------------------------------
 > # scatter plot of qPCR CT and KK EPG results
@@ -76,6 +92,17 @@ The following object is masked from ‘package:dplyr’:
 > yseq=seq(0,45,5)
 > xseq=c(1, 10, 100, 1000, 10000, 100000)
 > 
+> # customize font size, legend
+> fonts = theme(legend.text.align = 0,
++       axis.text.x = element_text(size=12),
++       axis.title.x = element_text(size=14, margin = margin(t = 10, r = 0, b = 0, l = 0)),
++       axis.text.y = element_text(size=12),
++       axis.title.y = element_text(size=14, margin = margin(t = 0, r = 10, b = 0, l = 0)),
++       strip.text = element_text(size=18),
++       legend.text = element_text(size=10),
++       legend.title = element_text(size=12),
++       plot.title = element_text(hjust = 0.5))
+>   
 > # al plot
 > al <- qdata %>% filter(positive.Al2==1 | alkk==1) %>%
 +   # impute 1 for negative values of epg
@@ -88,8 +115,10 @@ The following object is masked from ‘package:dplyr’:
 +   scale_x_log10(labels=xseq, breaks=xseq, limits=c(1, 10^5))+
 +   xlab("Kato-Katz eggs per gram")+
 +   ylab("qPCR Cq value")+
-+   theme_bw()+ggtitle(expression(paste(italic("Ascaris lumbricoides"))))+
-+   theme(plot.title = element_text(hjust = 0.5))
++   theme_bw()+
++   fonts + 
++   ggtitle(expression(paste(italic("Ascaris lumbricoides"))))
+> 
 > 
 > # hw plot
 > hw <- qdata %>% filter(positive.Hw==1 | hwkk==1) %>%
@@ -114,12 +143,12 @@ The following object is masked from ‘package:dplyr’:
 +   ylab("qPCR Cq value")+
 +   scale_color_manual(values=c(cb.blue,cb.dblue,cb.pink))+
 +   theme_bw()+ 
-+   theme(legend.position = c(0.77, 0.8), 
++   theme(legend.position = c(0.75, 0.8), 
 +         legend.background = element_rect(color = "black", 
 +           fill = "white", size = 0.2, linetype = "solid"),
 +         legend.text = element_text(face = "italic"))+
-+   ggtitle("Hookworm")+theme(plot.title = element_text(hjust = 0.5))
-> 
++   fonts + 
++   ggtitle("Hookworm")
 > 
 > hw.plot.poster=ggplot(hw, aes(x=hwepg, y=CT))+
 +   geom_point(aes(col=Species),alpha=0.65)+
@@ -145,8 +174,9 @@ The following object is masked from ‘package:dplyr’:
 +   scale_x_log10(labels=xseq, breaks=xseq, limits=c(1, 10^5))+
 +   xlab("Kato-Katz eggs per gram")+
 +   ylab("qPCR Cq value")+
-+   theme_bw()+ggtitle(expression(paste(italic("Trichuris trichiura"))))+
-+   theme(plot.title = element_text(hjust = 0.5))
++   theme_bw()+
++   fonts + 
++   ggtitle(expression(paste(italic("Trichuris trichiura"))))
 > 
 > cont.plot=grid.arrange(al.plot,hw.plot,tt.plot,nrow=1)
 Warning messages:
@@ -157,7 +187,7 @@ Warning messages:
 5: Removed 28 rows containing non-finite values (stat_smooth). 
 6: Removed 28 rows containing missing values (geom_point). 
 > 
-> pdf(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Results/wbb-qpcr-kk-scatter.pdf",
+> pdf(file=paste0(fig_dir,"wbb-qpcr-kk-scatter.pdf"),
 +     width=15,height=4)
 > grid.draw(cont.plot)
 > dev.off()
@@ -173,7 +203,7 @@ Warning messages:
 5: Removed 28 rows containing non-finite values (stat_smooth). 
 6: Removed 28 rows containing missing values (geom_point). 
 > 
-> pdf(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Results/wbb-qpcr-kk-scatter-poster.pdf",
+> pdf(file=paste0(fig_dir, "wbb-qpcr-kk-scatter-poster.pdf"),
 +     width=11,height=3)
 > grid.draw(cont.plot.poster)
 > dev.off()
@@ -182,4 +212,4 @@ pdf
 > 
 > proc.time()
    user  system elapsed 
-  3.987   0.135   4.402 
+  4.218   0.188   4.648 

@@ -22,9 +22,15 @@ Type 'q()' to quit R.
 > #######################################
 > # WASH Benefits Bangladesh STH KK qPCR validation
 > # characteristics of study participants
+> 
+> # by Jade Benjamin-Chung
+> # jadebc@berkeley.edu
 > #######################################
 > rm(list=ls())
-> library(dplyr)
+> 
+> # configure directories, load libraries and base functions
+> source(paste0(here::here(), "/0-config.R"))
+here() starts at /Users/jadederong/Documents/CRG/wash-benefits/bangladesh/src/wbb-sth-qpcr
 
 Attaching package: ‘dplyr’
 
@@ -36,10 +42,43 @@ The following objects are masked from ‘package:base’:
 
     intersect, setdiff, setequal, union
 
-Warning message:
-package ‘dplyr’ was built under R version 3.4.4 
+
+Attaching package: ‘reshape2’
+
+The following object is masked from ‘package:tidyr’:
+
+    smiths
+
+
+Attaching package: ‘gridExtra’
+
+The following object is masked from ‘package:dplyr’:
+
+    combine
+
+Welcome to the washb package
+Version: 0.2.1
+Created on 2017-02-02
+
+This software was developed with funding from the
+Bill & Melinda Gates Foundation (grant number OPPGD759).
+
+The package's reference manual and vignette are also online:
+https://ben-arnold.github.io/washb
+
+Loading required package: futile.logger
+Loading required package: rJava
+Loading required package: lpSolve
+Warning messages:
+1: package ‘ggplot2’ was built under R version 3.4.4 
+2: package ‘dplyr’ was built under R version 3.4.4 
+3: package ‘tidyr’ was built under R version 3.4.4 
+4: package ‘VennDiagram’ was built under R version 3.4.4 
+5: package ‘irr’ was built under R version 3.4.4 
 > 
-> load("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/qdata.RData")
+> # load data
+> load(paste0(data_dir,"qdata.RData"))
+> 
 > 
 > prop.table(table(qdata$sex))
 
@@ -59,4 +98,4 @@ package ‘dplyr’ was built under R version 3.4.4
 > 
 > proc.time()
    user  system elapsed 
-  0.742   0.054   0.862 
+  1.487   0.125   1.763 

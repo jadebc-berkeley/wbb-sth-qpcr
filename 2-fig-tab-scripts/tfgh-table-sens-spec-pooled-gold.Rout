@@ -23,9 +23,15 @@ Type 'q()' to quit R.
 > # WASH Benefits Bangladesh STH KK qPCR validation
 > # table of estimates of sensitivity, specificity
 > # using pooled kk qPCR as gold standard
+> 
+> # by Jade Benjamin-Chung
+> # jadebc@berkeley.edu
 > #######################################
 > rm(list=ls())
-> library(dplyr)
+> 
+> # configure directories, load libraries and base functions
+> source(paste0(here::here(), "/0-config.R"))
+here() starts at /Users/jadederong/Documents/CRG/wash-benefits/bangladesh/src/wbb-sth-qpcr
 
 Attaching package: ‘dplyr’
 
@@ -37,14 +43,47 @@ The following objects are masked from ‘package:base’:
 
     intersect, setdiff, setequal, union
 
-Warning message:
-package ‘dplyr’ was built under R version 3.4.4 
+
+Attaching package: ‘reshape2’
+
+The following object is masked from ‘package:tidyr’:
+
+    smiths
+
+
+Attaching package: ‘gridExtra’
+
+The following object is masked from ‘package:dplyr’:
+
+    combine
+
+Welcome to the washb package
+Version: 0.2.1
+Created on 2017-02-02
+
+This software was developed with funding from the
+Bill & Melinda Gates Foundation (grant number OPPGD759).
+
+The package's reference manual and vignette are also online:
+https://ben-arnold.github.io/washb
+
+Loading required package: futile.logger
+Loading required package: rJava
+Loading required package: lpSolve
+Warning messages:
+1: package ‘ggplot2’ was built under R version 3.4.4 
+2: package ‘dplyr’ was built under R version 3.4.4 
+3: package ‘tidyr’ was built under R version 3.4.4 
+4: package ‘VennDiagram’ was built under R version 3.4.4 
+5: package ‘irr’ was built under R version 3.4.4 
 > 
-> load("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/sensspec_pooled_gold.RData")
-> load("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/qdata.RData")
+> # load data
+> load(paste0(data_dir,"sensspec_pooled_gold.RData"))
+> load(paste0(data_dir,"qdata.RData"))
 > 
-> source("~/Documents/CRG/wash-benefits/bangladesh/src/wbb-sth-qpcr/2-fig-tab/0-base-table-functions.R")
-> 
+> #---------------------------------------
+> # make table
+> #---------------------------------------
 > N.al=nrow(qdata[!is.na(qdata$positive.Al2) & !is.na(qdata$alkk),])
 > N.hw=nrow(qdata[!is.na(qdata$positive.Hw) & !is.na(qdata$hwkk),])
 > N.tt=nrow(qdata[!is.na(qdata$positive.Tt) & !is.na(qdata$ttkk),])
@@ -74,8 +113,11 @@ package ‘dplyr’ was built under R version 3.4.4
 > out=full_join(out,q.spec,by=c("org"))
 > out$N=c(N.al,N.hw,N.tt)
 > 
-> write.csv(out,file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Results/ss_pooled_gold.csv",row.names=FALSE)
+> #---------------------------------------
+> # save table
+> #---------------------------------------
+> write.csv(out,file=paste0(tab_dir, "ss_pooled_gold.csv"),row.names=FALSE)
 > 
 > proc.time()
    user  system elapsed 
-  0.724   0.056   0.847 
+  1.370   0.128   1.664 

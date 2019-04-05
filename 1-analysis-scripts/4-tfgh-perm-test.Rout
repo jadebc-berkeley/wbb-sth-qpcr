@@ -24,9 +24,15 @@ Type 'q()' to quit R.
 > # clustered permutation test
 > # to assess whether prevalence is different
 > # between kk and qPCR
+> 
+> # by Jade Benjamin-Chung
+> # jadebc@berkeley.edu
 > #######################################
 > rm(list=ls())
-> library(dplyr)
+> 
+> # configure directories, load libraries and base functions
+> source(paste0(here::here(), "/0-config.R"))
+here() starts at /Users/jadederong/Documents/CRG/wash-benefits/bangladesh/src/wbb-sth-qpcr
 
 Attaching package: ‘dplyr’
 
@@ -38,13 +44,20 @@ The following objects are masked from ‘package:base’:
 
     intersect, setdiff, setequal, union
 
-Warning message:
-package ‘dplyr’ was built under R version 3.4.4 
-> library(clusrank)
-> library(tidyr)
-Warning message:
-package ‘tidyr’ was built under R version 3.4.4 
-> library(washb)
+
+Attaching package: ‘reshape2’
+
+The following object is masked from ‘package:tidyr’:
+
+    smiths
+
+
+Attaching package: ‘gridExtra’
+
+The following object is masked from ‘package:dplyr’:
+
+    combine
+
 Welcome to the washb package
 Version: 0.2.1
 Created on 2017-02-02
@@ -55,8 +68,22 @@ Bill & Melinda Gates Foundation (grant number OPPGD759).
 The package's reference manual and vignette are also online:
 https://ben-arnold.github.io/washb
 
-> load("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/qdata.RData")
+Loading required package: futile.logger
+Loading required package: rJava
+Loading required package: lpSolve
+Warning messages:
+1: package ‘ggplot2’ was built under R version 3.4.4 
+2: package ‘dplyr’ was built under R version 3.4.4 
+3: package ‘tidyr’ was built under R version 3.4.4 
+4: package ‘VennDiagram’ was built under R version 3.4.4 
+5: package ‘irr’ was built under R version 3.4.4 
 > 
+> # load data
+> load(paste0(data_dir,"qdata.RData"))
+> 
+> #---------------------------------------
+> # permutation test
+> #---------------------------------------
 > al.data <- qdata %>%
 +   # subset to relevant columns
 +   select(c(dataid,personid,block,clusterid,positive.Al,alkk)) %>%
@@ -92,7 +119,9 @@ https://ben-arnold.github.io/washb
 +   block = as.factor(block))%>%
 +   filter(!is.na(positive))
 >   
+> #---------------------------------------
 > # permutation tests with block as cluster
+> #---------------------------------------
 > set.seed(242524)
 > p.al <- washb_permute(Y=al.data$positive,tr=al.data$test,
 +              pair=al.data$block,contrast=c("kk","qpcr"),nreps=100000)
@@ -118,6 +147,10 @@ The following objects are masked from ‘package:dplyr’:
 
     arrange, count, desc, failwith, id, mutate, rename, summarise,
     summarize
+
+The following object is masked from ‘package:here’:
+
+    here
 
 
 	Approximative Wilcoxon-Pratt Signed-Rank Test
@@ -156,4 +189,4 @@ alternative hypothesis: true mu is not equal to 0
 > 
 > proc.time()
    user  system elapsed 
-  3.261   0.157   3.745 
+  4.006   0.233   4.718 

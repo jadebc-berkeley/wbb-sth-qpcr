@@ -22,9 +22,15 @@ Type 'q()' to quit R.
 > #######################################
 > # WASH Benefits Bangladesh STH KK qPCR validation
 > # 2x2 table of concordance discordance
+> 
+> # by Jade Benjamin-Chung
+> # jadebc@berkeley.edu
 > #######################################
 > rm(list=ls())
-> library(dplyr)
+> 
+> # configure directories, load libraries and base functions
+> source(paste0(here::here(), "/0-config.R"))
+here() starts at /Users/jadederong/Documents/CRG/wash-benefits/bangladesh/src/wbb-sth-qpcr
 
 Attaching package: ‘dplyr’
 
@@ -36,12 +42,6 @@ The following objects are masked from ‘package:base’:
 
     intersect, setdiff, setequal, union
 
-Warning message:
-package ‘dplyr’ was built under R version 3.4.4 
-> library(tidyr)
-Warning message:
-package ‘tidyr’ was built under R version 3.4.4 
-> library(reshape2)
 
 Attaching package: ‘reshape2’
 
@@ -49,11 +49,6 @@ The following object is masked from ‘package:tidyr’:
 
     smiths
 
-> library(ggplot2)
-Warning message:
-package ‘ggplot2’ was built under R version 3.4.4 
-> library(grid)
-> library(gridExtra)
 
 Attaching package: ‘gridExtra’
 
@@ -61,10 +56,33 @@ The following object is masked from ‘package:dplyr’:
 
     combine
 
-> load("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/qdata.RData")
-> load("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/kappa_test.RData")
-> source("~/Documents/CRG/wash-benefits/bangladesh/src/wbb-sth-qpcr/2-fig-tab/0-base-table-functions.R")
+Welcome to the washb package
+Version: 0.2.1
+Created on 2017-02-02
+
+This software was developed with funding from the
+Bill & Melinda Gates Foundation (grant number OPPGD759).
+
+The package's reference manual and vignette are also online:
+https://ben-arnold.github.io/washb
+
+Loading required package: futile.logger
+Loading required package: rJava
+Loading required package: lpSolve
+Warning messages:
+1: package ‘ggplot2’ was built under R version 3.4.4 
+2: package ‘dplyr’ was built under R version 3.4.4 
+3: package ‘tidyr’ was built under R version 3.4.4 
+4: package ‘VennDiagram’ was built under R version 3.4.4 
+5: package ‘irr’ was built under R version 3.4.4 
 > 
+> # load data
+> load(paste0(data_dir,"qdata.RData"))
+> load(paste0(data_dir,"kappa_test.RData"))
+> 
+> #---------------------------------------
+> # preprocess data
+> #---------------------------------------
 > qdata = qdata %>%
 +   mutate(positive.Al2.lab = ifelse(positive.Al2==1, "qPCR +", "qPCR -"),
 +          positive.Hw.lab = ifelse(positive.Hw==1, "qPCR +", "qPCR -"),
@@ -81,6 +99,9 @@ The following object is masked from ‘package:dplyr’:
 +          hwkk.lab = factor(hwkk.lab, levels=c("KK +", "KK -")),
 +          ttkk.lab = factor(ttkk.lab, levels=c("KK +", "KK -")))
 > 
+> #---------------------------------------
+> # create table
+> #---------------------------------------
 > altab = table(qdata$alkk.lab, qdata$positive.Al2.lab)
 > hwtab = table(qdata$hwkk.lab, qdata$positive.Hw.lab)
 > tttab = table(qdata$ttkk.lab, qdata$positive.Tt.lab)
@@ -101,8 +122,11 @@ There were 12 warnings (use warnings() to see them)
 +                    "", paste0(round(hw.kappa$value, 2), " (<0.001)"), "",
 +                    "", paste0(round(tt.kappa$value, 2), " (<0.001)"), ""))
 > 
-> write.csv(all_tables, file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Results/2x2.table.csv",row.names=FALSE)
+> #---------------------------------------
+> # save table
+> #---------------------------------------
+> write.csv(all_tables, file=paste0(tab_dir, "2x2.table.csv"),row.names=FALSE)
 > 
 > proc.time()
    user  system elapsed 
-  0.948   0.085   1.211 
+  1.423   0.143   1.794 
