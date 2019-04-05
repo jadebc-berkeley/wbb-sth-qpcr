@@ -13,8 +13,12 @@ library(reshape2)
 library(ggplot2)
 library(grid)
 library(gridExtra)
+library(washb)
+library(VennDiagram)
+library(venneuler)
 
 # define directories
+data_dir = "~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/"
 fig_dir = paste0(here::here(),"/3-figures/")
 
 # source base functions  
