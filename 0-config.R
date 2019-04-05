@@ -20,8 +20,9 @@ library(venneuler)
 # define directories
 data_dir = "~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/"
 fig_dir = paste0(here::here(),"/3-figures/")
+tab_dir = paste0(here::here(),"/4-tables/")
 
 # source base functions  
 source(paste0(here::here(), "/2-fig-tab-scripts/0-base-plot-functions.R"))
-source(paste0(here::here(), "/2-fig-tab-scripts/0-base-plot-functions.R"))
+source(paste0(here::here(), "/2-fig-tab-scripts/0-base-table-functions.R"))
 
