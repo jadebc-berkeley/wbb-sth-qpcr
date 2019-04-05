@@ -16,6 +16,9 @@ library(gridExtra)
 library(washb)
 library(VennDiagram)
 library(venneuler)
+library(irr)
+library(clusrank)
+
 
 # define directories
 data_dir = "~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/"
