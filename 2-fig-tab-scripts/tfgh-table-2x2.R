@@ -3,16 +3,17 @@
 # 2x2 table of concordance discordance
 #######################################
 rm(list=ls())
-library(dplyr)
-library(tidyr)
-library(reshape2)
-library(ggplot2)
-library(grid)
-library(gridExtra)
-load("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/qdata.RData")
-load("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/kappa_test.RData")
-source("~/Documents/CRG/wash-benefits/bangladesh/src/wbb-sth-qpcr/2-fig-tab/0-base-table-functions.R")
 
+# configure directories, load libraries and base functions
+source(paste0(here::here(), "/0-config.R"))
+
+# load data
+load(paste0(data_dir,"qdata.RData"))
+load(paste0(data_dir,"kappa_test.RData"))
+
+#---------------------------------------
+# preprocess data
+#---------------------------------------
 qdata = qdata %>%
   mutate(positive.Al2.lab = ifelse(positive.Al2==1, "qPCR +", "qPCR -"),
          positive.Hw.lab = ifelse(positive.Hw==1, "qPCR +", "qPCR -"),
@@ -29,6 +30,9 @@ qdata = qdata %>%
          hwkk.lab = factor(hwkk.lab, levels=c("KK +", "KK -")),
          ttkk.lab = factor(ttkk.lab, levels=c("KK +", "KK -")))
 
+#---------------------------------------
+# create table
+#---------------------------------------
 altab = table(qdata$alkk.lab, qdata$positive.Al2.lab)
 hwtab = table(qdata$hwkk.lab, qdata$positive.Hw.lab)
 tttab = table(qdata$ttkk.lab, qdata$positive.Tt.lab)
@@ -48,4 +52,7 @@ all_tables = all_tables %>%
                    "", paste0(round(hw.kappa$value, 2), " (<0.001)"), "",
                    "", paste0(round(tt.kappa$value, 2), " (<0.001)"), ""))
 
-write.csv(all_tables, file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Results/2x2.table.csv",row.names=FALSE)
+#---------------------------------------
+# save table
+#---------------------------------------
+write.csv(all_tables, file=paste0(tab_dir, "2x2.table.csv"),row.names=FALSE)
