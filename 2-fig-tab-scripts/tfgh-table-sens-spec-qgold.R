@@ -3,6 +3,9 @@
 # estimate sensitivity, specificity
 # of kk using qPCR as gold standard
 # make table
+
+# by Jade Benjamin-Chung
+# jadebc@berkeley.edu
 #######################################
 rm(list=ls())
 

@@ -1,6 +1,9 @@
 #######################################
 # WASH Benefits Bangladesh STH KK qPCR validation
 # 2x2 table of concordance discordance
+
+# by Jade Benjamin-Chung
+# jadebc@berkeley.edu
 #######################################
 rm(list=ls())
 

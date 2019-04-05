@@ -2,6 +2,9 @@
 # WASH Benefits Bangladesh STH KK qPCR validation
 # table of estimates of sensitivity, specificity
 # using pooled kk qPCR as gold standard
+
+# by Jade Benjamin-Chung
+# jadebc@berkeley.edu
 #######################################
 rm(list=ls())
 

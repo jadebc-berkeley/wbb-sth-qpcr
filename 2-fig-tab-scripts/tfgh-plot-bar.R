@@ -1,6 +1,9 @@
 #######################################
 # WASH Benefits Bangladesh STH KK qPCR validation
 # plot qpcr vs. kk prevalence
+
+# by Jade Benjamin-Chung
+# jadebc@berkeley.edu
 #######################################
 rm(list=ls())
 

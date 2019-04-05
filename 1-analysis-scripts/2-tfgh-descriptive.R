@@ -1,6 +1,9 @@
 #######################################
 # WASH Benefits Bangladesh STH KK qPCR validation
 # characteristics of study participants
+
+# by Jade Benjamin-Chung
+# jadebc@berkeley.edu
 #######################################
 rm(list=ls())
 

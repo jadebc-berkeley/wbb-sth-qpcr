@@ -1,6 +1,9 @@
 #######################################
 # WASH Benefits Bangladesh STH KK qPCR validation
 # venn diagram of co-infection
+
+# by Jade Benjamin-Chung
+# jadebc@berkeley.edu
 #######################################
 rm(list=ls())
 

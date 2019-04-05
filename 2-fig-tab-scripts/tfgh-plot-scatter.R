@@ -1,6 +1,9 @@
 #######################################
 # WASH Benefits Bangladesh STH KK qPCR validation
 # scatter plot qpcr Cq values vs. kk EPG values
+
+# by Jade Benjamin-Chung
+# jadebc@berkeley.edu
 #######################################
 rm(list=ls())
 

@@ -3,6 +3,9 @@
 # clustered permutation test
 # to assess whether prevalence is different
 # between kk and qPCR
+
+# by Jade Benjamin-Chung
+# jadebc@berkeley.edu
 #######################################
 rm(list=ls())
 

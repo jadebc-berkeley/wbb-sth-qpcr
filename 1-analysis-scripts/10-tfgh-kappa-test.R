@@ -2,6 +2,9 @@
 # WASH Benefits Bangladesh STH KK qPCR validation
 # kappa test of agreement between 
 # KK and qPCR classification
+
+# by Jade Benjamin-Chung
+# jadebc@berkeley.edu
 #######################################
 rm(list=ls())
 

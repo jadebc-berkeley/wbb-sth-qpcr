@@ -2,6 +2,9 @@
 # WASH Benefits Bangladesh STH KK qPCR validation
 # calculate prevalence and geometric mean
 # using each diagnostic
+
+# by Jade Benjamin-Chung
+# jadebc@berkeley.edu
 #######################################
 rm(list=ls())
 

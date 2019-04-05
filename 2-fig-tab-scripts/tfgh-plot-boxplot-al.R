@@ -2,6 +2,9 @@
 # WASH Benefits Bangladesh STH KK qPCR validation
 # boxplot of ascaris ct distribution
 # within intensity categories
+
+# by Jade Benjamin-Chung
+# jadebc@berkeley.edu
 #######################################
 rm(list=ls())
 
