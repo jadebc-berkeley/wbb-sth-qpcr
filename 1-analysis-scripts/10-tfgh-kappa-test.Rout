@@ -1,0 +1,92 @@
+
+R version 3.4.3 (2017-11-30) -- "Kite-Eating Tree"
+Copyright (C) 2017 The R Foundation for Statistical Computing
+Platform: x86_64-apple-darwin15.6.0 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> #######################################
+> # WASH Benefits Bangladesh STH KK qPCR validation
+> # kappa test of agreement between 
+> # KK and qPCR classification
+> 
+> # by Jade Benjamin-Chung
+> # jadebc@berkeley.edu
+> #######################################
+> rm(list=ls())
+> 
+> # configure directories, load libraries and base functions
+> source(paste0(here::here(), "/0-config.R"))
+here() starts at /Users/jadederong/Documents/CRG/wash-benefits/bangladesh/src/wbb-sth-qpcr
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+
+Attaching package: ‘reshape2’
+
+The following object is masked from ‘package:tidyr’:
+
+    smiths
+
+
+Attaching package: ‘gridExtra’
+
+The following object is masked from ‘package:dplyr’:
+
+    combine
+
+Welcome to the washb package
+Version: 0.2.1
+Created on 2017-02-02
+
+This software was developed with funding from the
+Bill & Melinda Gates Foundation (grant number OPPGD759).
+
+The package's reference manual and vignette are also online:
+https://ben-arnold.github.io/washb
+
+Loading required package: futile.logger
+Loading required package: rJava
+Loading required package: lpSolve
+Warning messages:
+1: package ‘ggplot2’ was built under R version 3.4.4 
+2: package ‘dplyr’ was built under R version 3.4.4 
+3: package ‘tidyr’ was built under R version 3.4.4 
+4: package ‘VennDiagram’ was built under R version 3.4.4 
+5: package ‘irr’ was built under R version 3.4.4 
+> 
+> # load data
+> load(paste0(data_dir,"qdata.RData"))
+> 
+> qdata = qdata %>% filter(!is.na(positive.Al2))
+> 
+> al.kappa = kappa2(qdata[,c("alkk","positive.Al2")], "unweighted")
+> hw.kappa = kappa2(qdata[,c("hwkk","positive.Hw")], "unweighted")
+> tt.kappa = kappa2(qdata[,c("ttkk","positive.Tt")], "unweighted")
+> 
+> save(al.kappa,  hw.kappa,  tt.kappa,
++         file=paste0(data_dir, "kappa_test.RData"))
+> 
+> proc.time()
+   user  system elapsed 
+  1.281   0.111   1.529 
