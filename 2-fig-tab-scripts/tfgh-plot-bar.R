@@ -10,6 +10,8 @@ library(ggplot2)
 library(grid)
 library(gridExtra)
 load("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/qdata.RData")
+
+
 #--------------------------------------
 # bar graph of qPCR CT and KK EPG results
 #--------------------------------------
