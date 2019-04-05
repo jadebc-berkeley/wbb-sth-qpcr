@@ -10,7 +10,7 @@ All data required to run the analyses will be made available in concert with the
 
 ### Directory structure
 
-**`1-analysis`** : analysis scripts
+**`1-analysis-scripts`** : analysis scripts
 
 * `0-run-analysis.sh`: bash script that reproduces entire R workflow in this subdirectory
 * `1-tfgh-preliminary.R`: R script that reads in raw data and prepares the analysis data (which is shared on OSF)
@@ -27,7 +27,7 @@ All data required to run the analyses will be made available in concert with the
 * `10-tfgh-kappa-test`: R script that performs kappa test of agreement between KK and qPCR classification
 
 
-**`2-fig-tab`** :  tables and figures
+**`2-fig-tab-scripts`** :  tables and figure scripts
 
 * `0-run-analysis.sh`: bash script that reproduces entire R workflow in this subdirectory
 * `0-base-plot-functions.R`: R script that includes functions used for plotting
@@ -40,6 +40,10 @@ All data required to run the analyses will be made available in concert with the
 * `tfgh-table-prevint.R`: R script that creates a table comparing the prevalence from each diagnostic, geometric mean of Kato-Katz eggs per gram, and median Cq values from qPCR (manuscript Table 2)
 * `tfgh-table-sens-spec-pooled-gold.R`: R script that creates a table comparing estimates of sensitivity, specificity using either method as gold standard (manuscript Table 4, Panel 2)
 * `tfgh-table-sens-spec-qgold.R`: R script that creates a table comparing estimates of sensitivity, specificity using pooled kk qPCR as gold standard (not included in manuscript)
+
+**`3-figures`** :  figure files
+
+**`4-tables`** :  table files
 
 
 
