@@ -8,6 +8,11 @@
 library(here)
 library(ggplot2)
 library(dplyr)
+library(tidyr)
+library(reshape2)
+library(ggplot2)
+library(grid)
+library(gridExtra)
 
 # define directories
 fig_dir = paste0(here::here(),"/3-figures/")
