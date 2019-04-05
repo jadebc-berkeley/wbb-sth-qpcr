@@ -3,11 +3,12 @@
 # venn diagram of co-infection
 #######################################
 rm(list=ls())
-library(dplyr)
-library(VennDiagram)
-library(venneuler)
 
-load("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/qdata.RData")
+# configure directories, load libraries and base functions
+source(paste0(here::here(), "/0-config.R"))
+
+# load data 
+load(paste0(data_dir,"qdata.RData"))
 
 # get n's - KK
 get_kk_n = function(data, al, hw, tt){
@@ -75,24 +76,29 @@ cb.pink="#CC79A7"
 cb.dblue="#005787"
 purple="#9E4AED"
 
-pdf(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Results/wbb-venn-kk.pdf",
+fontinflate = 1.2
+
+pdf(file=paste0(fig_dir, "wbb-venn-kk.pdf"),
     width=6,height=6)
   plot(v, col=c(cb.lightorange, cb.blue, cb.green))
   # titles
-  text(x=v$centers[1,1],y=v$centers[1,2]+0.32, labels=expression(paste(italic("A. lumbricoides"))))
-  text(x=v$centers[1,1]+0.3,y=v$centers[1,2]-0.28, labels="Hookworm")
-  text(x=v$centers[1,1]+0.3,y=v$centers[1,2]+0.22, labels=expression(paste(italic("T. trichiura"))))
+  text(x=v$centers[1,1],y=v$centers[1,2]+0.32, labels=expression(paste(italic("A. lumbricoides"))),
+       cex = fontinflate)
+  text(x=v$centers[1,1]+0.3,y=v$centers[1,2]-0.28, labels="Hookworm",
+       cex = fontinflate)
+  text(x=v$centers[1,1]+0.31,y=v$centers[1,2]+0.22, labels=expression(paste(italic("T. trichiura"))),
+       cex = fontinflate)
   
   # non intersections
-  text(x=v$centers[1,1],y=v$centers[1,2], labels=paste(altot))
-  text(x=v$centers[2,1]+0.06,y=v$centers[2,2]-0.05, labels=paste(hwtot))
-  text(x=v$centers[3,1]+0.06,y=v$centers[3,2]+0.02, labels=paste(tttot))
+  text(x=v$centers[1,1],y=v$centers[1,2], labels=paste(altot), cex = fontinflate)
+  text(x=v$centers[2,1]+0.06,y=v$centers[2,2]-0.05, labels=paste(hwtot), cex = fontinflate)
+  text(x=v$centers[3,1]+0.06,y=v$centers[3,2]+0.02, labels=paste(tttot), cex = fontinflate)
   
   # intersections
-  text(x=v$centers[1,1]+0.23,y=v$centers[1,2]+0.07, labels=paste(altt))
-  text(x=v$centers[1,1]+0.18,y=v$centers[1,2]-0.13, labels=paste(alhw))
-  text(x=v$centers[1,1]+0.23,y=v$centers[1,2]-0.035, labels=paste(alhwtt))
-  text(x=v$centers[1,1]+0.32,y=v$centers[1,2]-0.047, labels=paste(hwtt))
+  text(x=v$centers[1,1]+0.23,y=v$centers[1,2]+0.07, labels=paste(altt), cex = fontinflate)
+  text(x=v$centers[1,1]+0.18,y=v$centers[1,2]-0.13, labels=paste(alhw), cex = fontinflate)
+  text(x=v$centers[1,1]+0.23,y=v$centers[1,2]-0.035, labels=paste(alhwtt), cex = fontinflate)
+  text(x=v$centers[1,1]+0.32,y=v$centers[1,2]-0.047, labels=paste(hwtt), cex = fontinflate)
 dev.off()
 
 # ---------------------------------------
@@ -117,24 +123,25 @@ qpcr$labels <- c("","","")
 
 centers=qpcr$centers
 
-pdf(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Results/wbb-venn-qpcr.pdf",
+pdf(file=paste0(fig_dir, "wbb-venn-qpcr.pdf"),
     width=6,height=6)
   plot(qpcr, col=c(cb.lightorange, cb.blue,cb.green))
   # titles
-  text(x=centers[1,1]+0.0,y=centers[1,2]+0.26, labels=expression(paste(italic("A. lumbricoides"))))
-  text(x=centers[2,1]-0.2,y=centers[2,2]-0.22, labels="Hookworm")
-  text(x=centers[3,1]-0.12,y=centers[3,2]+0.2, labels=expression(paste(italic("T. trichiura"))))
+  text(x=centers[1,1]+0.0,y=centers[1,2]+0.26, labels=expression(paste(italic("A. lumbricoides"))), cex = 1.2)
+  text(x=centers[2,1]-0.2,y=centers[2,2]-0.22, labels="Hookworm", cex = fontinflate)
+  text(x=centers[3,1]-0.12,y=centers[3,2]+0.2, labels=expression(paste(italic("T. trichiura"))), cex = fontinflate)
   
   # non intersections
-  text(x=centers[1,1]+0.04,y=centers[1,2]+0.08, labels=paste(altot))# done
-  text(x=centers[2,1]-0.01,y=centers[2,2]-0.1, labels=paste(hwtot))# done
-  text(x=centers[3,1]-0.08,y=centers[3,2]+0.02, labels=paste(tttot))# done
+  text(x=centers[1,1]+0.04,y=centers[1,2]+0.08, labels=paste(altot), cex = fontinflate)
+  text(x=centers[2,1]-0.01,y=centers[2,2]-0.1, labels=paste(hwtot), cex = fontinflate)
+  text(x=centers[3,1]-0.08,y=centers[3,2]+0.02, labels=paste(tttot), cex = fontinflate)
   
   # intersections
-  text(x=centers[1,1]-0.16,y=centers[1,2]+0.02, labels=paste(altt))
-  text(x=centers[1,1]-0.13,y=centers[1,2]-0.1, labels=paste(alhwtt)) # done
-  text(x=centers[3,1]-0.02,y=centers[3,2]-0.1, labels=paste(hwtt))
-  text(x=centers[1,1]+0.02,y=centers[1,2]-0.15, labels=paste(alhw)) # done
+  text(x=centers[1,1]-0.16,y=centers[1,2]+0.02, labels=paste(altt), cex = fontinflate)
+  text(x=centers[1,1]-0.13,y=centers[1,2]-0.1, labels=paste(alhwtt), cex = fontinflate)
+  text(x=centers[3,1]-0.02,y=centers[3,2]-0.1, labels=paste(hwtt), cex = fontinflate)
+  text(x=centers[1,1]+0.02,y=centers[1,2]-0.15, labels=paste(alhw), cex = fontinflate) 
+
 dev.off()
 
 
@@ -165,17 +172,17 @@ qpcr.hw$labels <- c("","","")
 
 centers=qpcr.hw$centers
 
-pdf(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Results/wbb-venn-qpcr-hw.pdf",
+pdf(file=paste0(fig_dir,"wbb-venn-qpcr-hw.pdf"),
     width=6,height=6)
 plot(qpcr.hw, col=c(cb.lightorange, cb.blue, purple,cb.green))
 # titles
-text(x=centers[1,1],y=centers[1,2]+0.15, labels=expression(paste(italic("A. ceylanicum"))))
-text(x=centers[2,1],y=centers[2,2]-0.32, labels=expression(paste(italic("N. americanus"))))
-text(x=centers[3,1]-0.08,y=centers[3,2]+0.04, labels=expression(paste(italic("A. duodenale"))))
+text(x=centers[1,1],y=centers[1,2]+0.15, labels=expression(paste(italic("A. ceylanicum"))), cex = fontinflate)
+text(x=centers[2,1],y=centers[2,2]-0.315, labels=expression(paste(italic("N. americanus"))), cex = fontinflate)
+text(x=centers[3,1]-0.08,y=centers[3,2]+0.04, labels=expression(paste(italic("A. duodenale"))), cex = fontinflate)
 # non intersections
-text(x=centers[1,1],y=centers[1,2]+0.03, labels=paste(actot))
-text(x=centers[2,1],y=centers[2,2]-0.02, labels=paste(natot))
+text(x=centers[1,1],y=centers[1,2]+0.03, labels=paste(actot), cex = fontinflate)
+text(x=centers[2,1],y=centers[2,2]-0.02, labels=paste(natot), cex = fontinflate)
 # intersections
-text(x=centers[1,1]+0.0,y=centers[1,2]-0.09, labels=paste(acna))
+text(x=centers[1,1]+0.0,y=centers[1,2]-0.09, labels=paste(acna), cex = fontinflate)
 text(x=centers[1,1]-0.245,y=centers[1,2]-0.165, labels=paste(naad),cex=0.75)
 dev.off()

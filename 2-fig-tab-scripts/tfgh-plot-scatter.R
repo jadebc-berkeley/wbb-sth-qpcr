@@ -3,13 +3,12 @@
 # scatter plot qpcr Cq values vs. kk EPG values
 #######################################
 rm(list=ls())
-library(dplyr)
-library(tidyr)
-library(reshape2)
-library(ggplot2)
-library(grid)
-library(gridExtra)
-load("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/qdata.RData")
+
+# configure directories, load libraries and base functions
+source(paste0(here::here(), "/0-config.R"))
+
+# load data
+load(paste0(data_dir,"qdata.RData"))
 
 #--------------------------------------
 # scatter plot of qPCR CT and KK EPG results
@@ -24,6 +23,17 @@ cb.dblue="#005787"
 yseq=seq(0,45,5)
 xseq=c(1, 10, 100, 1000, 10000, 100000)
 
+# customize font size, legend
+fonts = theme(legend.text.align = 0,
+      axis.text.x = element_text(size=12),
+      axis.title.x = element_text(size=14, margin = margin(t = 10, r = 0, b = 0, l = 0)),
+      axis.text.y = element_text(size=12),
+      axis.title.y = element_text(size=14, margin = margin(t = 0, r = 10, b = 0, l = 0)),
+      strip.text = element_text(size=18),
+      legend.text = element_text(size=10),
+      legend.title = element_text(size=12),
+      plot.title = element_text(hjust = 0.5))
+  
 # al plot
 al <- qdata %>% filter(positive.Al2==1 | alkk==1) %>%
   # impute 1 for negative values of epg
@@ -36,8 +46,10 @@ al.plot=ggplot(al, aes(x=alepg, y=CTmean.Al2))+
   scale_x_log10(labels=xseq, breaks=xseq, limits=c(1, 10^5))+
   xlab("Kato-Katz eggs per gram")+
   ylab("qPCR Cq value")+
-  theme_bw()+ggtitle(expression(paste(italic("Ascaris lumbricoides"))))+
-  theme(plot.title = element_text(hjust = 0.5))
+  theme_bw()+
+  fonts + 
+  ggtitle(expression(paste(italic("Ascaris lumbricoides"))))
+
 
 # hw plot
 hw <- qdata %>% filter(positive.Hw==1 | hwkk==1) %>%
@@ -62,12 +74,12 @@ hw.plot=ggplot(hw, aes(x=hwepg, y=CT))+
   ylab("qPCR Cq value")+
   scale_color_manual(values=c(cb.blue,cb.dblue,cb.pink))+
   theme_bw()+ 
-  theme(legend.position = c(0.77, 0.8), 
+  theme(legend.position = c(0.75, 0.8), 
         legend.background = element_rect(color = "black", 
           fill = "white", size = 0.2, linetype = "solid"),
         legend.text = element_text(face = "italic"))+
-  ggtitle("Hookworm")+theme(plot.title = element_text(hjust = 0.5))
-
+  fonts + 
+  ggtitle("Hookworm")
 
 hw.plot.poster=ggplot(hw, aes(x=hwepg, y=CT))+
   geom_point(aes(col=Species),alpha=0.65)+
@@ -93,19 +105,20 @@ tt.plot=ggplot(tt, aes(x=ttepg, y=CTmean.Tt))+
   scale_x_log10(labels=xseq, breaks=xseq, limits=c(1, 10^5))+
   xlab("Kato-Katz eggs per gram")+
   ylab("qPCR Cq value")+
-  theme_bw()+ggtitle(expression(paste(italic("Trichuris trichiura"))))+
-  theme(plot.title = element_text(hjust = 0.5))
+  theme_bw()+
+  fonts + 
+  ggtitle(expression(paste(italic("Trichuris trichiura"))))
 
 cont.plot=grid.arrange(al.plot,hw.plot,tt.plot,nrow=1)
 
-pdf(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Results/wbb-qpcr-kk-scatter.pdf",
+pdf(file=paste0(fig_dir,"wbb-qpcr-kk-scatter.pdf"),
     width=15,height=4)
 grid.draw(cont.plot)
 dev.off()
 
 cont.plot.poster=grid.arrange(al.plot,hw.plot.poster,tt.plot,nrow=1)
 
-pdf(file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Results/wbb-qpcr-kk-scatter-poster.pdf",
+pdf(file=paste0(fig_dir, "wbb-qpcr-kk-scatter-poster.pdf"),
     width=11,height=3)
 grid.draw(cont.plot.poster)
 dev.off()
