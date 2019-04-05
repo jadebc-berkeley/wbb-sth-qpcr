@@ -3,15 +3,13 @@
 # table of qpcr vs. kk prevalence and intensity
 #######################################
 rm(list=ls())
-library(dplyr)
-library(tidyr)
-library(reshape2)
-library(ggplot2)
-library(gridExtra)
-load("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/qdata.RData")
-load("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/prev_results.RData")
 
-source("~/Documents/CRG/wash-benefits/bangladesh/src/wbb-sth-qpcr/2-fig-tab/0-base-table-functions.R")
+# configure directories, load libraries and base functions
+source(paste0(here::here(), "/0-config.R"))
+
+# load data
+load(paste0(data_dir,"qdata.RData"))
+load(paste0(data_dir,"prev_results.RData"))
 
 # -------------------------------------
 # prevalence
@@ -80,4 +78,7 @@ tab=full_join(tab,ct,by="org")
 tab = tab[,c(1:3,6,4,5,7)]
 tab=tab[c(1,2,4:6,3,7),]
 
-write.csv(tab,file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Results/prev.table.csv",row.names=FALSE)
+# -------------------------------------
+# save table
+# -------------------------------------
+write.csv(tab,file=paste0(tab_dir, "prev.table.csv"),row.names=FALSE)

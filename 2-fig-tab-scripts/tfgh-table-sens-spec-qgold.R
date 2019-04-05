@@ -5,13 +5,17 @@
 # make table
 #######################################
 rm(list=ls())
-library(dplyr)
 
-load("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/sensspec_qgold.RData")
-load("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/qdata.RData")
+# configure directories, load libraries and base functions
+source(paste0(here::here(), "/0-config.R"))
 
-source("~/Documents/CRG/wash-benefits/bangladesh/src/wbb-sth-qpcr/2-fig-tab/0-base-table-functions.R")
+# load data
+load(paste0(data_dir,"sensspec_qgold.RData"))
+load(paste0(data_dir,"qdata.RData"))
 
+#---------------------------------------
+# make table
+#---------------------------------------
 N.al=nrow(qdata[!is.na(qdata$positive.Al2) & !is.na(qdata$alkk),])
 N.hw=nrow(qdata[!is.na(qdata$positive.Hw) & !is.na(qdata$hwkk),])
 N.tt=nrow(qdata[!is.na(qdata$positive.Tt) & !is.na(qdata$ttkk),])
@@ -29,4 +33,7 @@ spec=kk.spec.qgold %>%
 out=full_join(sens,spec,by=c("org"))
 out$N=c(N.al,N.hw,N.tt)
 
-write.csv(out,file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Results/ss_qgold.csv",row.names=FALSE)
+#---------------------------------------
+# save table
+#---------------------------------------
+write.csv(out,file=paste0(tab_dir, "ss_qgold.csv"),row.names=FALSE)
