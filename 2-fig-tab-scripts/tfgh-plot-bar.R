@@ -7,7 +7,8 @@ rm(list=ls())
 # configure directories, load libraries and base functions
 source(paste0(here::here(), "/0-config.R"))
 
-load("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/qdata.RData")
+# load data
+load(paste0(data_dir,"qdata.RData"))
 
 
 #--------------------------------------
