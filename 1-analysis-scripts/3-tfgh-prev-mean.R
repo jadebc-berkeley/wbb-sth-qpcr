@@ -4,12 +4,12 @@
 # using each diagnostic
 #######################################
 rm(list=ls())
-library(dplyr)
-library(clusrank)
-library(tidyr)
-library(washb)
-library(ggplot2)
-load("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/qdata.RData")
+
+# configure directories, load libraries and base functions
+source(paste0(here::here(), "/0-config.R"))
+
+# load data
+load(paste0(data_dir,"qdata.RData"))
 
 #--------------------------------------
 # Estimate prevalence and 95%CI for each
@@ -101,4 +101,4 @@ save(al.kk,hw.kk,tt.kk,
      al.q,al2.q,hw.q,na.q,ac.q,ad.q,tt.q,ss.q,
      al.kk.gmn,hw.kk.gmn,tt.kk.gmn,
      al.q.gmn,na.q.gmn,ac.q.gmn,ad.q.gmn,tt.q.gmn,
-     file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/prev_results.RData")
+     file=paste0(data_dir, "prev_results.RData"))

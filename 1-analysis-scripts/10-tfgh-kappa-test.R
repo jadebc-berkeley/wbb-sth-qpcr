@@ -4,9 +4,12 @@
 # KK and qPCR classification
 #######################################
 rm(list=ls())
-library(irr)
 
-load("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/qdata.RData")
+# configure directories, load libraries and base functions
+source(paste0(here::here(), "/0-config.R"))
+
+# load data
+load(paste0(data_dir,"qdata.RData"))
 
 qdata = qdata %>% filter(!is.na(positive.Al2))
 
@@ -15,4 +18,4 @@ hw.kappa = kappa2(qdata[,c("hwkk","positive.Hw")], "unweighted")
 tt.kappa = kappa2(qdata[,c("ttkk","positive.Tt")], "unweighted")
 
 save(al.kappa,  hw.kappa,  tt.kappa,
-        file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/kappa_test.RData")
+        file=paste0(data_dir, "kappa_test.RData"))

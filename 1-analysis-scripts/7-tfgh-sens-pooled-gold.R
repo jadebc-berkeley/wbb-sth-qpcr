@@ -4,11 +4,16 @@
 # of kk using either method as gold
 #######################################
 rm(list=ls())
-library(dplyr)
-library(washb)
-load("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/qdata.RData")
 
+# configure directories, load libraries and base functions
+source(paste0(here::here(), "/0-config.R"))
+
+# load data
+load(paste0(data_dir,"qdata.RData"))
+
+#--------------------------------------
 # subset to relevant columns
+#--------------------------------------
 d = qdata %>%
   select(dataid,personid,clusterid,positive.Al2,positive.Hw,
          positive.Tt,alkk,hwkk,ttkk)
@@ -73,7 +78,10 @@ kk.spec.pooled.gold$org=c("A. lumbricoides","Hookworm","T. trichiura")
 q.spec.pooled.gold=data.frame(rbind(al.q.spec,hw.q.spec,tt.q.spec))
 q.spec.pooled.gold$org=c("A. lumbricoides","Hookworm","T. trichiura")
 
+#--------------------------------------
+# save results
+#--------------------------------------
 save(kk.sens.pooled.gold, kk.spec.pooled.gold,
      q.sens.pooled.gold, q.spec.pooled.gold,
-     file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/sensspec_pooled_gold.RData")
+     file=paste0(data_dir,"sensspec_pooled_gold.RData"))
 

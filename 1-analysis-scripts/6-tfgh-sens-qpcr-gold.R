@@ -4,11 +4,16 @@
 # of kk using qPCR as gold standard
 #######################################
 rm(list=ls())
-library(dplyr)
-library(washb)
-load("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/qdata.RData")
 
+# configure directories, load libraries and base functions
+source(paste0(here::here(), "/0-config.R"))
+
+# load data
+load(paste0(data_dir,"qdata.RData"))
+
+#----------------------------------------
 # subset to relevant columns
+#----------------------------------------
 d = qdata %>%
   select(dataid,personid,clusterid,positive.Al2,positive.Hw,
          positive.Tt,alkk,hwkk,ttkk)
@@ -53,5 +58,5 @@ kk.spec.qgold=data.frame(rbind(al.spec,hw.spec,tt.spec))
 kk.spec.qgold$org=c("A. lumbricoides","Hookworm","T. trichiura")
 
 save(kk.sens.qgold, kk.spec.qgold,
-     file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/sensspec_qgold.RData")
+     file=paste0(data_dir, "sensspec_qgold.RData"))
 

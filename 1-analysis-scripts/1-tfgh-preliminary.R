@@ -3,23 +3,22 @@
 # Clean and merge qPCR and KK data
 #######################################
 rm(list=ls())
-library(reshape2)
-library(ggplot2)
-library(dplyr)
-library(tidyr)
+
+# configure directories, load libraries and base functions
+source(paste0(here::here(), "/0-config.R"))
 
 #--------------------------------------
 # read in qPCR data
 #--------------------------------------
-data.dir="~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/Final file/"
+raw.data.dir="~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/Final file/"
 res.name="FINAL FINAL FINAL Master Results File - Bangladesh - 4-30-18"
-iac=read.csv(file=paste0(data.dir,res.name,"-IAC.csv"),stringsAsFactors=FALSE)
-na=read.csv(file=paste0(data.dir,res.name,"-NA.csv"),stringsAsFactors=FALSE)
-ad=read.csv(file=paste0(data.dir,res.name,"-AD.csv"),stringsAsFactors=FALSE)
-ss=read.csv(file=paste0(data.dir,res.name,"-SS.csv"),stringsAsFactors=FALSE)
-tt=read.csv(file=paste0(data.dir,res.name,"-TT.csv"),stringsAsFactors=FALSE)
-al=read.csv(file=paste0(data.dir,res.name,"-AL.csv"),stringsAsFactors=FALSE)
-ac=read.csv(file=paste0(data.dir,res.name,"-AC.csv"),stringsAsFactors=FALSE)
+iac=read.csv(file=paste0(raw.data.dir,res.name,"-IAC.csv"),stringsAsFactors=FALSE)
+na=read.csv(file=paste0(raw.data.dir,res.name,"-NA.csv"),stringsAsFactors=FALSE)
+ad=read.csv(file=paste0(raw.data.dir,res.name,"-AD.csv"),stringsAsFactors=FALSE)
+ss=read.csv(file=paste0(raw.data.dir,res.name,"-SS.csv"),stringsAsFactors=FALSE)
+tt=read.csv(file=paste0(raw.data.dir,res.name,"-TT.csv"),stringsAsFactors=FALSE)
+al=read.csv(file=paste0(raw.data.dir,res.name,"-AL.csv"),stringsAsFactors=FALSE)
+ac=read.csv(file=paste0(raw.data.dir,res.name,"-AC.csv"),stringsAsFactors=FALSE)
 
 colnames=c("sampleid","sampleno","assay",
   "CTmean","CTSD","assaydate","plateid","comments")
@@ -200,5 +199,5 @@ qdata = qdata %>%
 #--------------------------------------
 # save data
 #--------------------------------------
-save(qdata,file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/qdata.RData")
-write.csv(qdata,file="~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/qdata.csv",row.names=FALSE)
+save(qdata,file=paste0(data_dir ,"qdata.RData"))
+write.csv(qdata,file=paste0(data_dir, "qdata.csv"),row.names=FALSE)

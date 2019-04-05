@@ -3,8 +3,12 @@
 # produce initial values for bayesian lca models
 #######################################
 rm(list=ls())
-library(dplyr)
-load("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/qdata.RData")
+
+# configure directories, load libraries and base functions
+source(paste0(here::here(), "/0-config.R"))
+
+# load data
+load(paste0(data_dir,"qdata.RData"))
 
 #--------------------------------------
 # hookworm

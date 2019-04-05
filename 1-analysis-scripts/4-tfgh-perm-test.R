@@ -5,12 +5,16 @@
 # between kk and qPCR
 #######################################
 rm(list=ls())
-library(dplyr)
-library(clusrank)
-library(tidyr)
-library(washb)
-load("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/qdata.RData")
 
+# configure directories, load libraries and base functions
+source(paste0(here::here(), "/0-config.R"))
+
+# load data
+load(paste0(data_dir,"qdata.RData"))
+
+#---------------------------------------
+# permutation test
+#---------------------------------------
 al.data <- qdata %>%
   # subset to relevant columns
   select(c(dataid,personid,block,clusterid,positive.Al,alkk)) %>%
@@ -46,7 +50,9 @@ tt.data <- qdata %>%
   block = as.factor(block))%>%
   filter(!is.na(positive))
   
+#---------------------------------------
 # permutation tests with block as cluster
+#---------------------------------------
 set.seed(242524)
 p.al <- washb_permute(Y=al.data$positive,tr=al.data$test,
              pair=al.data$block,contrast=c("kk","qpcr"),nreps=100000)
