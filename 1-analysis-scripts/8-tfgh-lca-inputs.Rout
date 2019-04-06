@@ -105,37 +105,37 @@ Warning messages:
 > #--------------------------------------
 > qdata=qdata[!is.na(qdata$positive.Al) & !is.na(qdata$alkk),]
 > nrow(qdata)
-[1] 2799
-> 
-> nrow(qdata[qdata$positive.Al==1 & qdata$alkk==1,])
-[1] 228
-> nrow(qdata[qdata$positive.Al==0 & qdata$alkk==1,])
-[1] 807
-> nrow(qdata[qdata$positive.Al==1 & qdata$alkk==0,])
-[1] 127
-> nrow(qdata[qdata$positive.Al==0 & qdata$alkk==0,])
-[1] 1637
-> 
-> # initial value for prevalence - use qpcr
-> mean(qdata$positive.Al)
-[1] 0.126831
-> 
-> # new assay
-> qdata=qdata[!is.na(qdata$positive.Al2) & !is.na(qdata$alkk),]
-> nrow(qdata)
 [1] 2798
 > 
-> nrow(qdata[qdata$positive.Al2==1 & qdata$alkk==1,])
+> nrow(qdata[qdata$positive.Al==1 & qdata$alkk==1,])
 [1] 319
-> nrow(qdata[qdata$positive.Al2==0 & qdata$alkk==1,])
+> nrow(qdata[qdata$positive.Al==0 & qdata$alkk==1,])
 [1] 715
-> nrow(qdata[qdata$positive.Al2==1 & qdata$alkk==0,])
+> nrow(qdata[qdata$positive.Al==1 & qdata$alkk==0,])
 [1] 333
-> nrow(qdata[qdata$positive.Al2==0 & qdata$alkk==0,])
+> nrow(qdata[qdata$positive.Al==0 & qdata$alkk==0,])
 [1] 1431
 > 
 > # initial value for prevalence - use qpcr
-> mean(qdata$positive.Al2)
+> mean(qdata$positive.Al)
+[1] 0.2330236
+> 
+> # new assay
+> qdata=qdata[!is.na(qdata$positive.Al) & !is.na(qdata$alkk),]
+> nrow(qdata)
+[1] 2798
+> 
+> nrow(qdata[qdata$positive.Al==1 & qdata$alkk==1,])
+[1] 319
+> nrow(qdata[qdata$positive.Al==0 & qdata$alkk==1,])
+[1] 715
+> nrow(qdata[qdata$positive.Al==1 & qdata$alkk==0,])
+[1] 333
+> nrow(qdata[qdata$positive.Al==0 & qdata$alkk==0,])
+[1] 1431
+> 
+> # initial value for prevalence - use qpcr
+> mean(qdata$positive.Al)
 [1] 0.2330236
 > 
 > 
@@ -165,4 +165,4 @@ Warning messages:
 > 
 > proc.time()
    user  system elapsed 
-  1.299   0.120   1.554 
+  1.241   0.109   1.477 

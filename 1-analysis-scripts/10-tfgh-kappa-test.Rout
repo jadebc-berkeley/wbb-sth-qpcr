@@ -78,9 +78,9 @@ Warning messages:
 > # load data
 > load(paste0(data_dir,"qdata.RData"))
 > 
-> qdata = qdata %>% filter(!is.na(positive.Al2))
+> qdata = qdata %>% filter(!is.na(positive.Al))
 > 
-> al.kappa = kappa2(qdata[,c("alkk","positive.Al2")], "unweighted")
+> al.kappa = kappa2(qdata[,c("alkk","positive.Al")], "unweighted")
 > hw.kappa = kappa2(qdata[,c("hwkk","positive.Hw")], "unweighted")
 > tt.kappa = kappa2(qdata[,c("ttkk","positive.Tt")], "unweighted")
 > 
@@ -89,4 +89,4 @@ Warning messages:
 > 
 > proc.time()
    user  system elapsed 
-  1.281   0.111   1.529 
+  1.259   0.109   1.496 

@@ -93,7 +93,8 @@ Warning messages:
 +     test=="positive.Al" ~ "qpcr",
 +     test=="alkk"~ "kk"
 +   ),
-+   block = as.factor(block))
++   block = as.factor(block)) %>%
++   filter(!is.na(positive))
 > 
 > hw.data <- qdata %>%
 +   # subset to relevant columns
@@ -157,7 +158,7 @@ The following object is masked from ‘package:here’:
 
 data:  y by x (pos, neg) 
 	 stratified by block
-Z = 6.9996, p-value < 2.2e-16
+Z = 4.2901, p-value < 2.2e-16
 alternative hypothesis: true mu is not equal to 0
 
 > 
@@ -189,4 +190,4 @@ alternative hypothesis: true mu is not equal to 0
 > 
 > proc.time()
    user  system elapsed 
-  4.006   0.233   4.718 
+  3.931   0.203   4.361 

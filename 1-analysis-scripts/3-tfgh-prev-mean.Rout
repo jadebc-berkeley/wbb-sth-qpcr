@@ -108,9 +108,6 @@ Warning messages:
 [1,] 2800 0.4317857 0.4954134 0.01154714   0.4091533   0.4544181
 > 
 > al.q=washb_mean(qdata$positive.Al, id=qdata$clusterid, print = TRUE)
-        N      Mean        SD  Robust SE Lower 95%CI Upper 95%CI
-[1,] 2800 0.1267857 0.3327922 0.00833287   0.1104533   0.1431181
-> al2.q=washb_mean(qdata$positive.Al2, id=qdata$clusterid, print = TRUE)
 
 -----------------------------------------
 Dropping 1 observations
@@ -189,22 +186,15 @@ due to missing values in the outcome
 > qdata <- qdata %>%
 +   mutate(numsth.kk=alkk+hwkk+ttkk,
 +          numsth.q=positive.Al+positive.Ac+positive.Na+
-+            positive.Ad+positive.Tt,
-+          numsth.q2 = positive.Al2+positive.Ac+positive.Na+
 +            positive.Ad+positive.Tt) %>%
 +   mutate(multisth.kk=ifelse(numsth.kk>1,1,0),
-+          multisth.q=ifelse(numsth.q>1,1,0),
-+          multisth.q2=ifelse(numsth.q2>1,1,0))
++          multisth.q=ifelse(numsth.q>1,1,0))
 > 
 > prop.table(table(qdata$numsth.kk))*100
 
         0         1         2         3 
 56.821429 36.071429  5.964286  1.142857 
 > prop.table(table(qdata$numsth.q))*100
-
-         0          1          2          3          4 
-65.5234012 24.0443015  8.2886745  2.0364416  0.1071811 
-> prop.table(table(qdata$numsth.q2))*100
 
          0          1          2          3          4 
 58.3273767 28.5203717 10.3288063  2.6804861  0.1429593 
@@ -214,10 +204,6 @@ due to missing values in the outcome
         0         1 
 92.892857  7.107143 
 > prop.table(table(qdata$multisth.q))*100
-
-      0       1 
-89.5677 10.4323 
-> prop.table(table(qdata$multisth.q2))*100
 
        0        1 
 86.84775 13.15225 
@@ -239,11 +225,11 @@ due to missing values in the outcome
 99.6428571  0.3571429 
 > 
 > quantile(qdata$CTmean.Al[qdata$almh==1],probs=c(0,0.5,1),na.rm=TRUE)
-      0%      50%     100% 
-16.42475 20.26744 28.95261 
+       0%       50%      100% 
+ 4.417454  9.155346 34.341099 
 > quantile(qdata$CTmean.Al[qdata$almh==0],probs=c(0,0.5,1),na.rm=TRUE)
       0%      50%     100% 
-19.71206 24.56434 36.05956 
+ 8.13526 25.22662 39.57802 
 > 
 > 
 > #--------------------------------------
@@ -255,7 +241,6 @@ due to missing values in the outcome
 +          ln.hwepg=log(hwepg+1),
 +          ln.ttepg=log(ttepg+1),
 +          ln.CT.al=log(CTmean.Al+1),
-+          ln.CT.al2=log(CTmean.Al2+1),
 +          ln.CT.na=log(CTmean.Na+1),
 +          ln.CT.ac=log(CTmean.Ac+1),
 +          ln.CT.ad=log(CTmean.Ad+1),
@@ -286,15 +271,6 @@ due to missing values in the outcome
 > 
 > 
 > al.q.gmn=washb_mean(qdata$ln.CT.al, id=qdata$clusterid, print = TRUE)
-
------------------------------------------
-Dropping 2445 observations
-due to missing values in the outcome
- Final sample size: 355 
------------------------------------------
-       N     Mean        SD   Robust SE Lower 95%CI Upper 95%CI
-[1,] 355 3.196853 0.1426972 0.008234826    3.180713    3.212994
-> al2.q.gmn=washb_mean(qdata$ln.CT.al2, id=qdata$clusterid, print = TRUE)
 
 -----------------------------------------
 Dropping 2148 observations
@@ -342,11 +318,11 @@ due to missing values in the outcome
 > 
 > 
 > save(al.kk,hw.kk,tt.kk,
-+      al.q,al2.q,hw.q,na.q,ac.q,ad.q,tt.q,ss.q,
++      al.q,hw.q,na.q,ac.q,ad.q,tt.q,ss.q,
 +      al.kk.gmn,hw.kk.gmn,tt.kk.gmn,
 +      al.q.gmn,na.q.gmn,ac.q.gmn,ad.q.gmn,tt.q.gmn,
 +      file=paste0(data_dir, "prev_results.RData"))
 > 
 > proc.time()
    user  system elapsed 
-  1.728   0.135   2.128 
+  2.058   0.184   3.418 
