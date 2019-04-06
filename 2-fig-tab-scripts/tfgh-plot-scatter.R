@@ -38,11 +38,11 @@ fonts = theme(legend.text.align = 0,
       plot.title = element_text(hjust = 0.5))
   
 # al plot
-al <- qdata %>% filter(positive.Al2==1 | alkk==1) %>%
+al <- qdata %>% filter(positive.Al==1 | alkk==1) %>%
   # impute 1 for negative values of epg
   mutate(alepg=ifelse(alepg==0, 1, alepg))
 
-al.plot=ggplot(al, aes(x=alepg, y=CTmean.Al2))+
+al.plot=ggplot(al, aes(x=alepg, y=CTmean.Al))+
   geom_point(alpha=0.65,col=cb.lightorange)+
   geom_smooth(se=FALSE,col="black",data=al[al$alepg>1,], method='loess')+
   scale_y_log10(labels=yseq, breaks=yseq, limits=c(10^0.5, 10^1.7)) +

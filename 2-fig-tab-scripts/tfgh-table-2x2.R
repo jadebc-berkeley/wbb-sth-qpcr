@@ -18,7 +18,7 @@ load(paste0(data_dir,"kappa_test.RData"))
 # preprocess data
 #---------------------------------------
 qdata = qdata %>%
-  mutate(positive.Al2.lab = ifelse(positive.Al2==1, "qPCR +", "qPCR -"),
+  mutate(positive.Al.lab = ifelse(positive.Al==1, "qPCR +", "qPCR -"),
          positive.Hw.lab = ifelse(positive.Hw==1, "qPCR +", "qPCR -"),
          positive.Tt.lab = ifelse(positive.Tt==1, "qPCR +", "qPCR -"),
          alkk.lab = ifelse(alkk==1, "KK +", "KK -"),
@@ -26,7 +26,7 @@ qdata = qdata %>%
          ttkk.lab = ifelse(ttkk==1, "KK +", "KK -"))
 
 qdata = qdata %>% 
-  mutate(positive.Al2.lab = factor(positive.Al2.lab, levels=c("qPCR +", "qPCR -")),
+  mutate(positive.Al.lab = factor(positive.Al.lab, levels=c("qPCR +", "qPCR -")),
          positive.Hw.lab = factor(positive.Hw.lab, levels=c("qPCR +", "qPCR -")),
          positive.Tt.lab = factor(positive.Tt.lab, levels=c("qPCR +", "qPCR -")),
          alkk.lab = factor(alkk.lab, levels=c("KK +", "KK -")),
@@ -36,11 +36,11 @@ qdata = qdata %>%
 #---------------------------------------
 # create table
 #---------------------------------------
-altab = table(qdata$alkk.lab, qdata$positive.Al2.lab)
+altab = table(qdata$alkk.lab, qdata$positive.Al.lab)
 hwtab = table(qdata$hwkk.lab, qdata$positive.Hw.lab)
 tttab = table(qdata$ttkk.lab, qdata$positive.Tt.lab)
 
-alptab = prop.table(table(qdata$alkk.lab, qdata$positive.Al2.lab))
+alptab = prop.table(table(qdata$alkk.lab, qdata$positive.Al.lab))
 hwptab = prop.table(table(qdata$hwkk.lab, qdata$positive.Hw.lab))
 ttptab = prop.table(table(qdata$ttkk.lab, qdata$positive.Tt.lab))
 

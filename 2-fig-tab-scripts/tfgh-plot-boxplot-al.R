@@ -19,7 +19,7 @@ qdata = qdata %>%
 
 pdf(file=paste0(fig_dir,"wbb-alconc-boxplot.pdf"),
     width=5,height=5)
-ggplot(qdata,aes(y=CTmean.Al2,x=almh.f))+
+ggplot(qdata,aes(y=CTmean.Al,x=almh.f))+
   geom_boxplot()+  
   geom_dotplot(aes(fill=almh.f,col=almh.f),binaxis='y',stackdir='center',
                stackratio=1,dotsize=0.9,binwidth=.5, alpha=0.5)+
@@ -40,12 +40,12 @@ dev.off()
 
 
 # p-value for difference in means t test
-qdata = qdata %>% filter(!is.na(CTmean.Al2))
+qdata = qdata %>% filter(!is.na(CTmean.Al))
 
-washb_ttest(Y=qdata$CTmean.Al2,tr=qdata$almh.f,strat=qdata$block, 
+washb_ttest(Y=qdata$CTmean.Al,tr=qdata$almh.f,strat=qdata$block, 
             contrast=c("Light intensity\ninfection","Moderate-heavy intensity\ninfection"))
 
 # quantiles of the Ct values within infection
 # intensity levels
-quantile(qdata$CTmean.Al2[qdata$almh.f=="Light intensity\ninfection"], prob=c(0,.5,1))
-quantile(qdata$CTmean.Al2[qdata$almh.f=="Moderate-heavy intensity\ninfection"], prob=c(0,.5,1))
+quantile(qdata$CTmean.Al[qdata$almh.f=="Light intensity\ninfection"], prob=c(0,.5,1))
+quantile(qdata$CTmean.Al[qdata$almh.f=="Moderate-heavy intensity\ninfection"], prob=c(0,.5,1))

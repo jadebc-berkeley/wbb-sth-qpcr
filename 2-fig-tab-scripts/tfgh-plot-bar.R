@@ -21,7 +21,7 @@ load(paste0(data_dir,"qdata.RData"))
 per.pos = qdata %>% 
   # subset columns
   select(alkk,hwkk,ttkk,
-         positive.Al2,positive.Tt,positive.Hw,
+         positive.Al,positive.Tt,positive.Hw,
          positive.Ac,positive.Na,positive.Ad) %>%
   # calculate percent positive
   summarise_all(funs(mean(.,na.rm=TRUE))) %>%
@@ -32,7 +32,7 @@ per.pos = qdata %>%
 n.pos = qdata %>%
   # subset columns
   select(alkk,hwkk,ttkk,
-         positive.Al2,positive.Tt,positive.Na,positive.Ad,
+         positive.Al,positive.Tt,positive.Na,positive.Ad,
          positive.Ac) %>%
   # calculate sum of positives
   summarise_all(funs(sum(.,na.rm=TRUE)))  %>%

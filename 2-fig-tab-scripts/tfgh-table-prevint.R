@@ -62,7 +62,7 @@ medrange=function(y){
 }
 
 CT.summary <- qdata %>%
-  select(CTmean.Al2, CTmean.Ac, CTmean.Ad, CTmean.Na,
+  select(CTmean.Al, CTmean.Ac, CTmean.Ad, CTmean.Na,
          CTmean.Tt,CTmean.Ss) %>%
   summarise_all(list(medrange)) 
 

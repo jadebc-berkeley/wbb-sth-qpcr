@@ -18,7 +18,7 @@ load(paste0(data_dir,"qdata.RData"))
 #---------------------------------------
 # make table
 #---------------------------------------
-N.al=nrow(qdata[!is.na(qdata$positive.Al2) & !is.na(qdata$alkk),])
+N.al=nrow(qdata[!is.na(qdata$positive.Al) & !is.na(qdata$alkk),])
 N.hw=nrow(qdata[!is.na(qdata$positive.Hw) & !is.na(qdata$hwkk),])
 N.tt=nrow(qdata[!is.na(qdata$positive.Tt) & !is.na(qdata$ttkk),])
 

@@ -27,7 +27,7 @@ get_kk_n = function(data, al, hw, tt){
 # get n's - qPCR
 get_q_n = function(data, al, hw, tt){
   x = data %>% filter(
-    positive.Al2 == al,
+    positive.Al == al,
     positive.Hw == hw, 
     positive.Tt == tt
   ) %>%
