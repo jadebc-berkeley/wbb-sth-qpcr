@@ -53,11 +53,9 @@ medrange=function(y){
   med=quantile(y,prob=c(0.5))
   max=quantile(y,prob=c(1))
   
-  # min=formatC(min, format = "e", digits = 2)
   min=sprintf("%0.1f",min)
   med=sprintf("%0.1f",med)
   max=sprintf("%0.1f",max)
-  # max=formatC(max, format = "e", digits = 2)
   return(paste0(med, " (",min, ", ",max,")"))
 }
 
@@ -68,8 +66,9 @@ CT.summary <- qdata %>%
 
 CT.summary <- matrix(t(CT.summary),ncol(CT.summary),1)
 
-org=c("Ascaris lumbricoides","Necator americanus","Ancylostoma ceylanicum",
-      "Ancylostoma duodenale","Trichuris trichiura","Strongyloides stercoralis")
+org=c("Ascaris lumbricoides","Ancylostoma ceylanicum",
+      "Ancylostoma duodenale","Necator americanus","Trichuris trichiura",
+      "Strongyloides stercoralis")
 ct=data.frame(org=org,ct=CT.summary)
 ct$org=as.character(ct$org)
 
