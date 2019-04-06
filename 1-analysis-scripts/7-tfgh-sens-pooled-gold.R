@@ -18,17 +18,17 @@ load(paste0(data_dir,"qdata.RData"))
 # subset to relevant columns
 #--------------------------------------
 d = qdata %>%
-  select(dataid,personid,clusterid,positive.Al2,positive.Hw,
+  select(dataid,personid,clusterid,positive.Al,positive.Hw,
          positive.Tt,alkk,hwkk,ttkk)
 
 #----------------------------------------
 # calculate sensitivity
 #----------------------------------------
-ald1= d %>% filter(positive.Al2==1) %>%
+ald1= d %>% filter(positive.Al==1) %>%
   filter(!is.na(alkk)) %>%
-  filter(!is.na(positive.Al2)) 
+  filter(!is.na(positive.Al)) 
 al.kk.sens=washb_mean(ald1$alkk,id=ald1$clusterid)
-al.q.sens=washb_mean(ald1$positive.Al2,id=ald1$clusterid)
+al.q.sens=washb_mean(ald1$positive.Al,id=ald1$clusterid)
 
 hwd1= d %>% filter(hwkk==1 | positive.Hw==1) %>%
   filter(!is.na(hwkk)) %>%
@@ -51,11 +51,11 @@ q.sens.pooled.gold$org=c("A. lumbricoides","Hookworm","T. trichiura")
 #----------------------------------------
 # calculate specificity
 #----------------------------------------
-ald2= d %>% filter(positive.Al2==0) %>%
+ald2= d %>% filter(positive.Al==0) %>%
   filter(!is.na(alkk)) %>%
-  filter(!is.na(positive.Al2)) %>% 
+  filter(!is.na(positive.Al)) %>% 
   mutate(alkkneg=ifelse(alkk==1,0,1),
-         alqneg = ifelse(positive.Al2==1, 0, 1))
+         alqneg = ifelse(positive.Al==1, 0, 1))
 al.kk.spec=washb_mean(ald2$alkkneg,id=ald2$clusterid)
 al.q.spec=washb_mean(ald2$alqneg,id=ald2$clusterid)
 

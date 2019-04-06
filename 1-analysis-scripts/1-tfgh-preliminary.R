@@ -199,6 +199,31 @@ qdata = qdata %>%
       positive.Tt == 1 , 1,  0
   ))
 
+# -------------------------------------------
+# drop original Al assay, replace with new assay
+# -------------------------------------------
+qdata = qdata %>% 
+  select(-c(positive.Al, CTmean.Al, CTSD.Al)) %>%
+  rename(positive.Al = positive.Al2,
+         CTmean.Al = CTmean.Al2,
+         CTSD.Al = CTSD.Al2) 
+
+qdata = qdata %>%
+  select(clusterid, dataid, block,  personid, sex, dw,
+         aged,   agem,   agey,   alepg,  hwepg,  ttepg, 
+         logalepg, loghwepg, logttepg, alkk,   ttkk,   hwkk,  
+         sth, alint,  ttint,  hwint,  
+         
+         almh, hwmh, ttmh, 
+         almh.f, hwmh.f, ttmh.f,
+         
+         CTmean.Ac, CTmean.Ad,
+         CTmean.Al, CTmean.IAC,   CTmean.Na, CTmean.Ss, CTmean.Tt, CTSD.Ac, 
+         CTSD.Ad,  CTSD.Al,  CTSD.IAC, CTSD.Na,  CTSD.Ss,  CTSD.Tt, 
+         positive.Ac,  positive.Ad,  positive.Al,  positive.IAC, positive.Na,  positive.Ss,
+         positive.Tt, positive.Hw, positive.Sth, everything())
+
+
 #--------------------------------------
 # save data
 #--------------------------------------
