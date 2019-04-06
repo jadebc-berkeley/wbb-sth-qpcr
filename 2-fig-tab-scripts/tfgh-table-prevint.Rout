@@ -90,7 +90,7 @@ Warning messages:
 +   mutate(prevkk=ptestci.format(Mean,lb,ub,decimals=1,scale=100)) %>%
 +   select(org,Nkk=N,prevkk) 
 > 
-> prev.q=as.data.frame(rbind(al2.q,hw.q,na.q,ac.q,ad.q,tt.q,ss.q))
+> prev.q=as.data.frame(rbind(al.q,hw.q,na.q,ac.q,ad.q,tt.q,ss.q))
 > prev.q$org=c("Ascaris lumbricoides","Hookworm",
 +            "Necator americanus","Ancylostoma ceylanicum","Ancylostoma duodenale",
 +            "Trichuris trichiura","Strongyloides stercoralis")
@@ -119,23 +119,22 @@ Warning messages:
 +   med=quantile(y,prob=c(0.5))
 +   max=quantile(y,prob=c(1))
 +   
-+   # min=formatC(min, format = "e", digits = 2)
 +   min=sprintf("%0.1f",min)
 +   med=sprintf("%0.1f",med)
 +   max=sprintf("%0.1f",max)
-+   # max=formatC(max, format = "e", digits = 2)
 +   return(paste0(med, " (",min, ", ",max,")"))
 + }
 > 
 > CT.summary <- qdata %>%
-+   select(CTmean.Al2, CTmean.Ac, CTmean.Ad, CTmean.Na,
++   select(CTmean.Al, CTmean.Ac, CTmean.Ad, CTmean.Na,
 +          CTmean.Tt,CTmean.Ss) %>%
 +   summarise_all(list(medrange)) 
 > 
 > CT.summary <- matrix(t(CT.summary),ncol(CT.summary),1)
 > 
-> org=c("Ascaris lumbricoides","Necator americanus","Ancylostoma ceylanicum",
-+       "Ancylostoma duodenale","Trichuris trichiura","Strongyloides stercoralis")
+> org=c("Ascaris lumbricoides","Ancylostoma ceylanicum",
++       "Ancylostoma duodenale","Necator americanus","Trichuris trichiura",
++       "Strongyloides stercoralis")
 > ct=data.frame(org=org,ct=CT.summary)
 > ct$org=as.character(ct$org)
 > 
@@ -154,4 +153,4 @@ Warning messages:
 > 
 > proc.time()
    user  system elapsed 
-  1.381   0.126   1.688 
+  1.463   0.157   2.769 

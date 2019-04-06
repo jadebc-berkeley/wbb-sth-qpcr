@@ -83,7 +83,7 @@ Warning messages:
 > 
 > pdf(file=paste0(fig_dir,"wbb-alconc-boxplot.pdf"),
 +     width=5,height=5)
-> ggplot(qdata,aes(y=CTmean.Al2,x=almh.f))+
+> ggplot(qdata,aes(y=CTmean.Al,x=almh.f))+
 +   geom_boxplot()+  
 +   geom_dotplot(aes(fill=almh.f,col=almh.f),binaxis='y',stackdir='center',
 +                stackratio=1,dotsize=0.9,binwidth=.5, alpha=0.5)+
@@ -109,22 +109,22 @@ null device
 > 
 > 
 > # p-value for difference in means t test
-> qdata = qdata %>% filter(!is.na(CTmean.Al2))
+> qdata = qdata %>% filter(!is.na(CTmean.Al))
 > 
-> washb_ttest(Y=qdata$CTmean.Al2,tr=qdata$almh.f,strat=qdata$block, 
+> washb_ttest(Y=qdata$CTmean.Al,tr=qdata$almh.f,strat=qdata$block, 
 +             contrast=c("Light intensity\ninfection","Moderate-heavy intensity\ninfection"))
          diff         ci.lb         ci.ub        t-stat             p 
 -1.225322e+01 -1.376168e+01 -1.074476e+01 -1.634138e+01  5.156652e-21 
 > 
 > # quantiles of the Ct values within infection
 > # intensity levels
-> quantile(qdata$CTmean.Al2[qdata$almh.f=="Light intensity\ninfection"], prob=c(0,.5,1))
+> quantile(qdata$CTmean.Al[qdata$almh.f=="Light intensity\ninfection"], prob=c(0,.5,1))
       0%      50%     100% 
  8.13526 25.22662 39.57802 
-> quantile(qdata$CTmean.Al2[qdata$almh.f=="Moderate-heavy intensity\ninfection"], prob=c(0,.5,1))
+> quantile(qdata$CTmean.Al[qdata$almh.f=="Moderate-heavy intensity\ninfection"], prob=c(0,.5,1))
        0%       50%      100% 
  4.417454  9.155346 34.341099 
 > 
 > proc.time()
    user  system elapsed 
-  2.564   0.183   3.173 
+  2.435   0.128   2.769 

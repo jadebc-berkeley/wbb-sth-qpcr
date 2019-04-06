@@ -84,7 +84,7 @@ Warning messages:
 > #---------------------------------------
 > # make table
 > #---------------------------------------
-> N.al=nrow(qdata[!is.na(qdata$positive.Al2) & !is.na(qdata$alkk),])
+> N.al=nrow(qdata[!is.na(qdata$positive.Al) & !is.na(qdata$alkk),])
 > N.hw=nrow(qdata[!is.na(qdata$positive.Hw) & !is.na(qdata$hwkk),])
 > N.tt=nrow(qdata[!is.na(qdata$positive.Tt) & !is.na(qdata$ttkk),])
 > 
@@ -120,4 +120,4 @@ Warning messages:
 > 
 > proc.time()
    user  system elapsed 
-  1.370   0.128   1.664 
+  1.415   0.133   1.754 

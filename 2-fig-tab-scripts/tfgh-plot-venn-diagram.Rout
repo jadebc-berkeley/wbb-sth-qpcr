@@ -93,7 +93,7 @@ Warning messages:
 > # get n's - qPCR
 > get_q_n = function(data, al, hw, tt){
 +   x = data %>% filter(
-+     positive.Al2 == al,
++     positive.Al == al,
 +     positive.Hw == hw, 
 +     positive.Tt == tt
 +   ) %>%
@@ -264,4 +264,4 @@ null device
 > 
 > proc.time()
    user  system elapsed 
-  3.057   0.236   3.271 
+  2.808   0.205   2.950 

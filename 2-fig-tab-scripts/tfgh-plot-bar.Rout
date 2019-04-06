@@ -17,8 +17,6 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
-[Previously saved workspace restored]
-
 > #######################################
 > # WASH Benefits Bangladesh STH KK qPCR validation
 > # plot qpcr vs. kk prevalence
@@ -87,31 +85,21 @@ Warning messages:
 > per.pos = qdata %>% 
 +   # subset columns
 +   select(alkk,hwkk,ttkk,
-+          positive.Al2,positive.Tt,positive.Hw,
++          positive.Al,positive.Tt,positive.Hw,
 +          positive.Ac,positive.Na,positive.Ad) %>%
 +   # calculate percent positive
-+   summarise_all(funs(mean(.,na.rm=TRUE))) %>%
++   summarise_all(list(~mean(.,na.rm=TRUE))) %>%
 +   gather(lab,per.pos)
-Warning message:
-funs() is soft deprecated as of dplyr 0.8.0
-please use list() instead
-
-# Before:
-funs(name = f(.)
-
-# After: 
-list(name = ~f(.))
-This warning is displayed once per session. 
 > 
 > 
 > # calculate percent positive
 > n.pos = qdata %>%
 +   # subset columns
 +   select(alkk,hwkk,ttkk,
-+          positive.Al2,positive.Tt,positive.Na,positive.Ad,
++          positive.Al,positive.Tt,positive.Na,positive.Ad,
 +          positive.Ac) %>%
 +   # calculate sum of positives
-+   summarise_all(funs(sum(.,na.rm=TRUE)))  %>%
++   summarise_all(list(~sum(.,na.rm=TRUE)))  %>%
 +   gather(lab,n)
 > 
 > bar.data =   
@@ -167,7 +155,8 @@ This warning is displayed once per session.
 +                                       italic("Necator americanus"),
 +                                       italic("Trichuris trichiura"))) +
 +   scale_y_continuous(limits=c(0,40)) +
-+   geom_text(aes(label=per.f,vjust=c(-0.3,-0.3,-0.3,-0.3,-0.3,-2.9,-0.3,-0.3)), size=5) +
++   geom_text(aes(label=per.f,
++                 vjust=c(-0.3,-0.3,-0.3,-0.3,-0.3,-2.2,-0.3,-0.3)), size=5) +
 +   theme_bw() +
 +   
 +   # customize font size, legend
@@ -203,4 +192,4 @@ null device
 > 
 > proc.time()
    user  system elapsed 
-  4.251   0.200   4.811 
+  4.197   0.166   4.648 
