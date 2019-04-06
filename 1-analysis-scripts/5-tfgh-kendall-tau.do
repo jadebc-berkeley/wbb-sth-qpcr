@@ -1,5 +1,5 @@
 capture log close
-log using "~/Documents/CRG/wash-benefits/bangladesh/src/wbb-sth-qpcr/1-analysis/5-tfgh-kendall-tau.log", replace
+log using "~/Documents/CRG/wash-benefits/bangladesh/src/wbb-sth-qpcr/1-analysis-scripts/5-tfgh-kendall-tau.log", replace
 **************************************
 * WASH Benefits Bangladesh STH KK qPCR validation
 * calculate correlation between epg and CT value
@@ -8,7 +8,7 @@ log using "~/Documents/CRG/wash-benefits/bangladesh/src/wbb-sth-qpcr/1-analysis/
 
 insheet using "~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/qdata.csv", clear
 
-foreach var of varlist ctmeanac ctmeanad ctmeanal2 ctmeanna ctmeantt positivena positiveac positivead{
+foreach var of varlist ctmeanac ctmeanad ctmeanal ctmeanna ctmeantt positivena positiveac positivead{
 	replace `var' = "" if `var'=="NA"
 	destring `var', replace
 }
@@ -23,14 +23,14 @@ replace ctmeanhw = (ctmeanna + ctmeanac)/2 if positivena==1 & positiveac==1 & po
 replace ctmeanhw = (ctmeanac + ctmeanad)/2 if positivena==0 & positiveac==1 & positivead==1
 
 
-ktau alepg ctmeanal2, stats(taub)
+ktau alepg ctmeanal, stats(taub)
 ktau hwepg ctmeanna, stats(taub)
 ktau hwepg ctmeanac, stats(taub)
 ktau hwepg ctmeanhw, stats(taub)
 ktau ttepg ctmeantt, stats(taub)
 
 
-bootstrap r(tau_b), reps(1000) seed(1234) cluster(block): ktau alepg ctmeanal2, stats(taub)
+bootstrap r(tau_b), reps(1000) seed(1234) cluster(block): ktau alepg ctmeanal, stats(taub)
 bootstrap r(tau_b), reps(1000) seed(1234) cluster(block): ktau hwepg ctmeanna, stats(taub)
 bootstrap r(tau_b), reps(1000) seed(1234) cluster(block): ktau hwepg ctmeanac, stats(taub)
 bootstrap r(tau_b), reps(1000) seed(1234) cluster(block): ktau ttepg ctmeantt, stats(taub)
