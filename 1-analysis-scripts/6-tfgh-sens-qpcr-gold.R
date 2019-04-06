@@ -18,8 +18,9 @@ load(paste0(data_dir,"qdata.RData"))
 # subset to relevant columns
 #----------------------------------------
 d = qdata %>%
-  select(dataid,personid,clusterid,positive.Hw,
-         positive.Tt,alkk,hwkk,ttkk)
+  select(dataid,personid,clusterid,
+         positive.Al, positive.Hw, positive.Tt,
+         alkk,hwkk,ttkk)
 
 #----------------------------------------
 # calculate sensitivity
