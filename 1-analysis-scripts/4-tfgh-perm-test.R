@@ -27,7 +27,8 @@ al.data <- qdata %>%
     test=="positive.Al" ~ "qpcr",
     test=="alkk"~ "kk"
   ),
-  block = as.factor(block))
+  block = as.factor(block)) %>%
+  filter(!is.na(positive))
 
 hw.data <- qdata %>%
   # subset to relevant columns
