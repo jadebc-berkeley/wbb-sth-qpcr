@@ -43,16 +43,16 @@ nrow(qdata[qdata$positive.Al==0 & qdata$alkk==0,])
 mean(qdata$positive.Al)
 
 # new assay
-qdata=qdata[!is.na(qdata$positive.Al2) & !is.na(qdata$alkk),]
+qdata=qdata[!is.na(qdata$positive.Al) & !is.na(qdata$alkk),]
 nrow(qdata)
 
-nrow(qdata[qdata$positive.Al2==1 & qdata$alkk==1,])
-nrow(qdata[qdata$positive.Al2==0 & qdata$alkk==1,])
-nrow(qdata[qdata$positive.Al2==1 & qdata$alkk==0,])
-nrow(qdata[qdata$positive.Al2==0 & qdata$alkk==0,])
+nrow(qdata[qdata$positive.Al==1 & qdata$alkk==1,])
+nrow(qdata[qdata$positive.Al==0 & qdata$alkk==1,])
+nrow(qdata[qdata$positive.Al==1 & qdata$alkk==0,])
+nrow(qdata[qdata$positive.Al==0 & qdata$alkk==0,])
 
 # initial value for prevalence - use qpcr
-mean(qdata$positive.Al2)
+mean(qdata$positive.Al)
 
 
 #--------------------------------------
