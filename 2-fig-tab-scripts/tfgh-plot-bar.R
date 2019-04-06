@@ -24,7 +24,7 @@ per.pos = qdata %>%
          positive.Al,positive.Tt,positive.Hw,
          positive.Ac,positive.Na,positive.Ad) %>%
   # calculate percent positive
-  summarise_all(funs(mean(.,na.rm=TRUE))) %>%
+  summarise_all(list(~mean(.,na.rm=TRUE))) %>%
   gather(lab,per.pos)
 
 
@@ -35,7 +35,7 @@ n.pos = qdata %>%
          positive.Al,positive.Tt,positive.Na,positive.Ad,
          positive.Ac) %>%
   # calculate sum of positives
-  summarise_all(funs(sum(.,na.rm=TRUE)))  %>%
+  summarise_all(list(~sum(.,na.rm=TRUE)))  %>%
   gather(lab,n)
 
 bar.data =   
@@ -91,7 +91,8 @@ ggplot(bar.data,aes(x=test,y=per.pos,fill=org),col="black")+
                                       italic("Necator americanus"),
                                       italic("Trichuris trichiura"))) +
   scale_y_continuous(limits=c(0,40)) +
-  geom_text(aes(label=per.f,vjust=c(-0.3,-0.3,-0.3,-0.3,-0.3,-2.9,-0.3,-0.3)), size=5) +
+  geom_text(aes(label=per.f,
+                vjust=c(-0.3,-0.3,-0.3,-0.3,-0.3,-2.2,-0.3,-0.3)), size=5) +
   theme_bw() +
   
   # customize font size, legend
