@@ -6,7 +6,7 @@ log using "~/Documents/CRG/wash-benefits/bangladesh/src/wbb-sth-qpcr/1-analysis-
 * using Kendall's tau beta
 **************************************
 
-insheet using "~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/qdata.csv", clear
+insheet using "~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/public/qdata.csv", clear
 
 foreach var of varlist ctmeanac ctmeanad ctmeanal ctmeanna ctmeantt positivena positiveac positivead{
 	replace `var' = "" if `var'=="NA"

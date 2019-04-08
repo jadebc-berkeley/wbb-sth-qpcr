@@ -21,7 +21,7 @@ library(clusrank)
 library(assertthat)
 
 # define directories
-data_dir = "~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/"
+data_dir = "~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/public/"
 fig_dir = paste0(here::here(),"/3-figures/")
 tab_dir = paste0(here::here(),"/4-tables/")
 
