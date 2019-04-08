@@ -108,12 +108,21 @@ qpcr.w <- qpcr.w %>%
   mutate(personid=ifelse(personid=="O","O1",personid)) %>%
   mutate(personid=ifelse(personid=="W","T2",personid)) 
 
+# confirm that sample 10805ETS1 was dropped from qPCR 
+qpcr.w = qpcr.w %>% 
+  mutate(positive.Al = ifelse(sampleid=="10805ETS1", NA, positive.Al))
+
+assert_that(all(is.na(qpcr.w %>% 
+              filter(sampleid=="10805ETS1") %>%
+              select(CTmean.Ac, CTmean.Ad, CTmean.Al, CTmean.Na, CTmean.Ss, CTmean.Tt,
+                     CTSD.Ac, CTSD.Ad, CTSD.Al, CTSD.Na, CTSD.Ss, CTSD.Tt,
+                     positive.Ac, positive.Ad, positive.Al, positive.Na, positive.Ss, positive.Tt))))
 
 #--------------------------------------
 # read in revised Ascaris qPCR data
 #--------------------------------------
-# ascaris_new=read.csv("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/Revised ascaris assay/KK v New assay comparison_10-17-18.csv",stringsAsFactors=FALSE)
 ascaris_new=read.csv("~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/Revised ascaris assay/KK v New assay comparison_4-3-19_Updated with data for missing samples.csv", stringsAsFactors=FALSE)
+nrow(ascaris_new)
 
 colnames(ascaris_new) = c("sampleid", "alepg", "al", "X", "CTmean.Al2", "CTSD.Al2", "XX")
 ascaris_new$dataid=substr(ascaris_new$sampleid,1,5)
@@ -122,7 +131,6 @@ ascaris_new = ascaris_new %>% select(-c(X,XX, alepg, al))
 
 # indicator for positive Al 
 ascaris_new <- ascaris_new %>%
-  # mutate(CTmean.Al2 = ifelse(CTmean.Al2 == "DNA SAMPLE MISSING", NA,CTmean.Al2)) %>%
   mutate(CTmean.Al2 = as.numeric(CTmean.Al2)) %>%
   mutate(positive.Al2=ifelse(CTmean.Al2<40,1,0)) %>%
   mutate(positive.Al2=ifelse(is.na(CTmean.Al2),0,positive.Al2))
@@ -130,13 +138,43 @@ ascaris_new <- ascaris_new %>%
 # manual correction of id that doesn't match list sent to Smith
 ascaris_new = ascaris_new %>%
   ungroup() %>%
-    mutate(sampleid=ifelse(sampleid=="18705EOS1","18705ECS1",sampleid)) %>%
+    mutate(sampleid=ifelse(sampleid=="18705EOS1","18705ECS1",sampleid))
+
+# manual correction of data for id missing in xls file
+# Nils sent based on Nils' email 
+ascaris_new %>% filter(sampleid=="59901ETS1")
+
+addid = data.frame(
+  sampleid="59901ETS1",
+  CTmean.Al2 = NA,
+  CTSD.Al2 = NA,
+  dataid = "59901",
+  personid = "T1",
+  positive.Al2 = 0
+)
+
+ascaris_new = bind_rows(ascaris_new, addid)
+
+# create standard ids
+ascaris_new = ascaris_new %>%
     mutate(personid=substr(sampleid,7,7),
            dataid=substr(sampleid,1,5)) %>%
     mutate(personid=ifelse(personid=="T","T1",personid)) %>%
     mutate(personid=ifelse(personid=="C","C1",personid)) %>%
     mutate(personid=ifelse(personid=="O","O1",personid)) %>%
     mutate(personid=ifelse(personid=="W","T2",personid)) 
+
+
+# confirm that sample 10805ETS1 was dropped from qPCR 
+ascaris_new = ascaris_new %>% 
+  mutate(positive.Al2 = ifelse(sampleid=="10805ETS1", NA, positive.Al2))
+
+assert_that(all(is.na(ascaris_new %>% 
+                        filter(sampleid=="10805ETS1") %>%
+                        select(CTmean.Al2, CTSD.Al2, positive.Al2))))
+
+# # confirm that only one sample has a missing ascaris result
+assert_that(length(ascaris_new$positive.Al2[is.na(ascaris_new$positive.Al2)]) == 1)
 
 #--------------------------------------
 # merge in kk data
@@ -156,14 +194,20 @@ colnames(kk)[which(colnames(kk)=="hw")]="hwkk"
 
 # merge kk and qPCR data
 data=full_join(kk,qpcr.w,by=c("dataid","personid"))
-
-# merge on re-run ascaris qPCR data
-data=full_join(data,ascaris_new,by=c("dataid","personid","sampleid"))
-
 data$qpcr[is.na(data$qpcr)]="Not done"
 
 # subset to rows in which qpcr was done
 qdata=data[data$qpcr=="Done",]
+nrow(qdata)
+
+# merge on re-run ascaris qPCR data
+qdata=full_join(qdata,ascaris_new,by=c("dataid","personid","sampleid"))
+nrow(qdata)
+
+# confirm that all rows match between 
+# first and second batch of assays
+anti = anti_join(qdata,ascaris_new,by=c("dataid","personid","sampleid"))
+assert_that(nrow(anti)==0)
 
 # -------------------------------------------
 # create gold standard by pooling together 
@@ -209,7 +253,7 @@ qdata = qdata %>%
          CTSD.Al = CTSD.Al2) 
 
 qdata = qdata %>%
-  select(clusterid, dataid, block,  personid, sex, dw,
+  select(clusterid, dataid, block,  personid, sampleid, tr, sex, dw,
          aged,   agem,   agey,   alepg,  hwepg,  ttepg, 
          logalepg, loghwepg, logttepg, alkk,   ttkk,   hwkk,  
          sth, alint,  ttint,  hwint,  
@@ -223,6 +267,8 @@ qdata = qdata %>%
          positive.Ac,  positive.Ad,  positive.Al,  positive.IAC, positive.Na,  positive.Ss,
          positive.Tt, positive.Hw, positive.Sth, everything())
 
+# confirm n = 2800
+assert_that(nrow(qdata)==2800)
 
 #--------------------------------------
 # save data
