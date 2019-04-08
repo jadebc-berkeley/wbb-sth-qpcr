@@ -18,7 +18,7 @@ library(VennDiagram)
 library(venneuler)
 library(irr)
 library(clusrank)
-
+library(assertthat)
 
 # define directories
 data_dir = "~/Dropbox/WASH-B-STH-Add-on/TFGH/Data/RData/"
