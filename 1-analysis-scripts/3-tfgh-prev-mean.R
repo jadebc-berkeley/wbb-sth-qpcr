@@ -91,7 +91,36 @@ ac.q.gmn=washb_mean(qdata$ln.CT.ac, id=qdata$clusterid, print = TRUE)
 ad.q.gmn=washb_mean(qdata$ln.CT.ad, id=qdata$clusterid, print = TRUE)
 tt.q.gmn=washb_mean(qdata$ln.CT.tt, id=qdata$clusterid, print = TRUE)
 
+#--------------------------------
+# exponentiate mean, lb, ub
+#--------------------------------
+exp_mean_bounds = function(x){
+  x = as.data.frame(x)
+  x = x %>%
+    mutate(Mean = exp(Mean),
+           `Lower 95%CI` = exp(`Lower 95%CI`),
+           `Upper 95%CI` = exp(`Upper 95%CI`)) %>%
+    select(Mean, `Lower 95%CI`, `Upper 95%CI`)
+  x =x - 1
+  return(x)
+}
 
+al.kk.gmn = exp_mean_bounds(al.kk.gmn)
+hw.kk.gmn = exp_mean_bounds(hw.kk.gmn)
+tt.kk.gmn = exp_mean_bounds(tt.kk.gmn)
+
+al.kk.gmn.pos = exp_mean_bounds(al.kk.gmn.pos)
+hw.kk.gmn.pos = exp_mean_bounds(hw.kk.gmn.pos)
+tt.kk.gmn.pos = exp_mean_bounds(tt.kk.gmn.pos)
+
+al.q.gmn = exp_mean_bounds(al.q.gmn)
+na.q.gmn = exp_mean_bounds(na.q.gmn)
+ac.q.gmn = exp_mean_bounds(ac.q.gmn)
+tt.q.gmn = exp_mean_bounds(tt.q.gmn)
+
+#--------------------------------
+# save output
+#--------------------------------
 save(al.kk,hw.kk,tt.kk,
      al.q,hw.q,na.q,ac.q,ad.q,tt.q,ss.q,
      al.kk.gmn,hw.kk.gmn,tt.kk.gmn,
