@@ -38,9 +38,9 @@ prev.q = prev.q %>%
 # -------------------------------------
 epg=as.data.frame(rbind(al.kk.gmn,hw.kk.gmn,tt.kk.gmn))
 epg$org=c("Ascaris lumbricoides","Hookworm","Trichuris trichiura")
-colnames(epg)[5:6]=c("lb","ub")
+colnames(epg)[2:3]=c("lb","ub")
 epg = epg %>%
-  mutate(epg=ptestci.format(Mean,lb,ub,decimals=1,scale=1)) %>%
+  mutate(epg=ptestci.format(Mean,lb,ub,decimals=2,scale=1)) %>%
   select(org,epg)
 
 # -------------------------------------
