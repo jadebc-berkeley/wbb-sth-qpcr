@@ -17,6 +17,8 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
+[Previously saved workspace restored]
+
 > #######################################
 > # WASH Benefits Bangladesh STH KK qPCR validation
 > # plot qpcr vs. kk prevalence
@@ -192,4 +194,4 @@ null device
 > 
 > proc.time()
    user  system elapsed 
-  4.197   0.166   4.648 
+  4.275   0.174   4.705 

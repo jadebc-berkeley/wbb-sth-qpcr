@@ -190,4 +190,4 @@ alternative hypothesis: true mu is not equal to 0
 > 
 > proc.time()
    user  system elapsed 
-  3.931   0.203   4.361 
+  4.304   0.260   5.232 

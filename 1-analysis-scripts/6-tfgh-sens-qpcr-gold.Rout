@@ -129,8 +129,8 @@ Warning messages:
 +   filter(!is.na(alkk)) %>%
 +   mutate(alneg=ifelse(alkk==1,0,1))
 > al.spec=washb_mean(ald2$alneg,id=ald2$clusterid)
-        N      Mean        SD Robust SE Lower 95%CI Upper 95%CI
-[1,] 2147 0.6665114 0.4715692 0.0131356   0.6407656   0.6922572
+        N      Mean        SD  Robust SE Lower 95%CI Upper 95%CI
+[1,] 2147 0.6665114 0.4715692 0.01310612   0.6408234   0.6921994
 > 
 > hwd2= d %>% filter(positive.Hw==0) %>%
 +   filter(!is.na(hwkk)) %>%
@@ -155,4 +155,4 @@ Warning messages:
 > 
 > proc.time()
    user  system elapsed 
-  2.728   0.214   3.245 
+  2.900   0.206   3.487 

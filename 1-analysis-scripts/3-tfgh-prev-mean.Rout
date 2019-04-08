@@ -115,7 +115,7 @@ due to missing values in the outcome
  Final sample size: 2799 
 -----------------------------------------
         N      Mean        SD  Robust SE Lower 95%CI Upper 95%CI
-[1,] 2799 0.2329403 0.4227801 0.01235942   0.2087159   0.2571648
+[1,] 2799 0.2329403 0.4227801 0.01235853   0.2087176   0.2571631
 > hw.q=washb_mean(qdata$positive.Hw, id=qdata$clusterid, print = TRUE)
 
 -----------------------------------------
@@ -173,12 +173,12 @@ due to missing values in the outcome
 > sth.q=washb_mean(qdata$positive.Sth, id=qdata$clusterid, print = TRUE)
 
 -----------------------------------------
-Dropping 2 observations
+Dropping 1 observations
 due to missing values in the outcome
- Final sample size: 2798 
+ Final sample size: 2799 
 -----------------------------------------
-        N      Mean        SD Robust SE Lower 95%CI Upper 95%CI
-[1,] 2798 0.4167262 0.4931048 0.0146483   0.3880156   0.4454369
+        N      Mean        SD  Robust SE Lower 95%CI Upper 95%CI
+[1,] 2799 0.4165773 0.4930796 0.01465487   0.3878538   0.4453009
 > 
 > #--------------------------------------
 > # co-infection
@@ -197,7 +197,7 @@ due to missing values in the outcome
 > prop.table(table(qdata$numsth.q))*100
 
          0          1          2          3          4 
-58.3273767 28.5203717 10.3288063  2.6804861  0.1429593 
+58.3422651 28.5101822 10.3251161  2.6795284  0.1429082 
 > 
 > prop.table(table(qdata$multisth.kk))*100
 
@@ -206,7 +206,7 @@ due to missing values in the outcome
 > prop.table(table(qdata$multisth.q))*100
 
        0        1 
-86.84775 13.15225 
+86.85245 13.14755 
 > 
 > #--------------------------------------
 > # mod/heavy intensity infection
@@ -316,7 +316,36 @@ due to missing values in the outcome
        N     Mean        SD   Robust SE Lower 95%CI Upper 95%CI
 [1,] 343 3.385179 0.1308801 0.007781994    3.369926    3.400432
 > 
+> #--------------------------------
+> # exponentiate mean, lb, ub
+> #--------------------------------
+> exp_mean_bounds = function(x){
++   x = as.data.frame(x)
++   x = x %>%
++     mutate(Mean = exp(Mean),
++            `Lower 95%CI` = exp(`Lower 95%CI`),
++            `Upper 95%CI` = exp(`Upper 95%CI`)) %>%
++     select(Mean, `Lower 95%CI`, `Upper 95%CI`)
++   x =x - 1
++   return(x)
++ }
 > 
+> al.kk.gmn = exp_mean_bounds(al.kk.gmn)
+> hw.kk.gmn = exp_mean_bounds(hw.kk.gmn)
+> tt.kk.gmn = exp_mean_bounds(tt.kk.gmn)
+> 
+> al.kk.gmn.pos = exp_mean_bounds(al.kk.gmn.pos)
+> hw.kk.gmn.pos = exp_mean_bounds(hw.kk.gmn.pos)
+> tt.kk.gmn.pos = exp_mean_bounds(tt.kk.gmn.pos)
+> 
+> al.q.gmn = exp_mean_bounds(al.q.gmn)
+> na.q.gmn = exp_mean_bounds(na.q.gmn)
+> ac.q.gmn = exp_mean_bounds(ac.q.gmn)
+> tt.q.gmn = exp_mean_bounds(tt.q.gmn)
+> 
+> #--------------------------------
+> # save output
+> #--------------------------------
 > save(al.kk,hw.kk,tt.kk,
 +      al.q,hw.q,na.q,ac.q,ad.q,tt.q,ss.q,
 +      al.kk.gmn,hw.kk.gmn,tt.kk.gmn,
@@ -325,4 +354,4 @@ due to missing values in the outcome
 > 
 > proc.time()
    user  system elapsed 
-  2.058   0.184   3.418 
+  1.824   0.189   2.387 

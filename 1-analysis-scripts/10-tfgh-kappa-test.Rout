@@ -17,6 +17,8 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
+[Previously saved workspace restored]
+
 > #######################################
 > # WASH Benefits Bangladesh STH KK qPCR validation
 > # kappa test of agreement between 
@@ -89,4 +91,4 @@ Warning messages:
 > 
 > proc.time()
    user  system elapsed 
-  1.259   0.109   1.496 
+  1.581   0.146   2.189 
