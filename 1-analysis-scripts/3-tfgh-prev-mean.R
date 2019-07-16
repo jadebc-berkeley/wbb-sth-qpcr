@@ -58,6 +58,26 @@ prop.table(table(qdata$ttmh))*100
 quantile(qdata$CTmean.Al[qdata$almh==1],probs=c(0,0.5,1),na.rm=TRUE)
 quantile(qdata$CTmean.Al[qdata$almh==0],probs=c(0,0.5,1),na.rm=TRUE)
 
+#--------------------------------------
+# moderate intensity infection
+#--------------------------------------
+prop.table(table(qdata$al_mod))*100
+prop.table(table(qdata$hw_mod))*100
+prop.table(table(qdata$tt_mod))*100
+
+quantile(qdata$CTmean.Al[qdata$al_mod==1],probs=c(0,0.5,1),na.rm=TRUE)
+quantile(qdata$CTmean.Al[qdata$al_mod==0],probs=c(0,0.5,1),na.rm=TRUE)
+
+#--------------------------------------
+# heavy intensity infection
+#--------------------------------------
+prop.table(table(qdata$al_heavy))*100
+prop.table(table(qdata$hw_heavy))*100
+prop.table(table(qdata$tt_heavy))*100
+
+quantile(qdata$CTmean.Al[qdata$al_heavy==1],probs=c(0,0.5,1),na.rm=TRUE)
+quantile(qdata$CTmean.Al[qdata$al_heavy==0],probs=c(0,0.5,1),na.rm=TRUE)
+
 
 #--------------------------------------
 # Estimate geometric mean and 95%CI for each
@@ -118,6 +138,14 @@ na.q.gmn = exp_mean_bounds(na.q.gmn)
 ac.q.gmn = exp_mean_bounds(ac.q.gmn)
 tt.q.gmn = exp_mean_bounds(tt.q.gmn)
 
+
+#--------------------------------------
+# Median in positive samples and range
+#--------------------------------------
+al.med.pos = quantile(qdata$alepg[qdata$alkk==1], probs=c(0,0.5,1))
+hw.med.pos = quantile(qdata$hwepg[qdata$hwkk==1], probs=c(0,0.5,1))
+tt.med.pos = quantile(qdata$ttepg[qdata$ttkk==1], probs=c(0,0.5,1))
+
 #--------------------------------
 # save output
 #--------------------------------
@@ -125,4 +153,5 @@ save(al.kk,hw.kk,tt.kk,
      al.q,hw.q,na.q,ac.q,ad.q,tt.q,ss.q,
      al.kk.gmn,hw.kk.gmn,tt.kk.gmn,
      al.q.gmn,na.q.gmn,ac.q.gmn,ad.q.gmn,tt.q.gmn,
+     al.med.pos, hw.med.pos, tt.med.pos,
      file=paste0(data_dir, "prev_results.RData"))
