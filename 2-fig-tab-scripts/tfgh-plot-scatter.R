@@ -23,7 +23,6 @@ cb.orange="#D55E00"
 cb.pink="#CC79A7"
 cb.dblue="#005787"
 
-yseq=seq(0,45,5)
 xseq=c(1, 10, 100, 1000, 10000, 100000)
 
 # customize font size, legend
@@ -38,14 +37,17 @@ fonts = theme(legend.text.align = 0,
       plot.title = element_text(hjust = 0.5))
   
 # al plot
-al <- qdata %>% filter(positive.Al==1 | alkk==1) %>%
+al <- qdata %>% 
+  # filter(positive.Al==1 | alkk==1) %>%
   # impute 1 for negative values of epg
-  mutate(alepg=ifelse(alepg==0, 1, alepg))
+  mutate(alepg=ifelse(alepg==0, 1, alepg),
+         # impute CT=45 if CT is NA (negative result)
+         CTmean.Al_plot = ifelse(is.na(CTmean.Al), 45, CTmean.Al))
 
-al.plot=ggplot(al, aes(x=alepg, y=CTmean.Al))+
+al.plot=ggplot(al, aes(x=alepg, y=CTmean.Al_plot))+
   geom_point(alpha=0.65,col=cb.lightorange)+
-  geom_smooth(se=FALSE,col="black",data=al[al$alepg>1,], method='loess')+
-  scale_y_log10(labels=yseq, breaks=yseq, limits=c(10^0.5, 10^1.7)) +
+  geom_smooth(se=FALSE,col="black",data=al[al$alepg>1 & al$CTmean.Al_plot<45,], method='loess')+
+  scale_y_continuous(labels=seq(5,45,5), breaks=seq(5,45,5), limits=c(2, 45)) +
   scale_x_log10(labels=xseq, breaks=xseq, limits=c(1, 10^5))+
   xlab("Kato-Katz eggs per gram")+
   ylab("qPCR Cq value")+
@@ -55,7 +57,8 @@ al.plot=ggplot(al, aes(x=alepg, y=CTmean.Al))+
 
 
 # hw plot
-hw <- qdata %>% filter(positive.Hw==1 | hwkk==1) %>%
+hw <- qdata %>% 
+  # filter(positive.Hw==1 | hwkk==1) %>%
   select(c(CTmean.Na, CTmean.Ac, CTmean.Ad, hwepg)) %>%
   gather(hw.species,CT,CTmean.Na:CTmean.Ad) %>%
   mutate(Species=case_when(
@@ -65,29 +68,39 @@ hw <- qdata %>% filter(positive.Hw==1 | hwkk==1) %>%
   ))%>%
   # impute 1 for negative values of epg
   mutate(hwepg=ifelse(hwepg==0, 1, hwepg)) %>%
+  # impute CT=45 if CT is NA (negative result)
+  mutate(CT_plot = ifelse(is.na(CT), 45, CT)) %>%
   mutate(Species=factor(Species, levels=c("Necator americanus", 
                                           "Ancylostoma ceylanicum", "Ancylostoma duodenale")))
 
-hw.plot=ggplot(hw, aes(x=hwepg, y=CT))+
+hw.plot=ggplot(hw, aes(x=hwepg, y=CT_plot))+
   geom_point(aes(col=Species),alpha=0.65)+
-  geom_smooth(se=FALSE,col="black",data=hw[hw$hwepg>1,], method='loess')+
-  scale_y_log10(labels=yseq, breaks=yseq, limits=c(10^1.1, 10^1.7)) +
+  geom_smooth(se=FALSE,col="black",data=hw[hw$hwepg>1 & hw$CT_plot<45,], method='loess')+
+  scale_y_continuous(labels=seq(10,45,5), breaks=seq(10,45,5), limits=c(10, 45))+
   scale_x_log10(labels=xseq, breaks=xseq, limits=c(1, 10^5))+
   xlab("Kato-Katz eggs per gram")+
   ylab("qPCR Cq value")+
   scale_color_manual(values=c(cb.blue,cb.dblue,cb.pink))+
   theme_bw()+ 
-  theme(legend.position = c(0.75, 0.8), 
+  theme(legend.position = c(0.8, 0.83), 
+        legend.title=element_blank(),
         legend.background = element_rect(color = "black", 
           fill = "white", size = 0.2, linetype = "solid"),
-        legend.text = element_text(face = "italic"))+
-  fonts + 
-  ggtitle("Hookworm")
+        axis.text = element_text(size =12),
+        axis.title = element_text(size =14),
+        legend.text = element_text(face = "italic", 
+                                   size =9,
+                                   margin = margin(t = 0, r= 0, b=0, l =0)),
+        legend.key.size = unit(.5, 'lines'))+
+  # fonts + 
+  ggtitle("Hookworm") +
+  theme(plot.title = element_text(hjust = 0.5))
+
 
 hw.plot.poster=ggplot(hw, aes(x=hwepg, y=CT))+
   geom_point(aes(col=Species),alpha=0.65)+
   geom_smooth(se=FALSE,col="black",data=hw[hw$hwepg>1,], method='loess')+
-  scale_y_log10(labels=yseq, breaks=yseq, limits=c(10^1.1, 10^1.7)) +
+  scale_y_log10(labels=seq(0,45,5), breaks=seq(0,45,5), limits=c(10^1.1, 10^1.7)) +
   scale_x_log10(labels=xseq, breaks=xseq, limits=c(1, 10^5))+
   xlab("Kato-Katz eggs per gram")+
   ylab("qPCR Ct value")+
@@ -97,14 +110,17 @@ hw.plot.poster=ggplot(hw, aes(x=hwepg, y=CT))+
 
 
 # tt plot
-tt <- qdata %>% filter(positive.Tt==1 | ttkk==1) %>%
+tt <- qdata %>%
+  # filter(positive.Tt==1 | ttkk==1) %>%
   # impute 1 for negative values of epg
-  mutate(ttepg=ifelse(ttepg==0, 1, ttepg))
+  mutate(ttepg=ifelse(ttepg==0, 1, ttepg),
+         # impute CT=45 if CT is NA (negative result)
+         CTmean.Tt_plot = ifelse(is.na(CTmean.Tt), 45, CTmean.Tt))
 
-tt.plot=ggplot(tt, aes(x=ttepg, y=CTmean.Tt))+
+tt.plot=ggplot(tt, aes(x=ttepg, y=CTmean.Tt_plot))+
   geom_point(alpha=0.65,col=cb.green)+
-  geom_smooth(se=FALSE,col="black",data=tt[tt$ttepg>1,], method='loess')+
-  scale_y_log10(labels=yseq, breaks=yseq, limits=c(10^1.2, 10^1.7)) +
+  geom_smooth(se=FALSE,col="black",data=tt[tt$ttepg>1 & tt$CTmean.Tt_plot<45,], method='loess')+
+  scale_y_continuous(labels=seq(20, 45, 5), breaks=seq(20, 45, 5), limits=c(20, 45)) +
   scale_x_log10(labels=xseq, breaks=xseq, limits=c(1, 10^5))+
   xlab("Kato-Katz eggs per gram")+
   ylab("qPCR Cq value")+
