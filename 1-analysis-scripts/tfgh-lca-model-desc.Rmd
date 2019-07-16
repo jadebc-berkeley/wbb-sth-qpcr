@@ -5,7 +5,8 @@ output: pdf_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-## S1 Appendix: Bayesian latent class model specification 
+## Comparison of multi-parallel qPCR and Kato-Katz for detection of soil-transmitted helminth infection among children in rural Bangladesh
+## S2 Appendix: Bayesian latent class model specification 
 
 To estimate sensitivity and specificity of the STH diagnostic methods, we used Bayesian latent class analysis, which defines the true prevalence, sensitivity, and specificity as latent variables that are estimated simultaneously from the data and assumes no gold standard. We defined a model that accounted for covariance between diagnostic methods since both diagnostic methods are dependent upon the same underlying biological process. 
 
