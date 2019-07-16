@@ -34,35 +34,42 @@ prev.q = prev.q %>%
   select(org,Nq=N,prevq)
 
 # -------------------------------------
-# KK EPG
-# -------------------------------------
-epg=as.data.frame(rbind(al.kk.gmn,hw.kk.gmn,tt.kk.gmn))
-epg$org=c("Ascaris lumbricoides","Hookworm","Trichuris trichiura")
-colnames(epg)[2:3]=c("lb","ub")
-epg = epg %>%
-  mutate(epg=ptestci.format(Mean,lb,ub,decimals=2,scale=1)) %>%
-  select(org,epg)
-
-# -------------------------------------
-# CT value
-# -------------------------------------
 # function to make pretty median (range)
-medrange=function(y){
+# -------------------------------------
+medrange=function(y, digits){
   y=y[!is.na(y)]
   min=quantile(y,prob=c(0))
   med=quantile(y,prob=c(0.5))
   max=quantile(y,prob=c(1))
   
-  min=sprintf("%0.1f",min)
-  med=sprintf("%0.1f",med)
-  max=sprintf("%0.1f",max)
+  min=sprintf(paste0("%0.",digits,"f"),min)
+  med=sprintf(paste0("%0.",digits,"f"),med)
+  max=sprintf(paste0("%0.",digits,"f"),max)
   return(paste0(med, " (",min, ", ",max,")"))
 }
 
+# -------------------------------------
+# KK EPG
+# -------------------------------------
+epg.summary <- qdata %>%
+  mutate(alepg_pos = ifelse(alkk==0, NA, alepg),
+         hwepg_pos = ifelse(hwkk==0, NA, hwepg),
+         ttepg_pos = ifelse(ttkk==0, NA, ttepg)) %>%
+  select(alepg_pos, hwepg_pos, ttepg_pos) 
+
+epg.medrange <- sapply(epg.summary, function(x) medrange(y=x,digits=0))
+epg.df <- data.frame(org = c("Ascaris lumbricoides","Hookworm","Trichuris trichiura"),
+                     epg = epg.medrange)
+epg.df$org = as.character(epg.df$org)
+
+# -------------------------------------
+# CT value
+# -------------------------------------
 CT.summary <- qdata %>%
   select(CTmean.Al, CTmean.Ac, CTmean.Ad, CTmean.Na,
-         CTmean.Tt,CTmean.Ss) %>%
-  summarise_all(list(medrange)) 
+         CTmean.Tt,CTmean.Ss) 
+
+CT.medrange <- sapply(CT.summary, function(x) medrange(y=x,digits=0))
 
 CT.summary <- matrix(t(CT.summary),ncol(CT.summary),1)
 
@@ -73,7 +80,7 @@ ct=data.frame(org=org,ct=CT.summary)
 ct$org=as.character(ct$org)
 
 tab=full_join(prev.kk,prev.q,by="org") 
-tab=full_join(tab,epg,by="org")
+tab=full_join(tab,epg.df,by="org")
 tab=full_join(tab,ct,by="org")
 
 # manual reorder
