@@ -183,7 +183,7 @@ kk=read.csv("~/Dropbox/WASHB Parasites/Analysis datasets/Jade/sth.csv")
 kk$dataid=as.character(kk$dataid)
 kk$personid=as.character(kk$personid)
 kk=kk[,c("dataid","personid","block","clusterid","tr",
-         "sex","dw","aged","agem","agey",
+         "sex","dw","aged","agem","agey","counter","labdate",
       "alepg","hwepg","ttepg",
        "logalepg","loghwepg","logttepg",
        "al","tt","hw","sth","alint","ttint","hwint")]
@@ -224,12 +224,95 @@ qdata = qdata %>%
 # create indicators for moderate/heavy kk infection
 # -------------------------------------------
 qdata <- qdata %>%
-  mutate(almh=ifelse(alepg>=5000,1,0),
-         hwmh=ifelse(hwepg>=2000,1,0),
-         ttmh=ifelse(ttepg>=1000,1,0),
-         almh.f=as.factor(ifelse(almh==1,"Moderate-heavy intensity\ninfection","Low intensity\ninfection")),
-         hwmh.f=as.factor(ifelse(hwmh==1,"Moderate-heavy intensity","Low intensity")),
-         ttmh.f=as.factor(ifelse(ttmh==1,"Moderate-heavy intensity","Low intensity")))
+  mutate(
+    almh = case_when(alepg >= 5000 & alkk == 1 ~ 1,
+                     alepg < 5000 & alkk == 1 ~ 0,
+                     alkk == 0 ~ NA_real_),
+    hwmh = case_when(hwepg >= 2000 & hwkk == 1 ~ 1,
+                     hwepg < 2000 & hwkk == 1 ~ 0,
+                     hwkk == 0 ~ NA_real_),
+    ttmh = case_when(ttepg >= 1000 & ttkk == 1 ~ 1,
+                     ttepg < 1000 & ttkk == 1 ~ 0,
+                     ttkk == 0 ~ NA_real_),
+    
+    al_light = case_when(alepg < 5000 & alkk == 1 ~ 1,
+                         alepg >= 5000 & alkk == 1 ~ 0,
+                         alkk == 0 ~ NA_real_),
+    hw_light = case_when(hwepg < 2000 & hwkk == 1 ~ 1,
+                         hwepg >= 2000 & hwkk == 1 ~ 0,
+                         hwkk == 0 ~ NA_real_),
+    tt_light = case_when(ttepg < 1000 & ttkk == 1 ~ 1,
+                         ttepg >= 1000 & ttkk == 1 ~ 0,
+                         ttkk == 0 ~ NA_real_),
+    
+    al_mod = case_when( alepg >= 5000 & alepg < 50000 & alkk == 1 ~ 1,
+                       (alepg < 5000 | alepg >= 50000) & alkk == 1 ~ 0,
+                        alkk == 0 ~ NA_real_),
+    hw_mod = case_when( hwepg >= 2000 & hwepg < 4000 & hwkk == 1 ~ 1,
+                       (hwepg < 2000 | hwepg >= 4000) & hwkk == 1 ~ 0,
+                        hwkk == 0 ~ NA_real_),
+    tt_mod = case_when( ttepg >= 1000 & ttepg < 10000 & ttkk == 1 ~ 1,
+                       (ttepg < 1000 | ttepg >= 10000) & ttkk == 1 ~ 0,
+                        ttkk == 0 ~ NA_real_),
+    
+    al_heavy = case_when(alepg >= 50000 & alkk == 1 ~ 1,
+                         alepg < 50000 & alkk == 1 ~ 0,
+                         alkk == 0 ~ NA_real_),
+    hw_heavy = case_when(hwepg >= 4000 & hwkk == 1 ~ 1,
+                         hwepg < 4000 & hwkk == 1 ~ 0,
+                         hwkk == 0 ~ NA_real_),
+    tt_heavy = case_when(ttepg >= 10000 & ttkk == 1 ~ 1,
+                         ttepg < 10000 & ttkk == 1 ~ 0,
+                         ttkk == 0 ~ NA_real_)) %>%
+  mutate(
+    almh.f = case_when(almh == 1 ~ "Moderate-heavy intensity",
+                       almh == 0 ~ "Light intensity",
+                       is.na(almh) ~ "Uninfected"),
+    
+    hwmh.f = case_when(hwmh == 1 ~ "Moderate-heavy intensity",
+                       hwmh == 0 ~ "Light intensity",
+                       is.na(hwmh) ~ "Uninfected"),
+    
+    ttmh.f = case_when(ttmh == 1 ~ "Moderate-heavy intensity",
+                       ttmh == 0 ~ "Light intensity",
+                       is.na(ttmh) ~ "Uninfected"),
+    
+    al_light.f = case_when(al_light == 1 ~ "Light intensity",
+                           al_light == 0 ~ "Moderate-heavy intensity",
+                           is.na(al_light) ~ "Uninfected"),
+    
+    hw_light.f = case_when(hw_light == 1 ~ "Light intensity",
+                           hw_light == 0 ~ "Moderate-heavy intensity",
+                           is.na(hw_light) ~ "Uninfected"),
+    
+    tt_light.f = case_when(tt_light == 1 ~ "Light intensity",
+                           tt_light == 0 ~ "Moderate-heavy intensity",
+                           is.na(tt_light) ~ "Uninfected"),
+    
+    al_mod.f = case_when(al_mod == 1 ~ "Moderate intensity",
+                         al_mod == 0 ~ "Light or heavy intensity",
+                         is.na(al_mod) ~ "Uninfected"),
+    
+    hw_mod.f = case_when(hw_mod == 1 ~ "Moderate intensity",
+                         hw_mod == 0 ~ "Light or heavy intensity",
+                         is.na(hw_mod) ~ "Uninfected"),
+    
+    tt_mod.f = case_when(tt_mod == 1 ~ "Moderate intensity",
+                         tt_mod == 0 ~ "Light or heavy intensity",
+                         is.na(tt_mod) ~ "Uninfected"),
+    
+    al_heavy.f = case_when(al_heavy == 1 ~ "Heavy intensity",
+                           al_heavy == 0 ~ "Light-moderate intensity",
+                           is.na(al_heavy) ~ "Uninfected"),
+    
+    hw_heavy.f = case_when(hw_heavy == 1 ~ "Heavy intensity",
+                           hw_heavy == 0 ~ "Light-moderate intensity",
+                           is.na(hw_heavy) ~ "Uninfected"),
+    
+    tt_heavy.f = case_when(tt_heavy == 1 ~ "Heavy intensity",
+                           tt_heavy == 0 ~ "Light-moderate intensity",
+                           is.na(tt_heavy) ~ "Uninfected")
+  )
 
 # -------------------------------------------
 # create any STH
@@ -254,12 +337,23 @@ qdata = qdata %>%
 
 qdata = qdata %>%
   select(clusterid, dataid, block,  personid, sampleid, tr, sex, dw,
-         aged,   agem,   agey,   alepg,  hwepg,  ttepg, 
+         aged,   agem,   agey,   
+         counter,
+         alepg,  hwepg,  ttepg, 
          logalepg, loghwepg, logttepg, alkk,   ttkk,   hwkk,  
          sth, alint,  ttint,  hwint,  
          
          almh, hwmh, ttmh, 
          almh.f, hwmh.f, ttmh.f,
+         
+         al_light, hw_light, tt_light,
+         al_light.f, hw_light.f, tt_light.f,
+         
+         al_mod, hw_mod, tt_mod,
+         al_mod.f, hw_mod.f, tt_mod.f,
+         
+         al_heavy, hw_heavy, tt_heavy,
+         al_heavy.f, hw_heavy.f, tt_heavy.f, 
          
          CTmean.Ac, CTmean.Ad,
          CTmean.Al, CTmean.IAC,   CTmean.Na, CTmean.Ss, CTmean.Tt, CTSD.Ac, 
@@ -273,5 +367,13 @@ assert_that(nrow(qdata)==2800)
 #--------------------------------------
 # save data
 #--------------------------------------
+# qpcr data
 save(qdata,file=paste0(data_dir ,"qdata.RData"))
 write.csv(qdata,file=paste0(data_dir, "qdata.csv"),row.names=FALSE)
+
+# all kk and partial qpcr data 
+save(data,file=paste0(data_dir ,"data.RData"))
+saveRDS(data,file=paste0(data_dir ,"data.RDS"))
+write.csv(data,file=paste0(data_dir, "data.csv"),row.names=FALSE)
+
+
