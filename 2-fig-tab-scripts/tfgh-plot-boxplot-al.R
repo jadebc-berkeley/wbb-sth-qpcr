@@ -34,9 +34,9 @@ red = "#FA2A27"
 pdf(file=paste0(fig_dir,"wbb-alconc-boxplot.pdf"),
     width=5,height=5)
 ggplot(qdata,aes(y=CTmean.Al,x=xcat))+
-  geom_boxplot()+  
   geom_dotplot(aes(fill=xcat,col=xcat),binaxis='y',stackdir='center',
                stackratio=1,dotsize=0.9,binwidth=.5, alpha=0.5)+
+  geom_boxplot(alpha = 0)+  
   xlab("")+
   scale_color_manual(values=c(red, green, darkgreen),guide=FALSE)+
   scale_fill_manual(values=c(red, green, darkgreen),guide=FALSE)+
