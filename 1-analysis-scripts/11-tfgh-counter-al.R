@@ -15,9 +15,9 @@ source(paste0(here::here(), "/0-config.R"))
 load(paste0(data_dir,"qdata.RData"))
 
 # create indicator for false positive Ascaris in KK
-qdata = qdata %>% mutate(
-  false_al = ifelse(alkk==1 & positive.Al==0,1,0)
-)
+qdata = qdata %>% 
+  filter(positive.Al==0) %>%
+  mutate(false_al = ifelse(alkk==1 & positive.Al==0,1,0))
 
 # since each slide was read by two counters, 
 # need to transform data so that it is in long 
