@@ -62,7 +62,7 @@ qpcr.mean <- qpcr %>%
 
 mean.l <- qpcr.mean %>% 
   group_by(sampleid) %>%
-  select(sampleid,assay,CTmean) %>% 
+  dplyr::select(sampleid,assay,CTmean) %>% 
   spread(assay,CTmean) %>%
   rename(CTmean.Ac=Ac, CTmean.Ad=Ad, CTmean.Al=Al,
          CTmean.IAC=IAC, CTmean.Na=Na, 
@@ -70,7 +70,7 @@ mean.l <- qpcr.mean %>%
 
 sd.l <- qpcr.mean %>% 
   group_by(sampleid) %>%
-  select(sampleid,assay,CTSD) %>% 
+  dplyr::select(sampleid,assay,CTSD) %>% 
   spread(assay,CTSD) %>%
   rename(CTSD.Ac=Ac, CTSD.Ad=Ad, CTSD.Al=Al,
          CTSD.IAC=IAC, CTSD.Na=Na, 
@@ -78,7 +78,7 @@ sd.l <- qpcr.mean %>%
 
 pos.l <- qpcr.mean %>% 
   group_by(sampleid) %>%
-  select(sampleid,assay,positive) %>% 
+  dplyr::select(sampleid,assay,positive) %>% 
   spread(assay,positive) %>%
   rename(positive.Ac=Ac, positive.Ad=Ad, positive.Al=Al,
          positive.IAC=IAC, positive.Na=Na, 
@@ -114,7 +114,7 @@ qpcr.w = qpcr.w %>%
 
 assert_that(all(is.na(qpcr.w %>% 
               filter(sampleid=="10805ETS1") %>%
-              select(CTmean.Ac, CTmean.Ad, CTmean.Al, CTmean.Na, CTmean.Ss, CTmean.Tt,
+                dplyr::select(CTmean.Ac, CTmean.Ad, CTmean.Al, CTmean.Na, CTmean.Ss, CTmean.Tt,
                      CTSD.Ac, CTSD.Ad, CTSD.Al, CTSD.Na, CTSD.Ss, CTSD.Tt,
                      positive.Ac, positive.Ad, positive.Al, positive.Na, positive.Ss, positive.Tt))))
 
@@ -127,7 +127,7 @@ nrow(ascaris_new)
 colnames(ascaris_new) = c("sampleid", "alepg", "al", "X", "CTmean.Al2", "CTSD.Al2", "XX")
 ascaris_new$dataid=substr(ascaris_new$sampleid,1,5)
 ascaris_new$personid=paste(substr(ascaris_new$sampleid,7,7),1,sep="")
-ascaris_new = ascaris_new %>% select(-c(X,XX, alepg, al))
+ascaris_new = ascaris_new %>% dplyr::select(-c(X,XX, alepg, al))
 
 # indicator for positive Al 
 ascaris_new <- ascaris_new %>%
@@ -171,7 +171,7 @@ ascaris_new = ascaris_new %>%
 
 assert_that(all(is.na(ascaris_new %>% 
                         filter(sampleid=="10805ETS1") %>%
-                        select(CTmean.Al2, CTSD.Al2, positive.Al2))))
+                        dplyr::select(CTmean.Al2, CTSD.Al2, positive.Al2))))
 
 # # confirm that only one sample has a missing ascaris result
 assert_that(length(ascaris_new$positive.Al2[is.na(ascaris_new$positive.Al2)]) == 1)
@@ -183,7 +183,7 @@ kk=read.csv("~/Dropbox/WASHB Parasites/Analysis datasets/Jade/sth.csv")
 kk$dataid=as.character(kk$dataid)
 kk$personid=as.character(kk$personid)
 kk=kk[,c("dataid","personid","block","clusterid","tr",
-         "sex","dw","aged","agem","agey","counter","labdate",
+         "sex","dw","aged","agem","agey","counter1","counter2","labdate",
       "alepg","hwepg","ttepg",
        "logalepg","loghwepg","logttepg",
        "al","tt","hw","sth","alint","ttint","hwint")]
@@ -330,15 +330,15 @@ qdata = qdata %>%
 # drop original Al assay, replace with new assay
 # -------------------------------------------
 qdata = qdata %>% 
-  select(-c(positive.Al, CTmean.Al, CTSD.Al)) %>%
+  dplyr::select(-c(positive.Al, CTmean.Al, CTSD.Al)) %>%
   rename(positive.Al = positive.Al2,
          CTmean.Al = CTmean.Al2,
          CTSD.Al = CTSD.Al2) 
 
 qdata = qdata %>%
-  select(clusterid, dataid, block,  personid, sampleid, tr, sex, dw,
+  dplyr::select(clusterid, dataid, block,  personid, sampleid, tr, sex, dw,
          aged,   agem,   agey,   
-         counter,
+         counter1, counter2,
          alepg,  hwepg,  ttepg, 
          logalepg, loghwepg, logttepg, alkk,   ttkk,   hwkk,  
          sth, alint,  ttint,  hwint,  
