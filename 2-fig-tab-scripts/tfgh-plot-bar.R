@@ -13,6 +13,9 @@ source(paste0(here::here(), "/0-config.R"))
 # load data
 load(paste0(data_dir,"qdata.RData"))
 
+# drop the observation without qPCR
+qdata = qdata %>% filter(!is.na(positive.Al))
+assert_that(nrow(qdata)==2799)
 
 #--------------------------------------
 # bar graph of qPCR CT and KK EPG results
@@ -78,11 +81,13 @@ gray="#919191"
 
 mycol=c(cb.lightorange,purple,cb.blue,cb.pink,cb.dblue,cb.green)
 
+
 pdf(file=paste0(fig_dir, "wbb-qpcr-kk-bargraph.pdf"),
     width=10,height=4)
 ggplot(bar.data,aes(x=test,y=per.pos,fill=org),col="black")+
   geom_bar(aes(fill=org),stat="identity",colour="black",
-           position='stack')+facet_grid(~orgcat)+
+           position='stack') + 
+  facet_grid(~ orgcat)+
   scale_fill_manual("Organism",values=mycol,
                     labels=expression(italic("Ascaris lumbricoides"),
                                       "Hookworm",
