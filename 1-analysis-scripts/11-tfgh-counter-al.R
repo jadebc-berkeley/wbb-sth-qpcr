@@ -30,19 +30,28 @@ counter_data = qdata %>% dplyr::select(counter1, counter2, false_al) %>%
 false_pos_counter = lapply(as.list(levels(counter_data$name)), function(x)
   mean_se(counter_data$false_al[counter_data$name==x]))
 false_pos_counter = bind_rows(false_pos_counter) %>%
-  mutate(Counter = levels(counter_data$name))
+  mutate(Counter = levels(counter_data$name),
+         countern = case_when(
+           Counter == "HKC" ~ 1,
+           Counter == "MHR" ~ 2, 
+           Counter == "RK" ~ 3,
+           Counter == "SNJ" ~ 4
+         )) %>%
+  mutate(countern = as.factor(countern))
 
+palette = brewer.pal(n = 4, name = "Set1")
 
-false_plot = ggplot(false_pos_counter, aes(x = Counter, y = y)) + 
-  geom_bar(stat="identity",width=0.5, aes(fill=Counter)) +
+false_plot = ggplot(false_pos_counter, aes(x = countern, y = y)) + 
+  geom_bar(stat="identity",width=0.5, aes(fill=countern)) +
   geom_errorbar(aes(ymin=ymin, ymax=ymax), width=0.2) +
+  scale_fill_manual(values = palette) + 
   xlab("Kato-Katz Technician Number") + 
   ylab("Probability of false positive") +
   theme_bw() +
   theme(legend.position="none")
 
 ggsave(false_plot, file = paste0(fig_dir, "wbb-qpcr-kk-falsepos-counter.pdf"),
-       width = 4, height = 3)
+       width = 5, height = 2.5)
 
 # test association
 glm_fit = glm(false_al ~ counter, data = counter_data, family = "binomial")
