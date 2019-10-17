@@ -48,13 +48,6 @@ ggsave(false_plot, file = paste0(fig_dir, "wbb-qpcr-kk-falsepos-counter.pdf"),
 glm_fit = glm(false_al ~ counter, data = counter_data, family = "binomial")
 summary(glm_fit)
 
-# x = qdata %>% group_by(labdate, counter) %>%
-#   summarise(falsepos = mean(false_al))
-# 
-# ggplot(x, aes(x = labdate, y = falsepos, group=counter))+
-#   # geom_point(aes(col=counter)) +
-#   geom_line(aes(col=counter))
-# 
 
 
 
