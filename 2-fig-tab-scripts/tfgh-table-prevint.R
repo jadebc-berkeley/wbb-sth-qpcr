@@ -14,15 +14,33 @@ source(paste0(here::here(), "/0-config.R"))
 load(paste0(data_dir,"qdata.RData"))
 load(paste0(data_dir,"prev_results.RData"))
 
+# drop the observation without qPCR
+qdata = qdata %>% filter(!is.na(positive.Al))
+assert_that(nrow(qdata)==2799)
+
 # -------------------------------------
 # prevalence
 # -------------------------------------
+# get number of positives
+nkk_al = qdata %>% filter(alkk==1) %>% nrow()
+nkk_hw = qdata %>% filter(hwkk==1) %>% nrow()
+nkk_tt = qdata %>% filter(ttkk==1) %>% nrow()
+
+nq_al = qdata %>% filter(positive.Al==1) %>% nrow()
+nq_hw = qdata %>% filter(positive.Hw==1) %>% nrow()
+nq_ad = qdata %>% filter(positive.Ad==1) %>% nrow()
+nq_ac = qdata %>% filter(positive.Ac==1) %>% nrow()
+nq_na = qdata %>% filter(positive.Na==1) %>% nrow()
+nq_tt = qdata %>% filter(positive.Tt==1) %>% nrow()
+nq_ss = qdata %>% filter(positive.Ss==1) %>% nrow()
+
 prev.kk=as.data.frame(rbind(al.kk,hw.kk,tt.kk))
 prev.kk$org=c("Ascaris lumbricoides","Hookworm","Trichuris trichiura")
 colnames(prev.kk)[5:6]=c("lb","ub")
 prev.kk = prev.kk %>%
-  mutate(prevkk=ptestci.format(Mean,lb,ub,decimals=1,scale=100)) %>%
-  select(org,Nkk=N,prevkk) 
+  mutate(prevkk=ptestci.format(Mean,lb,ub,decimals=1,scale=100),
+         nkk = c(nkk_al, nkk_hw, nkk_tt)) %>%
+  select(org,nkk,prevkk) 
 
 prev.q=as.data.frame(rbind(al.q,hw.q,na.q,ac.q,ad.q,tt.q,ss.q))
 prev.q$org=c("Ascaris lumbricoides","Hookworm",
@@ -30,8 +48,9 @@ prev.q$org=c("Ascaris lumbricoides","Hookworm",
            "Trichuris trichiura","Strongyloides stercoralis")
 colnames(prev.q)[5:6]=c("lb","ub")
 prev.q = prev.q %>%
-  mutate(prevq=ptestci.format(Mean,lb,ub,decimals=1,scale=100)) %>%
-  select(org,Nq=N,prevq)
+  mutate(prevq=ptestci.format(Mean,lb,ub,decimals=1,scale=100),
+         nq = c(nq_al, nq_hw, nq_na, nq_ac, nq_ad, nq_tt, nq_ss)) %>%
+  select(org,nq,prevq)
 
 # -------------------------------------
 # function to make pretty median (range)
@@ -69,14 +88,14 @@ CT.summary <- qdata %>%
   select(CTmean.Al, CTmean.Ac, CTmean.Ad, CTmean.Na,
          CTmean.Tt,CTmean.Ss) 
 
-CT.medrange <- sapply(CT.summary, function(x) medrange(y=x,digits=0))
+CT.medrange <- sapply(CT.summary, function(x) medrange(y=x,digits=1))
 
-CT.summary <- matrix(t(CT.summary),ncol(CT.summary),1)
+# CT.summary <- matrix(t(CT.summary),ncol(CT.summary),1)
 
 org=c("Ascaris lumbricoides","Ancylostoma ceylanicum",
       "Ancylostoma duodenale","Necator americanus","Trichuris trichiura",
       "Strongyloides stercoralis")
-ct=data.frame(org=org,ct=CT.summary)
+ct=data.frame(org=org,ct=CT.medrange)
 ct$org=as.character(ct$org)
 
 tab=full_join(prev.kk,prev.q,by="org") 
