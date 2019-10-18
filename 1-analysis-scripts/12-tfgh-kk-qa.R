@@ -57,6 +57,89 @@ d = d %>%
   ) 
 
 ########################################################
+# Kappa statistics
+########################################################
+
+get_kappa = function(counter_name, origvar, expertvar){
+  kappa_df = d %>% 
+    filter(counter == counter_name) %>%
+    filter(!is.na(!!sym(expertvar))) %>%
+    dplyr::select(!!sym(origvar), !!sym(expertvar))
+  
+  kappa_test = kappa2(kappa_df, "unweighted")
+  kappa = kappa_test$value
+  pval = kappa_test$p.value
+  
+  out = list(kappa = kappa, pval = pval)
+  
+  return(out)
+}
+
+al_kappa = list()
+for(i in 1:length(unique(d$counter))){
+  al_kappa[[i]] = get_kappa(
+    counter_name = unique(d$counter)[i],
+    origvar = "alpos_orig",
+    expertvar = "alpos_expert"
+  )
+}
+
+al_kappa_df = bind_rows(al_kappa) %>% 
+  mutate(outcome = "Ascaris",
+         counter = unique(d$counter))
+
+hw_kappa = list()
+for(i in 1:length(unique(d$counter))){
+  hw_kappa[[i]] = get_kappa(
+    counter = unique(d$counter)[i],
+    origvar = "hwpos_orig",
+    expertvar = "hwpos_expert"
+  )
+}
+hw_kappa_df = bind_rows(hw_kappa) %>% 
+  mutate(outcome = "Hookworm",
+         counter = unique(d$counter))
+
+tt_kappa = list()
+for(i in 1:length(unique(d$counter))){
+  tt_kappa[[i]] = get_kappa(
+    counter = unique(d$counter)[i],
+    origvar = "ttpos_orig",
+    expertvar = "ttpos_expert"
+  )
+}
+tt_kappa_df = bind_rows(tt_kappa) %>% 
+  mutate(outcome = "Trichuris",
+         counter = unique(d$counter))
+
+kappa_all = bind_rows(al_kappa_df, hw_kappa_df, tt_kappa_df) %>%
+  mutate(countern = case_when(
+    counter == "HKC" ~ 1,
+    counter == "MHR" ~ 2, 
+    counter == "RK" ~ 3,
+    counter == "SNJ" ~ 4
+  )) %>% 
+  mutate(pval_f = ifelse(pval < 0.001, "<0.001", sprintf("%0.03f", pval))) %>%
+  dplyr::select(-c(pval, counter)) 
+
+kappa_wide_kappa = dcast(kappa_all %>% dplyr::select(-pval_f), 
+                         countern ~ outcome, id.var = "countern", value.var = "kappa")
+kappa_wide_pval= dcast(kappa_all %>% dplyr::select(-kappa), 
+                       countern ~ outcome, id.var = "countern", value.var = "pval_f") %>%
+  rename(
+    al_pval = Ascaris,
+    hw_pval = Hookworm,
+    tt_pval = Trichuris
+  )
+
+kappa_result = full_join(kappa_wide_kappa, kappa_wide_pval, by = "countern") %>%
+  dplyr::select(countern, Ascaris, al_pval, 
+         Hookworm, hw_pval, 
+         Trichuris, tt_pval)
+
+write.csv(kappa_result, paste0(tab_dir, "kk_tech_kappa.csv"))
+
+########################################################
 # Calculate probability of concordance and SE 
 ########################################################
 # Ascaris --------------------------------------- 
