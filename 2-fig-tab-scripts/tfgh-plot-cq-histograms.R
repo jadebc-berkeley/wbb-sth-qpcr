@@ -19,7 +19,7 @@ x = qdata %>% dplyr::select(CTmean.Na, CTmean.Al, CTmean.Ac,
 
 cq_bimodal = ggplot(x, aes(x = value)) + 
   geom_histogram(bins = 50) +
-  facet_wrap(~ sth, ncol = 1) + 
+  facet_wrap(~ sth, ncol = 1, scale = "free") + 
   theme_bw() +
   xlab("Mean Cq value") + 
   ylab("Number of samples")
@@ -27,3 +27,4 @@ cq_bimodal = ggplot(x, aes(x = value)) +
 
 ggsave(cq_bimodal, file = paste0(fig_dir, "wbb-qpcr-kk-cq-bimodal.pdf"),
        width = 5, height = 8)
+
