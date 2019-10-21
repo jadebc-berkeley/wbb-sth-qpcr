@@ -21,7 +21,6 @@ cb.blue= "#56B4E9"
 cb.green="#009E73"
 cb.orange="#D55E00"
 cb.pink="#CC79A7"
-cb.dblue="#005787"
 
 xseq=c(1, 10, 100, 1000, 10000, 100000)
 xlabels=c(0, 10, 100, 1000, 10000, 100000)
