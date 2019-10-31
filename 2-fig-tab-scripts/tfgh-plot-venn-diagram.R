@@ -13,6 +13,10 @@ source(paste0(here::here(), "/0-config.R"))
 # load data 
 load(paste0(data_dir,"qdata.RData"))
 
+# drop the observation without qPCR
+qdata = qdata %>% filter(!is.na(positive.Al))
+assert_that(nrow(qdata)==2799)
+
 # get n's - KK
 get_kk_n = function(data, al, hw, tt){
   x = data %>% filter(
