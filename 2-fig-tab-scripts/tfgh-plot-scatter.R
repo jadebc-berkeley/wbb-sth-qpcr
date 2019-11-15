@@ -13,11 +13,16 @@ source(paste0(here::here(), "/0-config.R"))
 # load data
 load(paste0(data_dir,"qdata.RData"))
 
+# drop the observation without qPCR
+qdata = qdata %>% filter(!is.na(positive.Al))
+assert_that(nrow(qdata)==2799)
+
 #--------------------------------------
 # scatter plot of qPCR CT and KK EPG results
 #--------------------------------------
 cb.lightorange="#E69F00"
 cb.blue= "#56B4E9"
+cb.dblue = "#0858A5"
 cb.green="#009E73"
 cb.orange="#D55E00"
 cb.pink="#CC79A7"
